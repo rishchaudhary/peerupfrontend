@@ -32,7 +32,7 @@ import USERLIST from '../_mock/user';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'description', label: 'Description', alignRight: false },
+  { id: 'document type', label: 'Document Type', alignRight: false },
   { id: 'date uploaded', label: 'Date Uploaded', alignRight: false },
 ];
 
@@ -136,14 +136,14 @@ export default function User() {
           <Typography variant="h4" gutterBottom>
             Documents
           </Typography>
-          <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New File
+          <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill" />}>
+            Upload
+          <input hidden accept="image/*" multiple type="file" />
           </Button>
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
-
+         
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -158,7 +158,7 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                    const { id, name, dateuploaded, isVerified, status,role } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (
@@ -180,8 +180,8 @@ export default function User() {
                             </Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align="left">{company}</TableCell>
-                        <TableCell align="left">{role}</TableCell>
+                        <TableCell align="left">{dateuploaded}</TableCell>
+                        <TableCell align="left">{dateuploaded}</TableCell>
                        
 
                         <TableCell align="right">
