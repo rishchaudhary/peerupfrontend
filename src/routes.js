@@ -9,6 +9,7 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Documents from './pages/Document';
 import DashboardApp from './pages/DashboardApp';
+import Profile from './pages/Profile';
 
 // ----------------------------------------------------------------------
 
@@ -21,6 +22,8 @@ export default function Router() {
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
         { path: 'document', element: <Documents /> },
+        { path: 'profile', element: <Profile /> },
+
       ],
     },
     {
