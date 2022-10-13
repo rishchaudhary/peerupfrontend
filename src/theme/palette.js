@@ -27,6 +27,7 @@ const GREY = {
   500_56: alpha('#919EAB', 0.56),
   500_80: alpha('#919EAB', 0.8),
 };
+// Purdue GOLD 
 
 const PRIMARY = {
   lighter: '#D1E9FC',
@@ -37,11 +38,12 @@ const PRIMARY = {
   contrastText: '#fff',
 };
 
+// Purdue GRAY 
 const SECONDARY = {
   lighter: '#D6E4FF',
   light: '#84A9FF',
-  main: '#CEB888',
-  dark: '#1939B7',
+  main: '#9D968D',
+  dark: '#373A36',
   darker: '#091A7A',
   contrastText: '#fff',
 };
