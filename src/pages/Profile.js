@@ -6,8 +6,10 @@ import { Link as RouterLink } from 'react-router-dom';
 import {
   Avatar,
   Container,
+  Divider,
   Grid,
   Rating,
+  Paper,
   Typography,
   TableContainer,
   TablePagination,
@@ -32,8 +34,13 @@ export default function User() {
 
   return (
     <Page title="User">
-      <Container>
-        <Grid container spacing={2} sx={{border: 1, borderColor: 'primary.main'}}>
+
+      {/* main container holding everything */}
+      <Container sx={{mx: 'auto', width: 1000}}> 
+
+        {/* Grid for top section of the profile page */}
+        <Grid container spacing={2}>
+
           {/* Grid 1: Profile pic */ }
           <Grid item xs={2} sx={{ alignItems: 'center' }}>
             <Avatar 
@@ -43,9 +50,10 @@ export default function User() {
             sx={{ width: 150, height: 150,}}
             />
           </Grid>
+
           {/* gird 2: Name & rating */}
           <Grid item xs={6}>
-            <Stack sx={{border: 1}}>
+            <Stack>
               <Typography variant="h1" gutterBottom>
                 {account.displayName}
               </Typography>
@@ -58,8 +66,13 @@ export default function User() {
               />
             </Stack>
           </Grid>
+          {/* end of top section */}
         </Grid> 
-        <Stack spacing={0.5} mt={3}>
+        
+        {/* Stack for bottom section of profile page */}
+        <Stack spacing={0.5} mt={3} mx={3}>
+          
+          {/* Stack 1: major */}
           <Stack spacing = {0.5} direction="row">
             <Typography variant="body" gutterBottom sx={{fontWeight: 'medium'}}>
               Major: 
@@ -69,6 +82,7 @@ export default function User() {
             </Typography>
           </Stack>
           
+          {/* Stack 1: Class/year */}
           <Stack spacing = {0.5} direction="row">
             <Typography variant="body" gutterBottom sx={{fontWeight: 'medium'}}>
               Class: 
@@ -77,6 +91,20 @@ export default function User() {
               {account.year}
             </Typography>
           </Stack>
+
+          <Paper elevation={2} sx={{ height: 200}}>
+            <Stack 
+            spacing = {0.5} 
+            mx={'auto'} 
+            divider={<Divider orientation="horizontal" flexItem />}>
+              <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
+                  Bio: 
+              </Typography>
+              <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1,fontWeight: 'regular'}}>
+                  {account.bio} 
+              </Typography>
+            </Stack>
+          </Paper>
         </Stack>
       </Container>
     </Page>
