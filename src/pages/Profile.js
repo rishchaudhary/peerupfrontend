@@ -4,16 +4,9 @@ import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
-  Card,
-  Table,
-  Stack,
   Avatar,
-  Button,
-  Checkbox,
-  TableRow,
-  TableBody,
-  TableCell,
   Container,
+  Grid,
   Typography,
   TableContainer,
   TablePagination,
@@ -37,25 +30,27 @@ export default function User() {
 
   return (
     <Page title="User">
-      <Container 
-        style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-     
-        <Avatar 
-        alt="Remy Sharp"
-        src={account.photoURL}
-        sx={{ width: 200, height: 200}}
-        
-      />
-        <Typography variant="h2" gutterBottom>
-          {account.displayName}
-          </Typography>
-      
-
-    
+      <Container>
+        <Grid container spacing={2}>
+          <Grid item xs={2}>
+            <Avatar 
+            alt= {account.displayName}
+            src={account.photoURL}
+            style= {{border: '1px solid lightgray'}}
+            sx={{ width: 150, height: 150}}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="h2" gutterBottom>
+              {account.displayName}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="h2" gutterBottom>
+              {account.displayName}
+            </Typography>
+          </Grid>
+        </Grid> 
       </Container>
     </Page>
   );
