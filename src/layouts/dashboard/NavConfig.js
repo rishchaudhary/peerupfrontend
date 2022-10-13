@@ -17,6 +17,11 @@ const navConfig = [
     icon: getIcon('eva:message-circle-fill'),
   },
   {
+    title: 'Profile',
+    path: '/dashboard/profile',
+    icon: getIcon('eva:person-outline'),
+  },
+  {
     title: 'Documents',
     path: '/dashboard/document',
     icon: getIcon('eva:file-text-outline'),
