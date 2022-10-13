@@ -43,18 +43,18 @@ export default function User() {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-      <Avatar 
+     
+        <Avatar 
         alt="Remy Sharp"
         src={account.photoURL}
         sx={{ width: 200, height: 200}}
+        
       />
-
-        <Stack direction="row" alignItems="center" >
         <Typography variant="h2" gutterBottom>
           {account.displayName}
           </Typography>
       
-        </Stack>
+
     
       </Container>
     </Page>
