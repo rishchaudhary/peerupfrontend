@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+// ratings
+import Rating from '@mui/material/Rating';
 // material
 import {
   Card,
@@ -78,6 +80,7 @@ function a11yProps(index) {
 // ----------------------------------------------------------------------
 const TABLE_HEAD = [
   { id: 'Tutor Name', label: 'Tutor Name', alignRight: false },
+  { id: 'Ratings', label: '', alignRight: false },
   { id: 'Meeting Time', label: 'Meeting Time', alignRight: false },
   { id: 'Location', label: 'Location', alignRight: false },
   { id: 'Rate($/hr)', label: 'Rate($/hr)', alignRight: false },
@@ -116,6 +119,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function DashboardApp() {
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -220,7 +224,7 @@ export default function DashboardApp() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, tutorName, dateuploaded , avatarUrl, dateAndTime} = row;
+                    const { id, tutorName, dateuploaded , avatarUrl, dateAndTime, location, rate, sessionsHosted, rating} = row;
                     const isItemSelected = selected.indexOf(tutorName) !== -1;
 
                     return (
@@ -228,7 +232,6 @@ export default function DashboardApp() {
                         hover
                         key={id}
                         tabIndex={-1}
-                        role="checkbox"
                         selected={isItemSelected}
                         aria-checked={isItemSelected}>
                         <TableCell padding="checkbox"/>
@@ -237,11 +240,15 @@ export default function DashboardApp() {
                             <Avatar alt={tutorName} src={avatarUrl} />
                             <Typography variant="subtitle2" noWrap>
                               {tutorName}
+                             
                             </Typography>
                           </Stack>
                         </TableCell>
+                        <TableCell align="left"> <Rating name="read-only" value={rating} readOnly /></TableCell>
                         <TableCell align="left">{dateAndTime}</TableCell>
-                        <TableCell align="left">{dateuploaded}</TableCell>
+                        <TableCell align="left">{location}</TableCell>
+                        <TableCell align="left">{rate}</TableCell>
+                        <TableCell align="left">{sessionsHosted}</TableCell>
                        
 
                       </TableRow>
