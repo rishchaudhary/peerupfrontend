@@ -7,40 +7,26 @@ const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
 const navConfig = [
   {
-    title: 'dashboard',
+    title: 'Home',
     path: '/dashboard/app',
-    icon: getIcon('eva:pie-chart-2-fill'),
+    icon: getIcon('eva:home-fill'),
   },
   {
-    title: 'user',
+    title: 'Messages',
     path: '/dashboard/user',
-    icon: getIcon('eva:people-fill'),
+    icon: getIcon('eva:message-circle-fill'),
   },
   {
-    title: 'product',
+    title: 'Documents',
+    path: '/dashboard/document',
+    icon: getIcon('eva:file-text-outline'),
+  },
+  {
+    title: 'Settings',
     path: '/dashboard/products',
-    icon: getIcon('eva:shopping-bag-fill'),
+    icon: getIcon('eva:settings-fill'),
   },
-  {
-    title: 'blog',
-    path: '/dashboard/blog',
-    icon: getIcon('eva:file-text-fill'),
-  },
-  {
-    title: 'login',
-    path: '/login',
-    icon: getIcon('eva:lock-fill'),
-  },
-  {
-    title: 'register',
-    path: '/register',
-    icon: getIcon('eva:person-add-fill'),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: getIcon('eva:alert-triangle-fill'),
-  },
+  
 ];
 
 export default navConfig;
