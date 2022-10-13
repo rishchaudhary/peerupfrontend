@@ -8,6 +8,7 @@ const account = {
   email: 'pete@purdue.edu',
   photoURL: '/static/purdue-pete.png',
   ratingVal: 4.5,
+  bio: 'Testing bio for cs student'
 };
 
 export default account;
