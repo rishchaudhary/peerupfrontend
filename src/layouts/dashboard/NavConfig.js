@@ -13,7 +13,7 @@ const navConfig = [
   },
   {
     title: 'Messages',
-    path: '/dashboard/user',
+    path: '/dashboard/404',
     icon: getIcon('eva:message-circle-fill'),
   },
   {
@@ -28,7 +28,7 @@ const navConfig = [
   },
   {
     title: 'Settings',
-    path: '/dashboard/products',
+    path: '/dashboard/404',
     icon: getIcon('eva:settings-fill'),
   },
   

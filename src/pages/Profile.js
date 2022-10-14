@@ -1,7 +1,3 @@
-import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Avatar,
@@ -12,30 +8,20 @@ import {
   Rating,
   Paper,
   Typography,
-  TableContainer,
-  TablePagination,
   Stack,
+  TextField,
 } from '@mui/material';
 // components
 import Page from '../components/Page';
-import Label from '../components/Label';
-import Scrollbar from '../components/Scrollbar';
-import Iconify from '../components/Iconify';
-import SearchNotFound from '../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import account from '../_mock/account';
-import Button from '../theme/overrides/Button';
-
 
 // ----------------------------------------------------------------------
 
-
-
-export default function User() {
+export default function Profile() {
 
   return (
-    <Page title="User">
+    <Page title="Profile">
 
       {/* main container holding everything */}
       <Container sx={{mx: 'auto', width: 1000}}> 
@@ -102,9 +88,16 @@ export default function User() {
               <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
                   Bio: 
               </Typography>
-              <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1,fontWeight: 'regular'}}>
-                  {account.bio} 
-              </Typography>
+              <TextField
+                id="outlined-multiline-static"
+                label="Enter bio here"
+                multiline
+                maxRows={5}
+                minRows={5}
+                defaultValue="Default Value"
+                margin="dense"
+                variant="outlined"
+              />
             </Stack>
           </Paper>
 
@@ -116,7 +109,11 @@ export default function User() {
 
             {account.enrolled.map(item => (
               <div key={item.id}>
-                <Chip label={item.class} color="primary"/>
+                <Chip 
+                label={item.class} 
+                color="primary"
+                sx={{fontWeight: 'bold'}}
+                />
               </div>
             ))}
           </Stack>
@@ -128,7 +125,11 @@ export default function User() {
 
             {account.dayPref.map(item => (
               <div key={item.id}>
-                <Chip label={item.class} color="primary"/>
+                <Chip 
+                label={item.class} 
+                color="primary"
+                sx={{fontWeight: 'bold'}}
+                />
               </div>
             ))}
           </Stack>
@@ -140,7 +141,11 @@ export default function User() {
 
             {account.timePref.map(item => (
               <div key={item.id}>
-                <Chip label={item.class} color="primary"/>
+                <Chip 
+                label={item.class} 
+                color="primary"
+                sx={{fontWeight: 'bold'}}
+                />
               </div>
             ))}
           </Stack>
