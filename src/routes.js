@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Documents from './pages/Document';
 import DashboardApp from './pages/DashboardApp';
 import Profile from './pages/Profile';
+import Message from './pages/Message';
 
 // ----------------------------------------------------------------------
 
@@ -20,6 +21,7 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'document', element: <Documents /> },
+        { path: 'message', element: <Message /> },
         { path: 'profile', element: <Profile /> },
       ],
     },
