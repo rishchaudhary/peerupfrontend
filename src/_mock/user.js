@@ -14,7 +14,7 @@ const users = [...Array(24)].map((_, index) => ({
   location: faker.address.streetName(),
   rate: faker.commerce.price(10, 30),
   sessionsHosted: faker.random.numeric(),
-  rating: faker.commerce.price(0, 5),
+  rating: faker.commerce.price(2, 5),
 }));
 
 export default users;
