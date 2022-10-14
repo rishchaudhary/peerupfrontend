@@ -28,7 +28,7 @@ const navConfig = [
   },
   {
     title: 'Settings',
-    path: '/dashboard/404',
+    path: '/dashboard/settings',
     icon: getIcon('eva:settings-fill'),
   },
   
