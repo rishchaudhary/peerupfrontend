@@ -84,16 +84,15 @@ export default function Profile() {
             <Stack 
             spacing = {0.5} 
             mx={'auto'} 
-            divider={<Divider orientation="horizontal" flexItem />}>
+            divider={<Divider orientation="horizontal" flexItem />}
+            >
               <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
                   Bio: 
               </Typography>
               <TextField
                 id="outlined-multiline-static"
-                label="Enter bio here"
                 multiline
                 maxRows={5}
-                minRows={5}
                 defaultValue="Default Value"
                 margin="dense"
                 variant="outlined"
