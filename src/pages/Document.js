@@ -115,7 +115,7 @@ export default function User() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  
+
   /* unused function, commented for warning
     const handleFilterByName = (event) => {
       setFilterName(event.target.value);
@@ -137,12 +137,12 @@ export default function User() {
           </Typography>
           <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill" />}>
             Upload
-          <input hidden accept="image/*" multiple type="file" />
+            <input hidden accept="image/*" multiple type="file" />
           </Button>
         </Stack>
 
         <Card>
-         
+
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -169,8 +169,8 @@ export default function User() {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
-                        <TableCell padding="checkbox"/>
-            
+                        <TableCell padding="checkbox" />
+
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
