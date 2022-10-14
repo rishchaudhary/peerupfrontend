@@ -6,6 +6,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import {
   Avatar,
   Container,
+  Chip,
   Divider,
   Grid,
   Rating,
@@ -24,6 +25,7 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import account from '../_mock/account';
+import Button from '../theme/overrides/Button';
 
 
 // ----------------------------------------------------------------------
@@ -51,7 +53,7 @@ export default function User() {
             />
           </Grid>
 
-          {/* gird 2: Name & rating */}
+          {/* grid 2: Name & rating */}
           <Grid item xs={6}>
             <Stack>
               <Typography variant="h1" gutterBottom>
@@ -105,6 +107,56 @@ export default function User() {
               </Typography>
             </Stack>
           </Paper>
+
+          {/* stack for class currently taking */}
+          <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
+            <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
+              Currently Taking:
+            </Typography>
+
+            {account.enrolled.map(item => (
+              <div key={item.id}>
+                <Chip label={item.class} color="primary"/>
+              </div>
+            ))}
+          </Stack>
+
+          <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
+            <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
+              Currently Taking:
+            </Typography>
+
+            {account.enrolled.map(item => (
+              <div key={item.id}>
+                <Chip label={item.class} color="primary"/>
+              </div>
+            ))}
+          </Stack>
+
+          <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
+            <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
+              Preffered Day:
+            </Typography>
+
+            {account.dayPref.map(item => (
+              <div key={item.id}>
+                <Chip label={item.class} color="primary"/>
+              </div>
+            ))}
+          </Stack>
+
+          <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
+            <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
+              Preffered Time:
+            </Typography>
+
+            {account.timePref.map(item => (
+              <div key={item.id}>
+                <Chip label={item.class} color="primary"/>
+              </div>
+            ))}
+          </Stack>
+
         </Stack>
       </Container>
     </Page>
