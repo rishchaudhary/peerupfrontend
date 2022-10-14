@@ -1,6 +1,9 @@
 // material
 import {
     Avatar,
+    Badge,
+    Box,
+    Button,
     Container,
     Chip,
     Divider,
@@ -11,13 +14,16 @@ import {
     Stack,
     TextField,
   } from '@mui/material';
+  import VerifiedIcon from '@mui/icons-material/Verified';
   // components
   import Page from '../components/Page';
+  import Iconify from '../components/Iconify';
   // mock
   import account from '../_mock/account';
   
   // ----------------------------------------------------------------------
-  
+  const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
+
   export default function TutorProfile() {
   
     return (
@@ -42,9 +48,12 @@ import {
             {/* grid 2: Name & rating */}
             <Grid item xs={6}>
               <Stack>
-                <Typography variant="h1" gutterBottom>
-                  {account.displayName}
-                </Typography>
+                <Stack direction="row" spacing={2}>
+                    <Typography variant="h1" gutterBottom>
+                        {account.displayName}
+                    </Typography>
+                    <VerifiedIcon/>
+                </Stack>
                 <Rating 
                   name="read-only" 
                   value={account.ratingVal} 
@@ -92,8 +101,9 @@ import {
                 <TextField
                   id="outlined-multiline-static"
                   multiline
+                  minRows={5}
                   maxRows={5}
-                  defaultValue="Default Value"
+                  defaultValue="Enter bio here"
                   margin="dense"
                   variant="outlined"
                 />
@@ -101,18 +111,18 @@ import {
             </Paper>
   
             {/* stack for class currently taking */}
-            <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
+            <Stack spacing={1} direction="row" pt={3} sx={{ alignContent: 'center'}}>
               <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-                Currently Taking:
+                Offering tutoring:
               </Typography>
   
               {account.enrolled.map(item => (
                 <div key={item.id}>
-                  <Chip 
-                  label={item.class} 
-                  color="primary"
-                  sx={{fontWeight: 'bold'}}
-                  />
+                    <Chip 
+                    label={item.class} 
+                    color="primary"
+                    sx={{fontWeight: 'bold'}}
+                    />
                 </div>
               ))}
             </Stack>
@@ -148,6 +158,18 @@ import {
                 </div>
               ))}
             </Stack>
+
+            <Box pt={5} sx={{ alignItems: 'center', alignContent: 'center'}} >
+                <Button 
+                variant="contained" 
+                component="label" 
+                startIcon={<Iconify icon="eva:plus-fill" />}
+                color="secondary"
+                >
+                Upload Transcript
+                <input hidden accept="image/*" multiple type="file" />
+                </Button>
+            </Box>
   
           </Stack>
         </Container>

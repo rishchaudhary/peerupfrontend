@@ -31,6 +31,11 @@ const navConfig = [
     path: '/dashboard/settings',
     icon: getIcon('eva:settings-fill'),
   },
+  {
+    title: 'TutorProfile',
+    path: '/dashboard/tutorProfile',
+    icon: getIcon('eva:person-outline'),
+  },
   
 ];
 

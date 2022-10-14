@@ -92,8 +92,9 @@ export default function Profile() {
               <TextField
                 id="outlined-multiline-static"
                 multiline
+                minRows={5}
                 maxRows={5}
-                defaultValue="Default Value"
+                defaultValue="Enter bio here"
                 margin="dense"
                 variant="outlined"
               />

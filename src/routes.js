@@ -11,6 +11,7 @@ import DashboardApp from './pages/DashboardApp';
 import Profile from './pages/Profile';
 import Message from './pages/Message';
 import Settings from './pages/Settings';
+import TutorProfile from './pages/TutorProfile';
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +26,7 @@ export default function Router() {
         { path: 'message', element: <Message /> },
         { path: 'settings', element: <Settings /> },
         { path: 'profile', element: <Profile /> },
+        { path: 'tutorProfile', element: <TutorProfile />}
       ],
     },
     {
