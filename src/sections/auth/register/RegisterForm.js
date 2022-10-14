@@ -9,8 +9,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Stack, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../../firebaseConfig';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { auth } from '../../../firebaseConfig/auth';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
@@ -51,12 +51,17 @@ export default function RegisterForm() {
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
+        sendEmailVerification(user);
+        console.log('User registered:', user.email);
         // ...
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        // ..
+        // inspect error and do stuff
+        console.log(errorMessage);
+        console.log('Error code:', errorCode);
+        // If email already in use errorcode will be auth/email-already-in-use
       });
     navigate('/dashboard', { replace: true });
   };
