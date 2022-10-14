@@ -1,10 +1,12 @@
 
+
 // scroll bar
 import 'simplebar/src/simplebar.css';
 
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+import { app } from './firebaseConfig';
 
 //
 import App from './App';
