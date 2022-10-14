@@ -123,18 +123,6 @@ export default function User() {
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-              Currently Taking:
-            </Typography>
-
-            {account.enrolled.map(item => (
-              <div key={item.id}>
-                <Chip label={item.class} color="primary"/>
-              </div>
-            ))}
-          </Stack>
-
-          <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
-            <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
               Preffered Day:
             </Typography>
 
