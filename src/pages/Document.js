@@ -183,7 +183,9 @@ export default function User() {
                         </TableCell>
                         <TableCell align="left">{dateuploaded}</TableCell>
                         <TableCell align="left">{dateuploaded}</TableCell>
-                       
+                        <TableCell align="right">
+                          <UserMoreMenu />
+                        </TableCell>
 
                       </TableRow>
                     );
