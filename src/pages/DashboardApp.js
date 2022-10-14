@@ -139,7 +139,7 @@ export default function DashboardApp() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // tabs
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(1);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -200,12 +200,23 @@ export default function DashboardApp() {
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-            <Tab label="Matched" {...a11yProps(0)} />
-            <Tab label="Scheduled" {...a11yProps(1)} />
-            <Tab label="Completed" {...a11yProps(2)} />
+           <Tab label="Request" {...a11yProps(0)} />
+            <Tab label="Matched" {...a11yProps(1)} />
+            <Tab label="Scheduled" {...a11yProps(2)} />
+            <Tab label="Completed" {...a11yProps(3)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
+          <Container>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+              <Typography variant="h3" gutterBottom>
+                Request
+              </Typography>
+            </Stack>
+            <Card/>
+          </Container>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
@@ -293,7 +304,7 @@ export default function DashboardApp() {
             </Card>
           </Container>
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        <TabPanel value={value} index={2}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
@@ -379,7 +390,7 @@ export default function DashboardApp() {
             </Card>
           </Container>
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={value} index={3}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
