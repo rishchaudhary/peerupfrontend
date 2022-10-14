@@ -58,6 +58,9 @@ export default function RegisterForm() {
         const errorCode = error.code;
         const errorMessage = error.message;
         // inspect error and do stuff
+        console.log(errorMessage);
+        console.log('Error code:', errorCode);
+        // If email already in use errorcode will be auth/email-already-in-use
       });
     navigate('/dashboard', { replace: true });
   };

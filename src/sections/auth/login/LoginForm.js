@@ -46,11 +46,16 @@ export default function LoginForm() {
       .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
+      console.log('user logged in:', user.email);
       // ...
       })
       .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
+      console.log(errorMessage);
+      console.log('Error code: ', errorCode);
+      // If user is not found errorCode will be auth/user-not-found
+      // If user exists but password is wrong errorCode will be auth/wrong-password
       });
     navigate('/dashboard', { replace: true });
   };
