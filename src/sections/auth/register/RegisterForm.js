@@ -52,6 +52,7 @@ export default function RegisterForm() {
         // Signed in 
         const user = userCredential.user;
         sendEmailVerification(user);
+        console.log('User registered:', user.email);
         // ...
       })
       .catch((error) => {
