@@ -132,7 +132,7 @@ export default function User() {
     <Page title="User">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h3" gutterBottom>
             Documents
           </Typography>
           <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill" />}>
@@ -169,17 +169,16 @@ export default function User() {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
+                        <TableCell padding="checkbox"/>
+            
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
-                              {name}
+                              {name}.pdf
                             </Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align="left">{dateuploaded}</TableCell>
+                        <TableCell align="left">Course Content</TableCell>
                         <TableCell align="left">{dateuploaded}</TableCell>
                         <TableCell align="right">
                           <UserMoreMenu />
