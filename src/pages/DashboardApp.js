@@ -261,12 +261,14 @@ export default function DashboardApp() {
                 
                 
               </Box>
-              <Box  sx={{px:2}}>
-              <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill" />}>
-            Add Attachments
-            <input hidden accept="image/*" multiple type="file" />
-          </Button>
+              <Box sx={{ px: 2 }}>
+                <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill" />}>
+                  Add Attachments
+                  <input hidden accept="image/*" multiple type="file" />
+                </Button>
+               
               </Box>
+
               
             </Card>
           </Container>
