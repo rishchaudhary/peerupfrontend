@@ -137,6 +137,7 @@ export default function DashboardApp() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  
 
   // tabs
   const [value, setValue] = React.useState(1);
