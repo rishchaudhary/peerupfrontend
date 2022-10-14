@@ -15,6 +15,10 @@ import Rating from '@mui/material/Rating';
 import IconButton from '@mui/material/IconButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+
+// forms
+import TextField from '@mui/material/TextField';
+
 // material
 import {
   Card,
@@ -139,6 +143,12 @@ export default function DashboardApp() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   
 
+  const [formValue, setFormValue] = React.useState('Controlled');
+
+  const handleChangeForm = (event) => {
+    setFormValue(event.target.formValue);
+  };
+
   // tabs
   const [value, setValue] = React.useState(1);
 
@@ -214,7 +224,51 @@ export default function DashboardApp() {
                 Request
               </Typography>
             </Stack>
-            <Card/>
+            <Card sx={{px:3, py:4}}>
+              <Box
+                component="form"
+                sx={{
+                  '& .MuiTextField-root': { m: 1, width: '25ch' },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <div>
+
+                <TextField id="outlined-search" label="Course Name" type="search" />
+                <TextField id="outlined-search" label="Location" type="search" />
+                  <TextField
+                    id="outlined-number"
+                    label="Session Length"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                <TextField id="outlined-search" label="Date" type="search" />
+                <TextField id="outlined-search" label="Time" type="search" />
+                  <TextField
+                    id="outlined-multiline-flexible"
+                    label="Description"
+                    multiline
+                    rows={4}
+                    value={formValue}
+                    onChange={handleChangeForm}
+                  />
+                  
+                  
+                </div>
+                
+                
+              </Box>
+              <Box  sx={{px:2}}>
+              <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill" />}>
+            Add Attachments
+            <input hidden accept="image/*" multiple type="file" />
+          </Button>
+              </Box>
+              
+            </Card>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={1}>
