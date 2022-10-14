@@ -49,13 +49,14 @@ export default function RegisterForm() {
   const onSubmit = async data => {
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
-        // Signed in 
+        // Registration was successful
         const user = userCredential.user;
         sendEmailVerification(user);
         console.log('User registered:', user.email);
         // ...
       })
       .catch((error) => {
+        // Registration was unsuccessful
         const errorCode = error.code;
         const errorMessage = error.message;
         // inspect error and do stuff
@@ -63,7 +64,7 @@ export default function RegisterForm() {
         console.log('Error code:', errorCode);
         // If email already in use errorcode will be auth/email-already-in-use
       });
-    navigate('/dashboard', { replace: true });
+    navigate('/dashboard/app', { replace: true });
   };
 
   return (
