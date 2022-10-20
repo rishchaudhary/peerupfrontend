@@ -12,3 +12,6 @@ onAuthStateChanged(auth, (user) => {
       // ...
     }
   });
+
+  // reset password: auth.sendPasswordResetEmail(email)
+  // add phone number auth.user.linkWithPhoneNumber(number, applicationVerifier)
