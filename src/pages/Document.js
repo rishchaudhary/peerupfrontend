@@ -16,6 +16,8 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+// firebase storage methods
+import { ref, uploadBytes } from 'firebase/storage';
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
@@ -24,6 +26,10 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
+// firebase imports
+import { storage, } from '../firebaseConfig/storage';
+
+// import { database } from 'src/firebaseConfig/database';
 
 // ----------------------------------------------------------------------
 
@@ -128,6 +134,13 @@ export default function User() {
 
   const isUserNotFound = filteredUsers.length === 0;
 
+  const uploadDoc = () => {
+    const selectedFile = document.getElementById('usr_doc').files[0];
+    const storageRef = ref(storage, selectedFile.name);
+    uploadBytes(storageRef, selectedFile).then((snapshot) => {
+      console.log('Uploaded file');
+    })
+  };
   return (
     <Page title="User">
       <Container>
@@ -135,9 +148,9 @@ export default function User() {
           <Typography variant="h3" gutterBottom>
             Documents
           </Typography>
-          <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill"/>}>
             Upload
-            <input hidden accept="image/*" multiple type="file" />
+            <input hidden multiple type="file" id="usr_doc" name='usr_doc' onChange={uploadDoc} />
           </Button>
         </Stack>
 
