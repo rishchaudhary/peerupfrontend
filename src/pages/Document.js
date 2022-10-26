@@ -28,6 +28,7 @@ import { UserListHead, UserMoreMenu } from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 // firebase imports
 import { storage, } from '../firebaseConfig/storage';
+import { auth } from '../firebaseConfig/auth'
 
 // import { database } from 'src/firebaseConfig/database';
 
@@ -135,12 +136,17 @@ export default function User() {
   const isUserNotFound = filteredUsers.length === 0;
 
   const uploadDoc = () => {
-    const selectedFile = document.getElementById('usr_doc').files[0];
-    const storageRef = ref(storage, selectedFile.name);
-    uploadBytes(storageRef, selectedFile).then((snapshot) => {
-      console.log('Uploaded file');
-    })
+    if (auth.currentUser == null) {
+      console.log('No document uploaded, no user logged in.');
+    } else {
+      const selectedFile = document.getElementById('usr_doc').files[0];
+      const storageRef = ref(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
+      uploadBytes(storageRef, selectedFile).then((snapshot) => {
+        console.log('Uploaded file');
+      })
+    }
   };
+  
   return (
     <Page title="User">
       <Container>

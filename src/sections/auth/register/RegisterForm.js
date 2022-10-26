@@ -10,7 +10,9 @@ import { Stack, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { ref, uploadString } from 'firebase/storage';
 import { auth } from '../../../firebaseConfig/auth';
+import { storage } from '../../../firebaseConfig/storage';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
@@ -47,11 +49,18 @@ export default function RegisterForm() {
   } = methods;
 
   const onSubmit = async data => {
+    // user = auth.currentUser; uid = user.uid
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         // Registration was successful
         const user = userCredential.user;
         sendEmailVerification(user);
+        const userPath = `User_data/${user.uid}/usrconfig.txt`;
+        const userRef = ref(storage, userPath);
+        const userInfo = `Email: ${user.email} First name: ${data.firstName} Last name: ${data.lastName}`;
+        uploadString(userRef, userInfo).then((snapshot) => {
+          console.log('Uploaded user config data.');
+        });
         console.log('User registered:', user.email);
         // ...
       })
