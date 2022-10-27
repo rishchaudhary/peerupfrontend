@@ -1,6 +1,7 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 export const auth = getAuth();
+
 onAuthStateChanged(auth, (user) => {
     if (user) {
       // User is signed in, see docs for a list of available properties
