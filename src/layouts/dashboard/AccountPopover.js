@@ -3,6 +3,9 @@ import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@mui/material';
+
+import { getAuth, signOut } from 'firebase/auth';
+
 // components
 import MenuPopover from '../../components/MenuPopover';
 // mocks_
@@ -41,6 +44,13 @@ export default function AccountPopover() {
 
   const handleClose = () => {
     setOpen(null);
+  };
+
+  const handleLogout = () => {
+    // logout
+    const auth = getAuth();
+    auth.signOut();
+    console.log('User signed out.');
   };
 
   return (
@@ -101,7 +111,7 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </MenuPopover>
