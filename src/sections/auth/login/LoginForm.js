@@ -47,7 +47,7 @@ export default function LoginForm() {
       // Signed in 
       const user = userCredential.user;
       console.log('user logged in:', user.email);
-      // ...
+      console.log('current user email: ', auth.currentUser.email);
       })
       .catch((error) => {
       const errorCode = error.code;

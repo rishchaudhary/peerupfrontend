@@ -9,7 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Stack, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
 import { ref, uploadString } from 'firebase/storage';
 import { auth } from '../../../firebaseConfig/auth';
 import { storage } from '../../../firebaseConfig/storage';
@@ -54,6 +54,7 @@ export default function RegisterForm() {
       .then((userCredential) => {
         // Registration was successful
         const user = userCredential.user;
+        updateProfile(user, {displayName: `${data.firstName} ${data.lastName}`});
         sendEmailVerification(user);
         const userPath = `User_data/${user.uid}/usrconfig.txt`;
         const userRef = ref(storage, userPath);

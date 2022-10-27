@@ -4,7 +4,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@mui/material';
 
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../firebaseConfig/auth';
 
 // components
 import MenuPopover from '../../components/MenuPopover';
@@ -12,6 +13,7 @@ import MenuPopover from '../../components/MenuPopover';
 import account from '../../_mock/account';
 
 // ----------------------------------------------------------------------
+
 
 const MENU_OPTIONS = [
   {
@@ -35,6 +37,16 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
   const anchorRef = useRef(null);
+  let usrEmail = '';
+  let usrDisplayName = '';
+
+  if (auth.currentUser != null) {
+    usrEmail = auth.currentUser.email;
+    usrDisplayName = auth.currentUser.displayName;
+  } else {
+    usrEmail = account.email;
+    usrDisplayName = account.displayName;
+  }
 
   const [open, setOpen] = useState(null);
 
@@ -92,10 +104,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {usrDisplayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {usrEmail}
           </Typography>
         </Box>
 
