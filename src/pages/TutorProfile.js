@@ -20,12 +20,19 @@ import {
   import Iconify from '../components/Iconify';
   // mock
   import account from '../_mock/account';
+  // firebase
+  import { auth } from '../firebaseConfig/auth';
   
   // ----------------------------------------------------------------------
   const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
   export default function TutorProfile() {
-  
+    let usrDisplayName = '';
+    if (auth.currentUser != null) {
+      usrDisplayName = auth.currentUser.displayName;
+    } else {
+      usrDisplayName = account.displayName;
+    }
     return (
       <Page title="Profile">
   
@@ -38,7 +45,7 @@ import {
             {/* Grid 1: Profile pic */ }
             <Grid item xs={2} sx={{ alignItems: 'center' }}>
               <Avatar 
-              alt={account.displayName}
+              alt={usrDisplayName}
               src={account.photoURL}
               style= {{border: '1px solid lightgray'}}
               sx={{ width: 150, height: 150,}}
@@ -50,7 +57,7 @@ import {
               <Stack>
                 <Stack direction="row" spacing={2}>
                     <Typography variant="h1" gutterBottom>
-                        {account.displayName}
+                        {usrDisplayName}
                     </Typography>
                     <VerifiedIcon/>
                 </Stack>
