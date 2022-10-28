@@ -88,5 +88,18 @@ export class Requests {
             return error;
         });
     }
+
+    static getAllRequestInformation(){
+
+        get(child(ref(getDatabase()), `Requests`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                return snapshot.val();
+            }
+
+        }).catch((error) => {
+            return error;
+        });
+    }
        
 }
