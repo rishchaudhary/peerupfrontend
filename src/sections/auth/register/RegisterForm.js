@@ -60,7 +60,7 @@ export default function RegisterForm() {
         const userPath = `User_data/${user.uid}/usrconfig.txt`;
         const userRef = ref(storage, userPath);
         const userInfo = `Email: ${user.email} First name: ${data.firstName} Last name: ${data.lastName}`;
-        NewUser.create_account(user.uid, user.email, user.displayName, data.password);
+        NewUser.create_account(user.uid, user.email, `${data.firstName} ${data.lastName}`, data.password);
         uploadString(userRef, userInfo).then((snapshot) => {
           console.log('Uploaded user config data.');
         });

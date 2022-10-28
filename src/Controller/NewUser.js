@@ -55,7 +55,7 @@ export class NewUser {
 
         get(child(ref(getDatabase()), `Users/${userID}`)).then((snapshot) => {
             if (snapshot.exists()) {
-                return snapshot.exportVal();
+                return snapshot.val();
             }
 
         }).catch((error) => {
