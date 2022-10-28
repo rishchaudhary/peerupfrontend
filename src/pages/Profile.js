@@ -11,12 +11,23 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+
+// Firebase
+import {getDatabase, ref, child, set, get, remove} from "firebase/database";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 // components
 import Page from '../components/Page';
 // mock
 import account from '../_mock/account';
+// Controller
+import {NewUser} from "../Controller/NewUser";
+import { auth } from '../firebaseConfig/auth';
+
 
 // ----------------------------------------------------------------------
+// const db = getDatabase();
+// const user = db.ref(`Users/${auth.currentUser.uid}/Name`);
 
 export default function Profile() {
 
@@ -31,7 +42,7 @@ export default function Profile() {
 
           {/* Grid 1: Profile pic */ }
           <Grid item xs={2} sx={{ alignItems: 'center' }}>
-            <Avatar 
+            <Avatar
             alt={account.displayName}
             src={account.photoURL}
             style= {{border: '1px solid lightgray'}}
@@ -43,7 +54,7 @@ export default function Profile() {
           <Grid item xs={6}>
             <Stack>
               <Typography variant="h1" gutterBottom>
-                {account.displayName}
+                {auth.currentUser.displayName}
               </Typography>
               <Rating 
                 name="read-only" 
