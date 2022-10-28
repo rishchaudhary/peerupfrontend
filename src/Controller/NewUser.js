@@ -3,14 +3,14 @@ import { size } from "lodash";
 
 export class NewUser {
 
-    static create_account(userID, emailAddress, fullName, username, password) {
+    static create_account(userID, emailAddress, fullName, password) {
 
         set(ref(getDatabase(), `Users/${userID}`), {
         Name: fullName,
         Email: emailAddress,
         HasTutorAccount: false,
         Sessions: ["N/A"],
-        Username: username,
+        // Username: username,
         Password: password,
         Requests: ["N/A"],
         Reviews: ["N/A"],

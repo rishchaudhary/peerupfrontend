@@ -1,4 +1,4 @@
-import { getDatabase, set, ref, remove} from "firebase/database";
+import { getDatabase, set, ref, remove, get, child} from "firebase/database";
 import { NewUser } from "./NewUser";
 import { Offers } from "./Offers";
 

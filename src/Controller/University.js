@@ -1,4 +1,4 @@
-import { getDatabase, set, get, ref } from "firebase/database";
+import { getDatabase, set, get, ref, remove, child } from "firebase/database";
 
 export class University{
 

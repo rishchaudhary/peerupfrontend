@@ -1,4 +1,4 @@
-import { getDatabase,off,ref, remove, set } from "firebase/database";
+import { getDatabase,off,ref, remove, set, get, child} from "firebase/database";
 import { NewTutor } from "./NewTutor";
 
 export class Offers{
@@ -26,7 +26,7 @@ export class Offers{
     static cancel_offer(offerID){
 
         remove(ref(getDatabase(), `Offers/${offerID}`));
-        const tutor = his.getOfferInformation(offerID).Tutor;
+        const tutor = this.getOfferInformation(offerID).Tutor;
         const data = NewTutor.getTutorAccountInformation(tutor).Requests;
 
         for (let i = 0; i < data.length; i += 1) {

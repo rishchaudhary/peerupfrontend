@@ -1,4 +1,4 @@
-import { getDatabase,set, ref, get, child } from "firebase/database";
+import { getDatabase,set, ref, get, child, remove } from "firebase/database";
 import { Review } from "./Review";
 
 export class NewTutor {
@@ -101,7 +101,7 @@ export class NewTutor {
 
         if (len >= 11) {
 
-            const sum = 0.0;
+            let sum = 0.0;
             for (let i = 1; i < len; i += 1) {
                 sum += Review.getReviewInformation(reviews[i]).Rating;
             }
