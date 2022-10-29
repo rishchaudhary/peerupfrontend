@@ -15,13 +15,18 @@ import {
     TextField,
   } from '@mui/material';
   import VerifiedIcon from '@mui/icons-material/Verified';
+  import { ref, onValue } from 'firebase/database';
+  import { database } from '../firebaseConfig/database';
   // components
   import Page from '../components/Page';
   import Iconify from '../components/Iconify';
+  
   // mock
   import account from '../_mock/account';
   // firebase
+  
   import { auth } from '../firebaseConfig/auth';
+  
   
   // ----------------------------------------------------------------------
   const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
@@ -29,10 +34,16 @@ import {
   export default function TutorProfile() {
     let usrDisplayName = '';
     if (auth.currentUser != null) {
-      usrDisplayName = auth.currentUser.displayName;
+      // User is signed in, use values from database
+      const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
+      onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
+        usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
+      });
     } else {
+      // user not signed in, using mock account credentials
       usrDisplayName = account.displayName;
     }
+
     return (
       <Page title="Profile">
   
