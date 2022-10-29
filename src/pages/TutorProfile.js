@@ -33,15 +33,19 @@ import {
 
   export default function TutorProfile() {
     let usrDisplayName = '';
+    let usrProfilePicURL = '';
     if (auth.currentUser != null) {
       // User is signed in, use values from database
       const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
       onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
         usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
       });
+      usrProfilePicURL = auth.currentUser.photoURL;
+      console.log(`pfp url: ${auth.currentUser.photoURL}`);
     } else {
       // user not signed in, using mock account credentials
       usrDisplayName = account.displayName;
+      usrProfilePicURL = account.photoURL;
     }
 
     return (
@@ -57,7 +61,7 @@ import {
             <Grid item xs={2} sx={{ alignItems: 'center' }}>
               <Avatar 
               alt={usrDisplayName}
-              src={account.photoURL}
+              src={usrProfilePicURL}
               style= {{border: '1px solid lightgray'}}
               sx={{ width: 150, height: 150,}}
               />

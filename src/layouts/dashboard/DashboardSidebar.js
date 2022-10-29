@@ -4,10 +4,17 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
+
+import { ref, onValue } from 'firebase/database';
+
 // mock
 import account from '../../_mock/account';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
+
+import { auth } from '../../firebaseConfig/auth';
+import { database } from '../../firebaseConfig/database';
+
 // components
 import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
@@ -46,6 +53,20 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
   const isDesktop = useResponsive('up', 'lg');
 
+  let usrDisplayName = '';
+  let usrProfilePicURL = '';
+  if (auth.currentUser != null) {
+    // User is signed in
+    const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`);
+    onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
+      usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
+    });
+    usrProfilePicURL = auth.currentUser.photoURL;
+  } else {
+    usrDisplayName = account.displayName;
+    usrProfilePicURL = account.photoURL;
+  }
+
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
@@ -67,10 +88,10 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={usrProfilePicURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {usrDisplayName}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {account.role}

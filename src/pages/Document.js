@@ -17,7 +17,8 @@ import {
   TablePagination,
 } from '@mui/material';
 // firebase storage methods
-import { ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { updateProfile } from 'firebase/auth';
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
@@ -143,7 +144,22 @@ export default function User() {
       const storageRef = ref(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
       uploadBytes(storageRef, selectedFile).then((snapshot) => {
         console.log('Uploaded file');
-      })
+        getDownloadURL(storageRef)
+        .then((url) => {
+          console.log(`url: ${url}`);
+          updateProfile(auth.currentUser, {
+            photoURL: url
+          }).then(() => {
+            console.log(`profile picture updated to ${auth.currentUser.photoURL}`);
+          }).catch((error) => {
+            console.log('error occurred updating profile picture');
+          });
+        }).catch((error) => {
+          console.log('error getting download url');
+        });
+      }).catch(() => {
+        console.log('error occured uploading file');
+      });
     }
   };
   

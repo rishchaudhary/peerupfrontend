@@ -31,6 +31,12 @@ import { auth } from '../firebaseConfig/auth';
 
 export default function Profile() {
 
+  let usrProfilePicURL = '';
+  if (auth.currentUser != null) {
+    usrProfilePicURL = auth.currentUser.photoURL;
+  } else {
+    usrProfilePicURL = account.photoURL;
+  }
   return (
     <Page title="Profile">
 
@@ -44,7 +50,7 @@ export default function Profile() {
           <Grid item xs={2} sx={{ alignItems: 'center' }}>
             <Avatar
             alt={account.displayName}
-            src={account.photoURL}
+            src={usrProfilePicURL}
             style= {{border: '1px solid lightgray'}}
             sx={{ width: 150, height: 150,}}
             />

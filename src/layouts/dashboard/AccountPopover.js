@@ -39,13 +39,16 @@ export default function AccountPopover() {
   const anchorRef = useRef(null);
   let usrEmail = '';
   let usrDisplayName = '';
+  let usrProfilePicURL = '';
 
   if (auth.currentUser != null) {
     usrEmail = auth.currentUser.email;
     usrDisplayName = auth.currentUser.displayName;
+    usrProfilePicURL = auth.currentUser.photoURL;
   } else {
     usrEmail = account.email;
     usrDisplayName = account.displayName;
+    usrProfilePicURL = account.photoURL;
   }
 
   const [open, setOpen] = useState(null);
@@ -85,7 +88,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={usrProfilePicURL} alt="photoURL" />
       </IconButton>
 
       <MenuPopover
