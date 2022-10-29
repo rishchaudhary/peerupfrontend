@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 // Firebase
-import {getDatabase, ref, child, set, get, remove} from "firebase/database";
+import { ref, onValue } from "firebase/database";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 // components
@@ -23,6 +23,7 @@ import account from '../_mock/account';
 // Controller
 import {NewUser} from "../Controller/NewUser";
 import { auth } from '../firebaseConfig/auth';
+import { database } from '../firebaseConfig/database';
 
 
 // ----------------------------------------------------------------------
@@ -30,10 +31,14 @@ import { auth } from '../firebaseConfig/auth';
 // const user = db.ref(`Users/${auth.currentUser.uid}/Name`);
 
 export default function Profile() {
-
+  let usrDisplayName = '';
   let usrProfilePicURL = '';
   if (auth.currentUser != null) {
     usrProfilePicURL = auth.currentUser.photoURL;
+    const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
+    onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
+      usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
+    });
   } else {
     usrProfilePicURL = account.photoURL;
   }
@@ -49,7 +54,7 @@ export default function Profile() {
           {/* Grid 1: Profile pic */ }
           <Grid item xs={2} sx={{ alignItems: 'center' }}>
             <Avatar
-            alt={account.displayName}
+            alt={usrDisplayName}
             src={usrProfilePicURL}
             style= {{border: '1px solid lightgray'}}
             sx={{ width: 150, height: 150,}}
@@ -60,7 +65,7 @@ export default function Profile() {
           <Grid item xs={6}>
             <Stack>
               <Typography variant="h1" gutterBottom>
-                {auth.currentUser.displayName}
+                {usrDisplayName}
               </Typography>
               <Rating 
                 name="read-only" 
