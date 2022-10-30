@@ -46,6 +46,7 @@ export default function AccountPopover() {
     usrDisplayName = auth.currentUser.displayName;
     usrProfilePicURL = auth.currentUser.photoURL;
   } else {
+    console.log('User not logged in');
     usrEmail = account.email;
     usrDisplayName = account.displayName;
     usrProfilePicURL = account.photoURL;

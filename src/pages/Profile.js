@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 // material
 import {
   Avatar,
+  Button,
   Container,
   Chip,
   Divider,
@@ -13,10 +15,12 @@ import {
 } from '@mui/material';
 
 // Firebase
-import { ref, onValue } from "firebase/database";
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { ref, onValue  } from "firebase/database";
+import { getAuth, onAuthStateChanged, updateProfile } from 'firebase/auth';
+import { ref as refStorage, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 // components
+import Iconify from '../components/Iconify';
 import Page from '../components/Page';
 // mock
 import account from '../_mock/account';
@@ -24,13 +28,45 @@ import account from '../_mock/account';
 import {NewUser} from "../Controller/NewUser";
 import { auth } from '../firebaseConfig/auth';
 import { database } from '../firebaseConfig/database';
+import { storage } from '../firebaseConfig/storage';
 
 
 // ----------------------------------------------------------------------
 // const db = getDatabase();
 // const user = db.ref(`Users/${auth.currentUser.uid}/Name`);
 
+
+
+
+
 export default function Profile() {
+  const navigate = useNavigate();
+  const uploadPfp = () => {
+    if (auth.currentUser != null) {
+      const selectedFile = document.getElementById('pfp').files[0];
+      const storageRef = refStorage(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
+      uploadBytes(storageRef, selectedFile).then((snapshot) => {
+        console.log('Uploaded file');
+        getDownloadURL(storageRef)
+        .then((url) => {
+          console.log(`url: ${url}`);
+          updateProfile(auth.currentUser, {
+            photoURL: url
+          }).then(() => {
+            console.log(`profile picture updated to ${auth.currentUser.photoURL}`);
+            navigate('/dashboard/profile', { replace: true });
+          }).catch((error) => {
+            console.log('error occurred updating profile picture');
+          });
+        }).catch((error) => {
+          console.log('error getting download url');
+        });
+      }).catch(() => {
+        console.log('error occured uploading file');
+      });
+    }
+  }
+  
   let usrDisplayName = '';
   let usrProfilePicURL = '';
   if (auth.currentUser != null) {
@@ -82,6 +118,14 @@ export default function Profile() {
         {/* Stack for bottom section of profile page */}
         <Stack spacing={0.5} mt={3} mx={3}>
           
+          {/* Stack for upload profile pic button */}
+          <Stack spacing = {0.5} direction="row">
+            <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill"/>}>
+              Upload profile picture
+              <input hidden type="file" id="pfp" name='pfp' accept="image/*" onChange={uploadPfp} />
+            </Button>
+          </Stack>
+
           {/* Stack 1: major */}
           <Stack spacing = {0.5} direction="row">
             <Typography variant="body" gutterBottom sx={{fontWeight: 'medium'}}>
