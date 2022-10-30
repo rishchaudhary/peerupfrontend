@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 
 // Firebase
-import { ref, onValue  } from "firebase/database";
+import { ref, onValue, set } from "firebase/database";
 import { getAuth, onAuthStateChanged, updateProfile } from 'firebase/auth';
 import { ref as refStorage, getDownloadURL, uploadBytes } from 'firebase/storage';
 
@@ -40,6 +40,8 @@ import { storage } from '../firebaseConfig/storage';
 
 
 export default function Profile() {
+  
+  
   const navigate = useNavigate();
   const uploadPfp = () => {
     if (auth.currentUser != null) {
@@ -69,15 +71,39 @@ export default function Profile() {
   
   let usrDisplayName = '';
   let usrProfilePicURL = '';
+  let usrClass = '';
+  let usrMajor = '';
+  let usrBio = '';
   if (auth.currentUser != null) {
     usrProfilePicURL = auth.currentUser.photoURL;
     const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
     onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
       usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
     });
+    const usrDisplayClassRef = ref(database, `Users/${auth.currentUser.uid}/Class`); // get database reference to path you want
+    onValue(usrDisplayClassRef, (snapshot) => { // create listener for the db reference
+      usrClass = snapshot.val(); // use the snapshot.val() method to return the value in that reference
+    });
+    const usrMajorRef = ref(database, `Users/${auth.currentUser.uid}/Major`); // get database reference to path you want
+    onValue(usrMajorRef, (snapshot) => { // create listener for the db reference
+      usrMajor = snapshot.val(); // use the snapshot.val() method to return the value in that reference
+    });
+    const usrBioRef = ref(database, `Users/${auth.currentUser.uid}/Bio`);
+    onValue(usrBioRef, (snapshot) => {
+      usrBio = snapshot.val();
+    })
   } else {
     usrProfilePicURL = account.photoURL;
+    usrDisplayName = account.displayName;
+    usrClass = account.year;
+    usrMajor = account.major;
   }
+
+  const handleUpdateBio = () => {
+    set(ref(database, `Users/${auth.currentUser.uid}/Bio`), document.getElementById('userBio').value);
+    // console.log(`user bio: ${document.getElementById('userBio').value}`);
+  }
+
   return (
     <Page title="Profile">
 
@@ -120,7 +146,7 @@ export default function Profile() {
           
           {/* Stack for upload profile pic button */}
           <Stack spacing = {0.5} direction="row">
-            <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill"/>}>
+            <Button variant="contained" component="label">
               Upload profile picture
               <input hidden type="file" id="pfp" name='pfp' accept="image/*" onChange={uploadPfp} />
             </Button>
@@ -132,7 +158,7 @@ export default function Profile() {
               Major: 
             </Typography>
             <Typography variant="body" gutterBottom>
-              {account.major}
+              {usrMajor}
             </Typography>
           </Stack>
           
@@ -142,7 +168,7 @@ export default function Profile() {
               Class: 
             </Typography>
             <Typography variant="body" gutterBottom>
-              {account.year}
+              {usrClass}
             </Typography>
           </Stack>
 
@@ -156,13 +182,14 @@ export default function Profile() {
                   Bio: 
               </Typography>
               <TextField
-                id="outlined-multiline-static"
+                id="userBio"
                 multiline
+                defaultValue={usrBio}
                 minRows={5}
                 maxRows={5}
-                defaultValue="Enter bio here"
                 margin="dense"
                 variant="outlined"
+                onBlur={handleUpdateBio}
               />
             </Stack>
           </Paper>

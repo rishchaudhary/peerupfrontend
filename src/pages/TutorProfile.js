@@ -15,7 +15,7 @@ import {
     TextField,
   } from '@mui/material';
   import VerifiedIcon from '@mui/icons-material/Verified';
-  import { ref, onValue } from 'firebase/database';
+  import { ref, onValue, set } from 'firebase/database';
   import { database } from '../firebaseConfig/database';
   // components
   import Page from '../components/Page';
@@ -34,18 +34,28 @@ import {
   export default function TutorProfile() {
     let usrDisplayName = '';
     let usrProfilePicURL = '';
+    let usrTutorBio = '';
     if (auth.currentUser != null) {
       // User is signed in, use values from database
       const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
       onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
         usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
       });
+      const usrTutorBioRef = ref(database, `Users/${auth.currentUser.uid}/TutorBio`);
+      onValue(usrTutorBioRef, (snapshot) => {
+        usrTutorBio = snapshot.val();
+      })
       usrProfilePicURL = auth.currentUser.photoURL;
-      console.log(`pfp url: ${auth.currentUser.photoURL}`);
+      // console.log(`pfp url: ${auth.currentUser.photoURL}`);
     } else {
       // user not signed in, using mock account credentials
       usrDisplayName = account.displayName;
       usrProfilePicURL = account.photoURL;
+    }
+
+    const handleUpdateTutorBio = () => {
+      set(ref(database, `Users/${auth.currentUser.uid}/TutorBio`), document.getElementById('usrTutorBio').value);
+      // console.log(`user bio: ${document.getElementById('userBio').value}`);
     }
 
     return (
@@ -121,13 +131,14 @@ import {
                     Bio: 
                 </Typography>
                 <TextField
-                  id="outlined-multiline-static"
+                  id="usrTutorBio"
                   multiline
                   minRows={5}
                   maxRows={5}
-                  defaultValue="Enter bio here"
+                  defaultValue={usrTutorBio}
                   margin="dense"
                   variant="outlined"
+                  onBlur={handleUpdateTutorBio}
                 />
               </Stack>
             </Paper>
