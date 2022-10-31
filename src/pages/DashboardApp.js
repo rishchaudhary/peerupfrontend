@@ -23,6 +23,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import FormControl from '@mui/material/FormControl';
 
 
 
@@ -292,9 +293,9 @@ export default function DashboardApp() {
               </Typography>
             </Stack>
             <Card sx={{ px: 7, py: 4 }}>
-
+            <FormControl>
               <Stack direction="row" spacing={2}>
-              <TextField 
+              <TextField
                 id="filled-select-course"
                 select
                 label="Select Course"
@@ -337,13 +338,13 @@ export default function DashboardApp() {
               <Stack direction="row" sx={{ py: 4 }}>
               <TextField
                   id="outlined-multiline-static"
-                  label="What do you need help with?"
+                  label="Description"
                   multiline
                   rows={4}
                   defaultValue="What do you need help with?"
                 />
               </Stack>  
-
+              </FormControl>
           </Card>
          
 
