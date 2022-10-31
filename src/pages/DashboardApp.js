@@ -45,6 +45,7 @@ import {
 } from '@mui/material';
 
 // User data 
+import RequestForm from '../components/RequestForm';
 import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
@@ -55,6 +56,7 @@ import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+
 
 
 
@@ -293,58 +295,9 @@ export default function DashboardApp() {
               </Typography>
             </Stack>
             <Card sx={{ px: 7, py: 4 }}>
-            <FormControl>
-              <Stack direction="row" spacing={2}>
-              <TextField
-                id="filled-select-course"
-                select
-                label="Select Course"
-                value={courses}
-                onChange={handleChangeCourseSelection}
-                helperText="ex: CS 180 ">
-                {courses.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </TextField>
 
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Select Date"
-                  value={value}
-                  onChange={(newValue) => {
-                    setValue(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <TimePicker
-                    label="Basic example"
-                    value={value}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </LocalizationProvider>
-
-             
-             
-              </Stack>   
-
-              <Stack direction="row" sx={{ py: 4 }}>
-              <TextField
-                  id="outlined-multiline-static"
-                  label="Description"
-                  multiline
-                  rows={4}
-                  defaultValue="What do you need help with?"
-                />
-              </Stack>  
-              </FormControl>
+            <RequestForm/>  
+            
           </Card>
          
 
