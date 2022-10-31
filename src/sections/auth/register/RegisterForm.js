@@ -17,7 +17,7 @@ import { storage } from '../../../firebaseConfig/storage';
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
-import { NewUser } from '../../../Controller/NewUser';
+import { User as UserController } from '../../../Controller/User';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
@@ -60,7 +60,7 @@ export default function RegisterForm() {
         const userPath = `User_data/${user.uid}/usrconfig.txt`;
         const userRef = ref(storage, userPath);
         const userInfo = `Email: ${user.email} First name: ${data.firstName} Last name: ${data.lastName}`;
-        NewUser.create_account(user.uid, user.email, `${data.firstName} ${data.lastName}`, data.password);
+        UserController.create_account(user.uid, user.email, `${data.firstName} ${data.lastName}`, 'Computer Science', 'sophomore');
         uploadString(userRef, userInfo).then((snapshot) => {
           console.log('Uploaded user config data.');
         });

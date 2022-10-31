@@ -16,14 +16,14 @@ import {
   } from '@mui/material';
   import VerifiedIcon from '@mui/icons-material/Verified';
   import { ref, onValue, set } from 'firebase/database';
+  import { auth } from '../firebaseConfig/auth';
   import { database } from '../firebaseConfig/database';
   // components
   import Page from '../components/Page';
   import Iconify from '../components/Iconify';
   
   // mock
-  import account from '../_mock/account';
-  import data from 'NewUser' 
+  import account from '../_mock/account'; 
   // ----------------------------------------------------------------------
   const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
