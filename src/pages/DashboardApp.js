@@ -20,7 +20,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import TextField from '@mui/material/TextField';
 
 //User data 
-import USER_DATA from '../Controller/User';
+import USER from '../../src/Controller/User';
 
 // material
 import {
@@ -133,7 +133,7 @@ function applySortFilter(array, comparator, query) {
 
  async function printUserData(){
   //test2 is the id, pass in currently logged in userid
-  const userData = USER_DATA.get_information('test2');
+  const userData = user.get_information('test2');
     const data = await userData.then(val => {return val;});
     const requests = data.Requests;
     const result = Object.keys(requests).map((key) => requests[key]);
