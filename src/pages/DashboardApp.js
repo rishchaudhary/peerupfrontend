@@ -22,6 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 
 
@@ -299,8 +300,7 @@ export default function DashboardApp() {
                 label="Select Course"
                 value={courses}
                 onChange={handleChangeCourseSelection}
-                helperText="ex: CS 180 "
-              >
+                helperText="ex: CS 180 ">
                 {courses.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.value}
@@ -318,8 +318,31 @@ export default function DashboardApp() {
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <TimePicker
+                    label="Basic example"
+                    value={value}
+                    onChange={(newValue) => {
+                      setValue(newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+
              
-              </Stack>     
+             
+              </Stack>   
+
+              <Stack direction="row" sx={{ py: 4 }}>
+              <TextField
+                  id="outlined-multiline-static"
+                  label="What do you need help with?"
+                  multiline
+                  rows={4}
+                  defaultValue="What do you need help with?"
+                />
+              </Stack>  
 
           </Card>
          
