@@ -1,12 +1,33 @@
 import { getDatabase,set, remove, ref, get } from "firebase/database";
 import { Review } from "./Review";
-
+ 
 export class Tutor {
     
 
-    static create_profile(userID, price, courses) {
+    // This function saves the data of a new tutor account to the database.
+    // It sets the value of the HasTutorAccount field of the User class to true. This tells us that the given user is also a tutor.
+    // We will use the user ID as our tutor ID.
+    static create_profile(userID, price, courses, preferredDays, preferredTimings) {
 
         set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), true);
+
+        const days = [false, false, false, false, false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < preferredDays.length; j += 1) {
+                if (i === preferredDays[j]) {
+                    days[i] = true;
+                }
+            }
+        }
+
+        const times = [false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < preferredTimings.length; j += 1) {
+                if (i === preferredTimings[j]) {
+                    times[i] = true;
+                }
+            }
+        }
         
         set(ref(getDatabase(), `TutorAccounts/${userID}`), {
         Sessions: ["Session ID"],
@@ -15,8 +36,8 @@ export class Tutor {
         Price: price,
         Offers: ['Offer ID'],
         Rating: 0,
-        PreferredDays: [false, false, false, false, false],
-        PreferredTimings: [false, false, false],
+        PreferredDays: days,
+        PreferredTimings: times,
         RewiewsForTutor: ["Review ID"],
         VerifiedCourses: ["Course Name"],
         NotVerifiedCourses: courses},
@@ -30,7 +51,8 @@ export class Tutor {
 
     }
 
-    // needs to be edited
+    // This function deletes a particular tutor's data from the database.
+    // It sets the HasTutorAccount to false. Meaning that the given user does not have a tutor account
     static delete_profile(userID) {
         
         remove(ref(getDatabase(), `TutorAccounts/${userID}`))
@@ -46,8 +68,11 @@ export class Tutor {
 
     }
 
+    // If the tutor wants to change the list of courses they want to tutor for, they will give us the new list of
+    // courses they want to tutor for. I will then check to see if any of these courses have already been verified by the admin.
+    // if yes, then add them to the list called verified courses else add to the list called notVerified. These two lists are 
+    // set as the value of the keys VerifiedCourses and NotverifiedCourses respectively.
     static async update_courses(userID, courses) {
-        
         
         const tutorData = this.get_information(userID);
         const data = await tutorData.then(val => {return val;});
@@ -75,6 +100,7 @@ export class Tutor {
             }
         }
 
+        // These two if statements are for the purpose of mainting the size of instances across all tutor accounts
         if (values1.length === 0) {
             values1.push('N/A');
         }
@@ -89,9 +115,11 @@ export class Tutor {
         set(ref(getDatabase(), `TutorAccounts/${userID}/NotVerifiedCourses`), values2);
     }
 
-    
+    // Once the admin looks over the tutor's transcript, they must enter a list of verified and not verified courses for
+    // that tutor. This list will then be used by this function to make these changes appear in the database.
     static update_by_admin(userID, newVerifiedList, newNotVerifiedList) {
          
+         // These two if statements are for the purpose of mainting the size of instances across all tutor accounts
         if (newNotVerifiedList.length === 0) {
             newNotVerifiedList.push('N/A');
         }
@@ -105,12 +133,14 @@ export class Tutor {
 
     }
 
+    // This updates the rate of the tutor.
     static update_price(userID, newPrice) {
         
         set(ref(getDatabase(), `TutorAccounts/${userID}/Price`), newPrice);
 
     }
     
+    // This updates the bio of the tutor.
     static update_bio(userID, bio) {
         
         
@@ -118,18 +148,39 @@ export class Tutor {
 
     }
 
-    static update_preferred_days(userID, updatedValue, index) {
+    
+    static update_preferred_days(userID, updatedValues) {
 
-        set(ref(getDatabase(), `TutorAccounts/${userID}/PreferredDays/${index}`), updatedValue);
+        const days = [false, false, false, false, false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < updatedValues.length; j += 1) {
+                if (i === updatedValues[j]) {
+                    days[i] = true;
+                }
+            }
+        }
+        set(ref(getDatabase(), `Users/${userID}/PreferredDays`), days);
         
     }
 
-    static update_preferred_times(userID, updatedValue, index) {
+    static update_preferred_times(userID, updatedValues) {
 
-        set(ref(getDatabase(), `TutorAccounts/${userID}/PreferredTimings/${index}`), updatedValue);
+        const times = [false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < updatedValues.length; j += 1) {
+                if (i === updatedValues[j]) {
+                    times[i] = true;
+                }
+            }
+        }
+
+        set(ref(getDatabase(), `Users/${userID}/PreferredTimings`), times);
         
     }
 
+    // This function calculates the rating for the given tutor. Called everytime a review is created for that tutor.
+    // If the number of reviews for a given tutor is less than 11, set the rating as 0. If equal to 11, then get the
+    // rating from each review and find the average. If greater than 11, (current rating for tutor + rating from new review) / 2
     static async tutor_rating(userID) {
         
         
@@ -171,6 +222,7 @@ export class Tutor {
     }
 
 
+    // This gets the promise that contains the information about a particular tutor account.
     static async get_information(userID) {
 
         const db = getDatabase();
