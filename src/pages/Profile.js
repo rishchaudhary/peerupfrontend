@@ -24,12 +24,8 @@ import Iconify from '../components/Iconify';
 import Page from '../components/Page';
 // mock
 import account from '../_mock/account';
-// Controller
-import {NewUser} from "../Controller/NewUser";
-import { auth } from '../firebaseConfig/auth';
-import { database } from '../firebaseConfig/database';
-import { storage } from '../firebaseConfig/storage';
-
+//data 
+import { } from '../../firebaseConfig/database';
 
 // ----------------------------------------------------------------------
 // const db = getDatabase();
