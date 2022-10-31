@@ -19,6 +19,9 @@ import CancelIcon from '@mui/icons-material/Cancel';
 // forms
 import TextField from '@mui/material/TextField';
 
+//User data 
+import USER_DATA from '../Controller/User';
+
 // material
 import {
   Card,
@@ -128,7 +131,24 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+ async function printUserData(){
+  //test2 is the id, pass in currently logged in userid
+  const userData = USER_DATA.get_information('test2');
+    const data = await userData.then(val => {return val;});
+    const requests = data.Requests;
+    const result = Object.keys(requests).map((key) => requests[key]);
+
+    for(let i = 1; i < result.length; i++){
+      const requestData = Requests.get_information(result[i]);
+      const data2 = await requestData.then(val => {return val;});
+      console.log(data2);
+    }
+  }
+
+
 export default function DashboardApp() {
+
+  printUserData();
 
   const [page, setPage] = useState(0);
 
@@ -204,6 +224,17 @@ export default function DashboardApp() {
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
+//----------------------------------------------------------------------------------
+
+window.onload = function() {
+  yourFunction(param1, param2);
+};
+
+
+
+
+
+
 
   return (
     <Page title="User">
