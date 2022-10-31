@@ -23,11 +23,7 @@ import {
   
   // mock
   import account from '../_mock/account';
-  // firebase
-  
-  import { auth } from '../firebaseConfig/auth';
-  
-  
+  import data from 'NewUser' 
   // ----------------------------------------------------------------------
   const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
@@ -82,7 +78,8 @@ import {
               <Stack>
                 <Stack direction="row" spacing={2}>
                     <Typography variant="h1" gutterBottom>
-                        {usrDisplayName}
+                        {account.displayName}
+                        {}
                     </Typography>
                     <VerifiedIcon/>
                 </Stack>
