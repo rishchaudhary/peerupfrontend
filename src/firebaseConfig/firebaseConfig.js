@@ -30,8 +30,6 @@ export const AuthContextProvider = props => {
 }
 
 export const useAuthState = () => {
-  console.log(`AuthContext: ${AuthContext}`)
   const auth = useContext(AuthContext)
-  console.log(`auth: ${auth}`)
   return { ...auth, isAuthenticated: auth.user != null }
 }

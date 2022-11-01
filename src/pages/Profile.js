@@ -121,7 +121,7 @@ export default function Profile() {
           {/* Grid 1: Profile pic */ }
           <Grid item xs={2} sx={{ alignItems: 'center' }}>
             <Avatar
-            alt={userData.Name}
+            alt={usrDisplayName}
             src={usrProfilePicURL}
             style= {{border: '1px solid lightgray'}}
             sx={{ width: 150, height: 150,}}
@@ -132,7 +132,7 @@ export default function Profile() {
           <Grid item xs={6}>
             <Stack>
               <Typography variant="h1" gutterBottom>
-                {userData.Name}
+                {usrDisplayName}
               </Typography>
               <Rating 
                 name="read-only" 
@@ -163,7 +163,7 @@ export default function Profile() {
               Major: 
             </Typography>
             <Typography variant="body" gutterBottom>
-              {userData.Major}
+              {usrMajor}
             </Typography>
           </Stack>
           
@@ -173,7 +173,7 @@ export default function Profile() {
               Class: 
             </Typography>
             <Typography variant="body" gutterBottom>
-              {userData.Class}
+              {usrClass}
             </Typography>
           </Stack>
 
@@ -189,7 +189,7 @@ export default function Profile() {
               <TextField
                 id="userBio"
                 multiline
-                defaultValue={userData.Bio}
+                defaultValue={usrBio}
                 minRows={5}
                 maxRows={5}
                 margin="dense"
