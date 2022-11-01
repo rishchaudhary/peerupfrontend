@@ -60,6 +60,13 @@ async function createSession(courseName, requestDay, requestTime, description){
     REQUESTS.create_request(requestID, time, day, descriptionText, userID, course);
 }
 
+async function printData(courseValue,dateValue,timeValue, requestDescription){
+    console.log(courseValue.toString());
+    console.log(dateValue);
+    console.log(timeValue);
+    console.log(requestDescription);
+}
+
 export default function RequestForm() {
 
     const courses = [
@@ -112,8 +119,16 @@ export default function RequestForm() {
         setDescription(newValue);
     };
 
+  
+
+      const printData = async data => {
+
+        console.log(courseValue);
+
+      };
+
     return (
-        <FormControl>
+        <FormControl onSubmit={[printData]}>
             <Stack direction="row" spacing={2}>
                 <TextField
                     id="filled-select-course"
@@ -147,8 +162,6 @@ export default function RequestForm() {
                     />
                 </LocalizationProvider>
 
-
-
             </Stack>
 
             <Stack direction="row" sx={{ py: 4 }}>
@@ -162,7 +175,7 @@ export default function RequestForm() {
                 />
             </Stack>
 
-            <LoadingButton fullWidth size="large" type="submit" variant="contained" onSubmit={createSession(courseValue, dateValue, timeValue, requestDescription)}>
+            <LoadingButton fullWidth size="large" type="submit" variant="contained" >
                 Submit Request
             </LoadingButton>
 
