@@ -122,8 +122,6 @@ export default function RequestForm() {
 
 
             <Stack direction="row" sx={{ py: 2 }}>
-
-
                 <div>
                     <TextField
                         id="outlined-multiline-flexible"
@@ -139,7 +137,6 @@ export default function RequestForm() {
             </Stack>
 
             <Stack direction="row" sx={{ py: 1 }} spacing={2}>
-
                 <div>
                     <Select
                         value={meetingFormat}
@@ -153,7 +150,6 @@ export default function RequestForm() {
                     </Select>
                 </div>
 
-
                 {meetingFormat
                     ? <div><TextField id="outlined-basic" label="Location" value={requestLocation} variant="outlined" onChange={(event) => {
                         setLocation(event.target.value);
@@ -161,8 +157,6 @@ export default function RequestForm() {
                     : null
                 }
             </Stack>
-
-
 
             <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
                 console.log("Creating session");
