@@ -3,6 +3,7 @@ import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import dayjs from 'dayjs';
 // tabs
 import * as React from 'react';
 import PropTypes from 'prop-types';
@@ -25,6 +26,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import FormControl from '@mui/material/FormControl';
 import { LoadingButton } from '@mui/lab';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
 
 // material
 import {
@@ -50,7 +56,7 @@ import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
 
 
-async function createSession(courseName, requestDay, requestTime, description){
+async function createSession(courseName, requestDay, requestTime, description) {
 
     const userID = auth.currentUser.uid;
     const course = courseName.toString();
@@ -58,11 +64,11 @@ async function createSession(courseName, requestDay, requestTime, description){
     const time = requestTime.toString();
     const descriptionText = description.toString();
     const requestID = Math.random();
-    
+
     REQUESTS.create_request(requestID, time, day, descriptionText, userID, course);
 }
 
-async function printData(courseValue,dateValue,timeValue, requestDescription){
+async function printData(courseValue, dateValue, timeValue, requestDescription) {
     console.log(courseValue.toString());
     console.log(dateValue);
     console.log(timeValue);
@@ -98,129 +104,136 @@ export default function RequestForm() {
         },
     ];
 
+    const format = [
+        {
+            value: 'Online',
+        },
+        {
+            value: 'In-person',
+        },
+        
+    ];
+
     const [courseValue, setCourse] = React.useState('CS 180');
 
-    const [dateValue, setDateValue] = React.useState(null);
+    // change this to null
+    const [dateValue, setDateValue] = React.useState("");
 
-    const [timeValue, setTimeValue] = React.useState(1);
+    // change this to null
+    const [timeValue, setTimeValue] = React.useState("");
 
-    const [requestDescription, setDescription] = React.useState("");
+    const [requestDescription, setDescription] = React.useState('');
 
-    const [requestData, setRequestData] = useState({
-        // course: React.useState('CS 180'),
-        // date: React.useState(null),
-        // time: React.useState(1),
-        description: "",
-    })
+    const [requestLocation, setLocation] = React.useState('');
 
-    requestData.course = React.useState('CS 180');
-    requestData.date = React.useState(null);
-    requestData.time =  React.useState(1);
-    requestData.description = React.useState("");
+    const [meetingFormat, setFormat] = React.useState(0);
 
-    function handle(e) {
-        // const newdata = {...requestData}
-        
-        // const newCourse = {... courseValue}
-        // const newDate = {...dateValue}
-        // const newTime = {...timeValue}
-        const newDescription = {...requestDescription}
-
-        // newdata[e.target.id] = e.target.value
-        // newCourse[e.target.id] = e.target.value
-        // newDate[e.target.id] = e.target.value
-        // newTime[e.target.id] = e.target.value
-        newDescription[e.target.id] = e.target.value
-        console.log(newDescription);
-        
-        // setRequestData(newdata)
-        /*
-        handleChangeCourseSelection(newCourse)
-        handleDateSelection(newDate)
-        handleTimeSelection(newTime)
-        handleDescription(newDescription)
-        */
-
+    function printData() {
+        console.log(setCourse);
     }
 
-
-
-    const handleChangeCourseSelection = (event, newValue) => {
-        setCourse(newValue);
-        console.log(courseValue.toString());
-    };
-    const handleDateSelection = (event, newValue) => {
-        setDateValue(newValue);
-        console.log(dateValue.toString());
-    };
-
-    const handleTimeSelection = (event, newValue) => {
-        setTimeValue(newValue);
-        console.log(timeValue.toString());
-    };
-
-    const handleDescription = (event, newValue) => {
-        setDescription(newValue);
-        console.log(requestDescription.toString());
-    };
+   
 
 
     return (
         <FormControl>
-
-
-
             <Stack direction="row" spacing={2}>
+                <div>
+                    <InputLabel id="demo-simple-select-label">Course</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={courseValue}
+                        label="Course"
+                        onChange={(e) => setCourse(e.target.value)}
+                    >
+                        <MenuItem value="CS 180">CS 180</MenuItem>
+                        <MenuItem value="CS 182">CS 182</MenuItem>
+                        <MenuItem value="CS 240">CS 240</MenuItem>
+                    </Select>
+                </div>
 
-                <input onChange={handleDescription} id="description" value={requestDescription} placeholder="description" type="text"/>
+                <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Select Date"
+                            value={dateValue}
+                            onChange={(newValue) => {
+                                setDateValue(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </div>
 
-                <TextField
-                    id="courseValue"
-                    select
-                    label="Select Course"
-                    value={courseValue}
-                    onChange={handleChangeCourseSelection}
-                    helperText="ex: CS 180 ">
-                    {courses.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.value}
-                        </MenuItem>
-                    ))}
-                </TextField>
+                <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <TimePicker
+                            label="Basic example"
+                            value={timeValue}
+                            onChange={(newValue) => {
+                                setTimeValue(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </div>
 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        label="Select Date"
-                        id="dateValue"
-                        value={dateValue}
-                        onChange={handleDateSelection}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </LocalizationProvider>
-
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <TimePicker
-                        label="Select Time"
-                        id="timeValue"
-                        value={timeValue}
-                        onChange={handleTimeSelection}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </LocalizationProvider>
 
             </Stack>
 
-            <Stack direction="row" sx={{ py: 4 }}>
-                <TextField
-                    id="requestDescription"
-                    label="Request Description3"
-                    multiline
-                    rows={4}
-                    defaultValue={requestDescription}
-                    onChange={handleDescription}
-                />
+        
+            <Stack direction="row" sx={{ py: 2}}>
+
+    
+                <div>
+                    <TextField
+                        id="outlined-multiline-flexible"
+                        label="Enter Request Details"
+                        multiline
+                        maxRows={4}
+                        value={requestDescription}
+                        onChange={(event) => {
+                            setDescription(event.target.value);
+                        }}
+                    />
+                </div>
             </Stack>
 
+            <Stack direction="row" sx={{ py: 2 }} spacing={2}>
+
+                <div>
+                    <Select
+                        value={meetingFormat}
+                        onChange={(e) => setFormat(e.target.value)}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                    >
+
+                        <MenuItem value={0}>Online</MenuItem>
+                        <MenuItem value={1}>In-person</MenuItem>
+                    </Select>
+                </div>
+              
+                
+                { meetingFormat
+                    ? <div><TextField id="outlined-basic" label="Location" value={requestLocation} variant="outlined"  onChange={(event) => {
+                        setLocation(event.target.value);}}/></div>
+                    : null
+                }
+            
+            </Stack>
+
+            
+            <Stack direction="row" sx={{ py: 2 }}>
+                <p>{courseValue} </p>
+                <p>{dateValue.toString()}</p>
+                <p>{timeValue.toString()}</p>
+                <p>{requestDescription}</p>
+                <p>{requestLocation}</p>
+
+            </Stack>
+            
             <LoadingButton fullWidth size="large" type="submit" variant="contained" >
                 Submit Request
             </LoadingButton>
