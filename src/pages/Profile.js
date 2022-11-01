@@ -19,30 +19,45 @@ import { ref, onValue, set } from "firebase/database";
 import { getAuth, onAuthStateChanged, updateProfile } from 'firebase/auth';
 import { ref as refStorage, getDownloadURL, uploadBytes } from 'firebase/storage';
 
+import { useContext } from 'react';
+import { DBContext } from '../App';
 // components
 import Iconify from '../components/Iconify';
 import Page from '../components/Page';
 // mock
 import account from '../_mock/account';
 // data 
+import { useAuthState } from '../firebaseConfig/firebaseConfig';
 import { database } from '../firebaseConfig/database';
 import { auth } from '../firebaseConfig/auth';
 import { storage } from '../firebaseConfig/storage';
+import { User as USER } from '../Controller/User';
+
+
 
 // ----------------------------------------------------------------------
-// const db = getDatabase();
-// const user = db.ref(`Users/${auth.currentUser.uid}/Name`);
 
 
+async function getUserData() {
+    const dbSnap = USER.get_information('test2');
+    const user = await dbSnap.then(val => {return val;});
+    return user;
+}
 
 
 
 export default function Profile() {
-  
-  
+  const {displayName, major, userClass, userBio} = useContext(DBContext);
+  const [stateDisplayName, setStateDisplayName] = displayName;
+  const [stateMajor, setStateMajor] = major;
+  const [stateUserClass, setStateUserClass] = userClass;
+  const [stateUserBio, setStateUserBio] = userBio;
+  const userData = getUserData();
+  // console.log(userData.Name);
+  const { isAuthenticated } = useAuthState();
   const navigate = useNavigate();
   const uploadPfp = () => {
-    if (auth.currentUser != null) {
+    if (isAuthenticated) {
       const selectedFile = document.getElementById('pfp').files[0];
       const storageRef = refStorage(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
       uploadBytes(storageRef, selectedFile).then((snapshot) => {
@@ -67,35 +82,7 @@ export default function Profile() {
     }
   }
   
-  let usrDisplayName = '';
-  let usrProfilePicURL = '';
-  let usrClass = '';
-  let usrMajor = '';
-  let usrBio = '';
-  if (auth.currentUser != null) {
-    usrProfilePicURL = auth.currentUser.photoURL;
-    const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
-    onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
-      usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
-    });
-    const usrDisplayClassRef = ref(database, `Users/${auth.currentUser.uid}/Class`); // get database reference to path you want
-    onValue(usrDisplayClassRef, (snapshot) => { // create listener for the db reference
-      usrClass = snapshot.val(); // use the snapshot.val() method to return the value in that reference
-    });
-    const usrMajorRef = ref(database, `Users/${auth.currentUser.uid}/Major`); // get database reference to path you want
-    onValue(usrMajorRef, (snapshot) => { // create listener for the db reference
-      usrMajor = snapshot.val(); // use the snapshot.val() method to return the value in that reference
-    });
-    const usrBioRef = ref(database, `Users/${auth.currentUser.uid}/Bio`);
-    onValue(usrBioRef, (snapshot) => {
-      usrBio = snapshot.val();
-    })
-  } else {
-    usrProfilePicURL = account.photoURL;
-    usrDisplayName = account.displayName;
-    usrClass = account.year;
-    usrMajor = account.major;
-  }
+  const usrProfilePicURL = auth.currentUser.photoURL;
 
   const handleUpdateBio = () => {
     set(ref(database, `Users/${auth.currentUser.uid}/Bio`), document.getElementById('userBio').value);
@@ -114,7 +101,7 @@ export default function Profile() {
           {/* Grid 1: Profile pic */ }
           <Grid item xs={2} sx={{ alignItems: 'center' }}>
             <Avatar
-            alt={usrDisplayName}
+            alt={stateDisplayName}
             src={usrProfilePicURL}
             style= {{border: '1px solid lightgray'}}
             sx={{ width: 150, height: 150,}}
@@ -125,7 +112,7 @@ export default function Profile() {
           <Grid item xs={6}>
             <Stack>
               <Typography variant="h1" gutterBottom>
-                {usrDisplayName}
+                {stateDisplayName}
               </Typography>
               <Rating 
                 name="read-only" 
@@ -156,7 +143,7 @@ export default function Profile() {
               Major: 
             </Typography>
             <Typography variant="body" gutterBottom>
-              {usrMajor}
+              {stateMajor}
             </Typography>
           </Stack>
           
@@ -166,7 +153,7 @@ export default function Profile() {
               Class: 
             </Typography>
             <Typography variant="body" gutterBottom>
-              {usrClass}
+              {stateUserClass}
             </Typography>
           </Stack>
 
@@ -182,7 +169,7 @@ export default function Profile() {
               <TextField
                 id="userBio"
                 multiline
-                defaultValue={usrBio}
+                defaultValue={stateUserBio}
                 minRows={5}
                 maxRows={5}
                 margin="dense"
@@ -211,7 +198,7 @@ export default function Profile() {
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-              Preffered Day:
+              Preferred Day:
             </Typography>
 
             {account.dayPref.map(item => (
@@ -227,7 +214,7 @@ export default function Profile() {
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-              Preffered Time:
+              Preferred Time:
             </Typography>
 
             {account.timePref.map(item => (

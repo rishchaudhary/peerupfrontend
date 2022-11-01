@@ -104,7 +104,7 @@ export class Requests {
                 return;
             }
         }
-        
+
     }
 
     static update_time(requestID, startTime, endTime) {
@@ -160,5 +160,5 @@ export class Requests {
         const info = await snapshot.then(val => {return val;});
         return info;
     }
-       
+
 }

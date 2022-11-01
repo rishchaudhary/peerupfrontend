@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@mui/material';
 
 import { getAuth } from 'firebase/auth';
+import { DBContext } from '../../App';
 import { auth } from '../../firebaseConfig/auth';
 
 // components
@@ -37,19 +38,15 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
   const anchorRef = useRef(null);
-  let usrEmail = '';
-  let usrDisplayName = '';
-  let usrProfilePicURL = '';
+  const usrEmail = auth.currentUser.email;
+  const usrProfilePicURL = auth.currentUser.photoURL;
+  
+  const {displayName, major, userClass} = useContext(DBContext);
+  const [stateDisplayName, setStateDisplayName] = displayName;
+  
 
-  if (auth.currentUser != null) {
-    usrEmail = auth.currentUser.email;
-    usrDisplayName = auth.currentUser.displayName;
-    usrProfilePicURL = auth.currentUser.photoURL;
-  } else {
+  if (auth.currentUser == null) {
     console.log('User not logged in');
-    usrEmail = account.email;
-    usrDisplayName = account.displayName;
-    usrProfilePicURL = account.photoURL;
   }
 
   const [open, setOpen] = useState(null);
@@ -108,7 +105,7 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {usrDisplayName}
+            {stateDisplayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {usrEmail}

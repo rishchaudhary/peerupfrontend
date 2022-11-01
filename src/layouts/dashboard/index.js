@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 //
+import { onValue, ref } from 'firebase/database';
+import { database } from '../../firebaseConfig/database';
+import { auth } from '../../firebaseConfig/auth';
+import { DBContext } from '../../App';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+
+
+
 
 // ----------------------------------------------------------------------
 
@@ -34,6 +41,34 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
+
+  const {displayName, major, userClass, userBio, userTutorBio} = useContext(DBContext);
+  const [stateDisplayName, setStateDisplayName] = displayName;
+  const [stateMajor, setStateMajor] = major;
+  const [stateUserClass, setStateUserClass ] = userClass;
+  const [stateUserBio, setStateUserBio] = userBio;
+  const [stateUserTutorBio, setStateUserTutorBio] = userTutorBio;
+  const displayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`);
+  onValue(displayNameRef, (snapshot) => {
+    setStateDisplayName(snapshot.val());
+  });
+  const majorRef = ref(database, `Users/${auth.currentUser.uid}/Major`);
+  onValue(majorRef, (snapshot) => {
+    setStateMajor(snapshot.val());
+  });
+  const userClassRef = ref(database, `Users/${auth.currentUser.uid}/Class`);
+  onValue(userClassRef, (snapshot) => {
+    setStateUserClass(snapshot.val());
+  });
+  const userBioRef = ref(database, `Users/${auth.currentUser.uid}/Bio`);
+  onValue(userBioRef, (snapshot) => {
+    setStateUserBio(snapshot.val());
+  });
+  const usrTutorBioRef = ref(database, `Users/${auth.currentUser.uid}/TutorBio`);
+  onValue(usrTutorBioRef, (snapshot) => {
+    setStateUserTutorBio(snapshot.val());
+  })
+  
 
   return (
     <RootStyle>

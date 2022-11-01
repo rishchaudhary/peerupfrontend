@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Stack, IconButton, InputAdornment } from '@mui/material';
+import {Stack, IconButton, InputAdornment, ToggleButton, ToggleButtonGroup, Box, Typography} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
@@ -24,6 +24,12 @@ export default function RegisterForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [days, setPref] = useState(false);
+
+  const handlePrefDay = (event, newDay) => {
+      // console.log(days);
+      setPref(newDay);
+  }
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
@@ -35,6 +41,8 @@ export default function RegisterForm() {
   const defaultValues = {
     firstName: '',
     lastName: '',
+    major: '',
+    standing: '',
     email: '',
     password: '',
   };
@@ -50,7 +58,6 @@ export default function RegisterForm() {
   } = methods;
 
   const onSubmit = async data => {
-    // user = auth.currentUser; uid = user.uid
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         // Registration was successful
@@ -60,7 +67,15 @@ export default function RegisterForm() {
         const userPath = `User_data/${user.uid}/usrconfig.txt`;
         const userRef = ref(storage, userPath);
         const userInfo = `Email: ${user.email} First name: ${data.firstName} Last name: ${data.lastName}`;
-        UserController.create_account(user.uid, user.email, `${data.firstName} ${data.lastName}`, 'Computer Science', 'sophomore');
+        console.log(days);
+        UserController.create_account(
+            user.uid,
+            data.email,
+            `${data.firstName} ${data.lastName}`,
+            `${data.Major}`,
+            `${data.Class}`,
+            days);
+
         uploadString(userRef, userInfo).then((snapshot) => {
           console.log('Uploaded user config data.');
         });
@@ -74,7 +89,7 @@ export default function RegisterForm() {
         // inspect error and do stuff
         console.log(errorMessage);
         console.log('Error code:', errorCode);
-        // If email already in use errorcode will be auth/email-already-in-use
+        // If email already in use error code will be auth/email-already-in-use
       });
     navigate('/dashboard/app', { replace: true });
   };
@@ -103,6 +118,34 @@ export default function RegisterForm() {
             ),
           }}
         />
+        <Stack direction={"row"} spacing={3} alignItems="center">
+            <Typography variant="body1" >
+                Preferred days:
+            </Typography>
+            <ToggleButtonGroup value={days} onSubmit = {handlePrefDay} aria-label={'Preferred Days'}>
+                <ToggleButton value={0} aria-label = 'Mon'>
+                    Mon
+                </ToggleButton>
+                <ToggleButton value={1} aria-label = 'Tue'>
+                    Tue
+                </ToggleButton>
+                <ToggleButton value={2} aria-label = 'Wed'>
+                    Wed
+                </ToggleButton>
+                <ToggleButton value={3} aria-label = 'Thu'>
+                    Thu
+                </ToggleButton>
+                <ToggleButton value={4} aria-label = 'Fri'>
+                    Fri
+                </ToggleButton>
+                <ToggleButton value={5} aria-label = 'Sat'>
+                    Sat
+                </ToggleButton>
+                <ToggleButton value={6} aria-label = 'Sun'>
+                    Sun
+                </ToggleButton>
+            </ToggleButtonGroup>
+        </Stack>
 
         <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
           Register
