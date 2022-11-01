@@ -54,7 +54,7 @@ import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
 
 
-async function createSession(courseName, requestDay, requestTime, description){
+async function createSession(courseName, requestDay, requestTime, description) {
 
     const userID = auth.currentUser.uid;
     const course = courseName.toString();
@@ -62,11 +62,11 @@ async function createSession(courseName, requestDay, requestTime, description){
     const time = requestTime.toString();
     const descriptionText = description.toString();
     const requestID = Math.random();
-    
+
     REQUESTS.create_request(requestID, time, day, descriptionText, userID, course);
 }
 
-async function printData(courseValue,dateValue,timeValue, requestDescription){
+async function printData(courseValue, dateValue, timeValue, requestDescription) {
     console.log(courseValue.toString());
     console.log(dateValue);
     console.log(timeValue);
@@ -106,37 +106,36 @@ export default function RequestForm() {
 
     // change this to null
     const [dateValue, setDateValue] = React.useState("");
+    
+    // change this to null
+    const [timeValue, setTimeValue] = React.useState("");
 
-    const [timeValue, setTimeValue] = React.useState(1);
+    const [requestDescription, setDescription] = React.useState('');
+ 
+    const [inPerson, setValue] = React.useState(false);
 
-    const [requestDescription, setDescription] = React.useState("");
-    const [value, setValue] = React.useState("");
-
-    function printData(){
+    function printData() {
         console.log(setCourse);
     }
-   
-    const handleDateChange = (newValue) => {
-        setDateValue(newValue);
-      };
 
+   
 
     return (
         <FormControl>
             <Stack direction="row" spacing={2}>
-            <div>
-            <InputLabel id="demo-simple-select-label">Course</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={courseValue}
-                    label="Course"
-                    onChange={(e) => setCourse(e.target.value)}
-                >
-                    <MenuItem value="CS 180">CS 180</MenuItem>
-                    <MenuItem value="CS 182">CS 182</MenuItem>
-                    <MenuItem value="CS 240">CS 240</MenuItem>
-                </Select>
+                <div>
+                    <InputLabel id="demo-simple-select-label">Course</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={courseValue}
+                        label="Course"
+                        onChange={(e) => setCourse(e.target.value)}
+                    >
+                        <MenuItem value="CS 180">CS 180</MenuItem>
+                        <MenuItem value="CS 182">CS 182</MenuItem>
+                        <MenuItem value="CS 240">CS 240</MenuItem>
+                    </Select>
                 </div>
 
                 <div>
@@ -151,14 +150,44 @@ export default function RequestForm() {
                         />
                     </LocalizationProvider>
                 </div>
-               
 
+                <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <TimePicker
+                            label="Basic example"
+                            value={timeValue}
+                            onChange={(newValue) => {
+                                setTimeValue(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </div>
+
+              
             </Stack>
 
             <Stack direction="row" sx={{ py: 4 }}>
-            <p>{courseValue} </p>
-            <p>{dateValue.toString()}</p>
-            
+                    <div>
+                    <TextField
+                        id="outlined-multiline-flexible"
+                        label="Enter Request Details"
+                        multiline
+                        maxRows={4}
+                        value={requestDescription}
+                        onChange={(event) => {
+                            setDescription(event.target.value);
+                          }}
+                    />
+                    </div>
+                </Stack>
+
+            <Stack direction="row" sx={{ py: 4 }}>
+                <p>{courseValue} </p>
+                <p>{dateValue.toString()}</p>
+                <p>{timeValue.toString()}</p>
+                <p>{requestDescription}</p>
+
             </Stack>
 
             <LoadingButton fullWidth size="large" type="submit" variant="contained" >
