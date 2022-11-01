@@ -32,12 +32,12 @@ export default function Router() {
       ],
     },
     {
-      path: 'login',
+      path: '/login',
       element: isAuthenticated ? <Navigate to='/dashboard/app' /> : <Login />,
     },
     
     {
-      path: 'register',
+      path: '/register',
       element: <Register />,
     },
     {

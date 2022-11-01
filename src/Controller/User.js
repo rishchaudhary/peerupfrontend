@@ -1,7 +1,9 @@
-import {getDatabase, ref, set,remove, get} from "firebase/database";
+import {getDatabase, ref, set, remove, get, onValue} from "firebase/database";
 import { Requests } from "./Requests";
 import {Review} from "./Review"
 import { Tutor } from "./Tutor";
+import {database} from "../firebaseConfig/database";
+import {auth} from "../firebaseConfig/auth";
 
  
 export class User {
@@ -160,7 +162,7 @@ export class User {
         const snapshot = (await (get(userRef))).toJSON();
         return snapshot;
         
-    }   
+    }
     
 } 
 
