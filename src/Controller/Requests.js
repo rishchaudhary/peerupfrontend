@@ -1,10 +1,10 @@
 import { getDatabase, get, set, ref} from "firebase/database";
-import { Offers } from "./Offers";
-import { User } from "./User"; 
+import { User } from "./User";
+import {Tutor} from "./Tutor";
 
 export class Requests { 
 
-    static async create_request(requestID, startTime, endTime, date, description, userID, course) {
+    static async create_request(requestID, startTime, endTime, date, description, userID, course, location, format) {
 
         await set(ref(getDatabase(), `Requests/${requestID}`), {
 
@@ -13,8 +13,11 @@ export class Requests {
             Date: date,
             Description: description,
             CreatedBy: userID,
+            IsOnline: format,
+            Location: location,
             CourseWanted: course,
-            Offers: ["N/A"]
+            TutorsWhoAccepted: ["N/A"],
+            StudentChoice: 'N/A'
         });
 
         const userData = User.get_information(userID);
@@ -30,12 +33,12 @@ export class Requests {
 
         const requestData = Requests.get_information(requestID);
         const data = await requestData.then(val => {return val;});
-        const requestinfo = data.Offers;
-        let result = Object.keys(requestinfo).map((key) => requestinfo[key]);
+        const requestInfo = data.TutorsWhoAccepted;
+        let result = Object.keys(requestInfo).map((key) => requestInfo[key]);
         /* eslint-disable no-await-in-loop */
         for (let i = 1; i < result.length; i += 1) {
 
-            await Offers.cancel_offer(result[i])
+            await this.remove_tutor_to_request(requestID, result[i]);
         }
         /* eslint-disable no-await-in-loop */
         const userData = User.get_information(data.CreatedBy);
@@ -55,35 +58,52 @@ export class Requests {
       
     }
 
-    static async add_offer_to_request(requestID, offerID, startTime, endTime, location,tutorID) {
+    static async add_tutor_to_request(requestID, tutorID) {
 
-        await Offers.create_offer(offerID, startTime, endTime, location, tutorID);
-        const requestData = Requests.get_information(requestID);
-        const data = await requestData.then(val => {return val;});
-        const requestinfo = data.Offers;
-        const result = Object.keys(requestinfo).map((key) => requestinfo[key]);
-        result.push(offerID);
-        await set(ref(getDatabase(), `Requests/${requestID}/Offers`), result);
+        const requestData = this.get_information(requestID);
+        const data1 = await requestData.then(val => {return val;});
+        const data = data1.TutorsWhoAccepted;
+        let result = Object.keys(data).map((key) => data[key]);
+        result.push(tutorID);
+        await set(ref(getDatabase(), `Requests/${requestID}/TutorsWhoAccepted`), result);
+
+        const tutorData = Tutor.get_information(tutorID);
+        const data2 = await tutorData.then(val => {return val;});
+        const data3 = data2.RequestsYouAccepted;
+        result = Object.keys(data3).map((key) => data3[key]);
+        result.push(requestID);
+        await set(ref(getDatabase(), `TutorAccounts/${tutorID}/RequestsYouAccepted`), result);
 
     }
 
-    static async cancel_offer_for_request(requestID, offerID){
-       
-        const requestData = Requests.get_information(requestID);
-        const data = await requestData.then(val => {return val;});
-        const requestinfo = data.Offers;
-        const result = Object.keys(requestinfo).map((key) => requestinfo[key]);
+    static async remove_tutor_to_request(requestID, tutorID){
+
+        const requestData = this.get_information(requestID);
+        const data1 = await requestData.then(val => {return val;});
+        const data = data1.TutorsWhoAccepted;
+        let result = Object.keys(data).map((key) => data[key]);
 
         for (let i = 0; i < result.length; i += 1) {
-            if (offerID === result[i]) {
+            if (tutorID === result[i]) {
                 result.splice(i, 1);
-                set(ref(getDatabase(), `Requests/${requestID}/Offers`), result);
+                console.log(result);
+                await set(ref(getDatabase(), `Requests/${requestID}/TutorsWhoAccepted`), result);
                 break;
             }
         }
 
-        await Offers.cancel_offer(offerID);
+        const tutorData = Tutor.get_information(tutorID);
+        const data2 = await tutorData.then(val => {return val;});
+        const data3 = data2.RequestsYouAccepted;
+        result = Object.keys(data3).map((key) => data3[key]);
 
+        for (let i = 0; i < result.length; i += 1) {
+            if (requestID === result[i]) {
+                result.splice(i, 1);
+                await set(ref(getDatabase(), `TutorAccounts/${tutorID}/RequestsYouAccepted`), result);
+                return;
+            }
+        }
         
     }
 
@@ -110,6 +130,21 @@ export class Requests {
         
         set(ref(getDatabase(), `Requests/${requestID}/Course`), course);
         
+    }
+
+    static update_location(requestID, location) {
+
+        set(ref(getDatabase(), `Requests/${requestID}/Location`), location);
+
+    }
+
+    static update_format(requestID, format) {
+
+        set(ref(getDatabase(), `Requests/${requestID}/IsOnline`), format);
+
+        if (format === true) {
+            this.update_location(requestID, 'N/A');
+        }
     }
 
     static async get_information(requestID) {

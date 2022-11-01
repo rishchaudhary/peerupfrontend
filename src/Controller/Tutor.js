@@ -34,7 +34,7 @@ export class Tutor {
         Messages: ["Message ID"],
         Requests: ["Request ID"],
         Price: price,
-        Offers: ['Offer ID'],
+        RequestsYouAccepted: ['request ID'],
         Rating: 0,
         PreferredDays: days,
         PreferredTimings: times,
