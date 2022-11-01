@@ -1,22 +1,4 @@
-// tabs
-import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import dayjs from 'dayjs';
-// tabs
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-// ratings
-import Rating from '@mui/material/Rating';
-// button
-import IconButton from '@mui/material/IconButton';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
-
 // forms
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -28,121 +10,53 @@ import FormControl from '@mui/material/FormControl';
 import { LoadingButton } from '@mui/lab';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
-
 // material
 import {
-    Card,
-    Table,
     Stack,
-    Avatar,
-    Button,
-    Checkbox,
-    TableRow,
-    TableBody,
-    TableCell,
-    Container,
-    Typography,
-    TableContainer,
-    TablePagination,
 } from '@mui/material';
-import { ReadMoreTwoTone } from '@mui/icons-material';
 
 // User data 
-import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
 
-// create_request(requestID, startTime, length, date, description, userID, course, location, format)
 async function createSession(courseName, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
 
     const userID = (auth.currentUser.uid).toString();
     const course = courseName;
     const date = dateValue.toString();
-    const time = timeValue.toString();
+    const time = `${timeValue.toString()} hrs`;
     const descriptionText = requestDescription.toString();
-    const requestID = "69";
-    if(meetingFormat === 0){
+    const requestID = "69-420";
+    let sessionFormat = "";
+
+    if (meetingFormat === 0) {
         requestLocation = "";
+        sessionFormat = "Online";
+    } else {
+        sessionFormat = "In-Person"
     }
     const length = sessionLength.toString();
     const format = meetingFormat.toString();
-    REQUESTS.create_request(requestID, time, length, date, descriptionText, userID, course, requestLocation, format);
+    REQUESTS.create_request(requestID, time, length, date, descriptionText, userID, course, requestLocation, sessionFormat);
 }
 
-function printData(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
-    console.log("Button clicked");
-    console.log(courseValue);
-    console.log(dateValue.toString());
-    console.log(timeValue.toString());
-    console.log(requestDescription);
-    console.log(requestLocation);
-    console.log(meetingFormat);
-}
 
 export default function RequestForm() {
 
-    const courses = [
-        {
-            value: 'CS 180',
-        },
-        {
-            value: 'CS 182',
-        },
-        {
-            value: 'CS 240',
-        },
-        {
-            value: 'CS 250',
-        },
-        {
-            value: 'CS 251',
-        },
-        {
-            value: 'CS 252',
-        },
-        {
-            value: 'CS 307',
-        },
-        {
-            value: 'CS 373',
-        },
-    ];
-
-    const format = [
-        {
-            value: 'Online',
-        },
-        {
-            value: 'In-person',
-        },
-        
-    ];
 
     const [courseValue, setCourse] = React.useState('CS 180');
 
-    const [sessionLength, setSessionLength] = React.useState(0); 
+    const [sessionLength, setSessionLength] = React.useState(0);
 
-    // change this to null
-    const [dateValue, setDateValue] = React.useState("");
+    const [dateValue, setDateValue] = React.useState(null);
 
-    // change this to null
-    const [timeValue, setTimeValue] = React.useState("");
+    const [timeValue, setTimeValue] = React.useState(null);
 
     const [requestDescription, setDescription] = React.useState('');
 
     const [requestLocation, setLocation] = React.useState('');
 
     const [meetingFormat, setFormat] = React.useState(0);
-
-    function printData() {
-        console.log(setCourse.toString());
-    }
-
-   
-
 
     return (
         <FormControl>
@@ -192,7 +106,7 @@ export default function RequestForm() {
                 <div>
                     <TextField
                         id="outlined-number"
-                        label="Number"
+                        label="Session Length"
                         type="number"
                         InputLabelProps={{
                             shrink: true,
@@ -206,10 +120,10 @@ export default function RequestForm() {
 
             </Stack>
 
-        
-            <Stack direction="row" sx={{ py: 2}}>
 
-    
+            <Stack direction="row" sx={{ py: 2 }}>
+
+
                 <div>
                     <TextField
                         id="outlined-multiline-flexible"
@@ -238,40 +152,26 @@ export default function RequestForm() {
                         <MenuItem value={1}>In-person</MenuItem>
                     </Select>
                 </div>
-              
-                
-                { meetingFormat
-                    ? <div><TextField id="outlined-basic" label="Location" value={requestLocation} variant="outlined"  onChange={(event) => {
-                        setLocation(event.target.value);}}/></div>
+
+
+                {meetingFormat
+                    ? <div><TextField id="outlined-basic" label="Location" value={requestLocation} variant="outlined" onChange={(event) => {
+                        setLocation(event.target.value);
+                    }} /></div>
                     : null
                 }
-            
             </Stack>
 
-           
-            
+
+
             <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
-                
-                
-                console.log(courseValue );     
-                console.log(dateValue.toString()); 
-                console.log(timeValue.toString()); 
-                console.log(requestDescription); 
-                console.log(requestLocation); 
-                console.log(meetingFormat.toString()); 
-                console.log(sessionLength.toString());
-                
-            
-               console.log("Creating session");
-               createSession(courseValue,dateValue,timeValue,requestDescription,requestLocation,meetingFormat,sessionLength);
+                console.log("Creating session");
+                createSession(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength);
             }} >
                 Submit Request
             </LoadingButton>
 
         </FormControl>
     );
-
-
-
 
 }
