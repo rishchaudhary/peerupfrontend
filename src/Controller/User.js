@@ -62,22 +62,22 @@ export class User {
         const data = await userData.then(val => {return val;});
         const userDataRequests = data.Requests;
         let result = Object.keys(userDataRequests).map((key) => userDataRequests[key]);
-
+        /* eslint-disable no-await-in-loop */
         for (let i = 1; i < result.length; i += 1) {
-            Requests.delete_request(result[i]);
+            await Requests.delete_request(result[i]);
         }
-
+        /* eslint-disable no-await-in-loop */
         const userDataReviews = data.Reviews;
         result = Object.keys(userDataReviews).map((key) => userDataReviews[key]);
-
+        /* eslint-disable no-await-in-loop */
         for (let i = 1; i < result.length; i += 1) {
-            Review.delete_review(result[i]);
+            await Review.delete_review(result[i]);
         }
-
+        /* eslint-disable no-await-in-loop */
         const hasTutorAccount = data.HasTutorAccount;
 
         if (hasTutorAccount) {
-            Tutor.delete_profile(userID);
+            await Tutor.delete_profile(userID);
         }
 
         

@@ -53,18 +53,11 @@ export class Tutor {
 
     // This function deletes a particular tutor's data from the database.
     // It sets the HasTutorAccount to false. Meaning that the given user does not have a tutor account
-    static delete_profile(userID) {
+    static async delete_profile(userID) {
         
-        remove(ref(getDatabase(), `TutorAccounts/${userID}`))
+        await remove(ref(getDatabase(), `TutorAccounts/${userID}`))
+        await set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), false);
 
-        .then(() => {
-
-            set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), false);
-            return "Data Deleted Successfully";
-        })
-        .catch((error) => {
-            return error;
-        });
 
     }
 
