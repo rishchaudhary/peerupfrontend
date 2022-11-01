@@ -14,6 +14,7 @@ import useResponsive from '../../hooks/useResponsive';
 
 import { auth } from '../../firebaseConfig/auth';
 import { database } from '../../firebaseConfig/database';
+import { useAuthState } from '../../firebaseConfig/firebaseConfig';
 
 // components
 import Logo from '../../components/Logo';
@@ -55,12 +56,14 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
   let usrDisplayName = '';
   let usrProfilePicURL = '';
-  if (auth.currentUser != null) {
+  const { isAuthenticated } = useAuthState();
+  if (isAuthenticated) {
     // User is signed in
     const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`);
-    onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
+    usrDisplayName = auth.currentUser.displayName;
+    /* onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
       usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
-    });
+    }); */
     usrProfilePicURL = auth.currentUser.photoURL;
   } else {
     usrDisplayName = account.displayName;

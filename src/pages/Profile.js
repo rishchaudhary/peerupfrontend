@@ -25,6 +25,7 @@ import Page from '../components/Page';
 // mock
 import account from '../_mock/account';
 // data 
+import { useAuthState } from '../firebaseConfig/firebaseConfig';
 import { database } from '../firebaseConfig/database';
 import { auth } from '../firebaseConfig/auth';
 import { storage } from '../firebaseConfig/storage';
@@ -39,10 +40,10 @@ import { storage } from '../firebaseConfig/storage';
 
 export default function Profile() {
   
-  
+  const { isAuthenticated } = useAuthState();
   const navigate = useNavigate();
   const uploadPfp = () => {
-    if (auth.currentUser != null) {
+    if (isAuthenticated) {
       const selectedFile = document.getElementById('pfp').files[0];
       const storageRef = refStorage(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
       uploadBytes(storageRef, selectedFile).then((snapshot) => {
@@ -72,7 +73,7 @@ export default function Profile() {
   let usrClass = '';
   let usrMajor = '';
   let usrBio = '';
-  if (auth.currentUser != null) {
+  if (isAuthenticated) {
     usrProfilePicURL = auth.currentUser.photoURL;
     const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
     onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference

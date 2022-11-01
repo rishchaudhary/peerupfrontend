@@ -28,6 +28,7 @@ import { UserListHead, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 // firebase imports
+import { useAuthState } from '../firebaseConfig/firebaseConfig';
 import { storage, } from '../firebaseConfig/storage';
 import { auth } from '../firebaseConfig/auth'
 
@@ -73,6 +74,8 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function User() {
+  const { isAuthenticated } = useAuthState();
+  
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -137,7 +140,7 @@ export default function User() {
   const isUserNotFound = filteredUsers.length === 0;
 
   const uploadDoc = () => {
-    if (auth.currentUser == null) {
+    if (isAuthenticated) {
       console.log('No document uploaded, no user logged in.');
     } else {
       const selectedFile = document.getElementById('usr_doc').files[0];
