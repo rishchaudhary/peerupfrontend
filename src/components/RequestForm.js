@@ -3,6 +3,7 @@ import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import dayjs from 'dayjs';
 // tabs
 import * as React from 'react';
 import PropTypes from 'prop-types';
@@ -25,7 +26,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import FormControl from '@mui/material/FormControl';
 import { LoadingButton } from '@mui/lab';
+import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 // material
 import {
@@ -101,22 +104,28 @@ export default function RequestForm() {
 
     const [courseValue, setCourse] = React.useState('CS 180');
 
-    const [dateValue, setDateValue] = React.useState(null);
+    // change this to null
+    const [dateValue, setDateValue] = React.useState("");
 
     const [timeValue, setTimeValue] = React.useState(1);
 
     const [requestDescription, setDescription] = React.useState("");
+    const [value, setValue] = React.useState("");
 
     function printData(){
         console.log(setCourse);
     }
    
+    const handleDateChange = (newValue) => {
+        setDateValue(newValue);
+      };
 
 
     return (
         <FormControl>
             <Stack direction="row" spacing={2}>
-
+            <div>
+            <InputLabel id="demo-simple-select-label">Course</InputLabel>
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -128,16 +137,31 @@ export default function RequestForm() {
                     <MenuItem value="CS 182">CS 182</MenuItem>
                     <MenuItem value="CS 240">CS 240</MenuItem>
                 </Select>
+                </div>
 
+                <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Select Date"
+                            value={dateValue}
+                            onChange={(newValue) => {
+                                setDateValue(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </div>
                
 
             </Stack>
 
             <Stack direction="row" sx={{ py: 4 }}>
-            <p>{courseValue}</p>
+            <p>{courseValue} </p>
+            <p>{dateValue.toString()}</p>
+            
             </Stack>
 
-            <LoadingButton fullWidth size="large" type="submit" variant="contained" onChange={console.log(courseValue)} >
+            <LoadingButton fullWidth size="large" type="submit" variant="contained" >
                 Submit Request
             </LoadingButton>
 
