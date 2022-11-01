@@ -4,11 +4,12 @@ import { User } from "./User";
 
 export class Requests { 
 
-    static async create_request(requestID, time, date, description, userID, course) {
+    static async create_request(requestID, startTime, endTime, date, description, userID, course) {
 
         set(ref(getDatabase(), `Requests/${requestID}`), {
 
-            Time: time,
+            StartTime: startTime,
+            EndTime: endTime,
             Date: date,
             Description: description,
             CreatedBy: userID,
@@ -31,11 +32,11 @@ export class Requests {
         const data = await requestData.then(val => {return val;});
         const requestinfo = data.Offers;
         let result = Object.keys(requestinfo).map((key) => requestinfo[key]);
-
+        /* eslint-disable no-await-in-loop */
         for (let i = 1; i < result.length; i += 1) {
-            Requests.cancel_offer_for_request(result[i]);
+            await Requests.cancel_offer_for_request(result[i]);
         }
-
+        /* eslint-disable no-await-in-loop */
         const userData = User.get_information(data.CreatedBy);
         const user = await userData.then(val => {return val;});
         const userinfo = user.Requests;
@@ -53,9 +54,9 @@ export class Requests {
       
     }
 
-    static async add_offer_to_request(requestID, offerID, time, location,tutorID) {
+    static async add_offer_to_request(requestID, offerID, startTime, endTime, location,tutorID) {
 
-        Offers.create_offer(offerID, time, location,tutorID);
+        Offers.create_offer(offerID, startTime,endTime,  location,tutorID);
         const requestData = Requests.get_information(requestID);
         const data = await requestData.then(val => {return val;});
         const requestinfo = data.Offers;
@@ -85,9 +86,10 @@ export class Requests {
         
     }
 
-    static update_time(requestID, time) {
+    static update_time(requestID, startTime, endTime) {
         
-        set(ref(getDatabase(), `Requests/${requestID}/Time`), time);
+        set(ref(getDatabase(), `Requests/${requestID}/StartTime`), startTime);
+        set(ref(getDatabase(), `Requests/${requestID}/EndTime`), endTime);
         
     }
 
