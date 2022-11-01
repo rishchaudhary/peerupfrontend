@@ -15,10 +15,12 @@ import {
     TextField,
   } from '@mui/material';
   import VerifiedIcon from '@mui/icons-material/Verified';
+  import { useContext } from 'react';
   import { ref, onValue, set } from 'firebase/database';
-  import { useAuthState } from '../firebaseConfig/firebaseConfig';
   import { auth } from '../firebaseConfig/auth';
   import { database } from '../firebaseConfig/database';
+  
+  import { DBContext } from '../App';
   // components
   import Page from '../components/Page';
   import Iconify from '../components/Iconify';
@@ -29,27 +31,12 @@ import {
   const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
   export default function TutorProfile() {
-    let usrDisplayName = '';
-    let usrProfilePicURL = '';
-    let usrTutorBio = '';
-    const { isAuthenticated } = useAuthState();
-    if (isAuthenticated) {
-      // User is signed in, use values from database
-      const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
-      onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
-        usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
-      });
-      const usrTutorBioRef = ref(database, `Users/${auth.currentUser.uid}/TutorBio`);
-      onValue(usrTutorBioRef, (snapshot) => {
-        usrTutorBio = snapshot.val();
-      })
-      usrProfilePicURL = auth.currentUser.photoURL;
-      // console.log(`pfp url: ${auth.currentUser.photoURL}`);
-    } else {
-      // user not signed in, using mock account credentials
-      usrDisplayName = account.displayName;
-      usrProfilePicURL = account.photoURL;
-    }
+    const {displayName, major, userClass, userBio, userTutorBio} = useContext(DBContext);
+    const [stateDisplayName, setStateDisplayName] = displayName;
+    const [stateMajor, setStateMajor] = major;
+    const [stateUserClass, setStateUserClass] = userClass;
+    const [stateUserTutorBio, setStateUserTutorBio] = userTutorBio;
+    const usrProfilePicURL = auth.currentUser.photoURL;
 
     const handleUpdateTutorBio = () => {
       set(ref(database, `Users/${auth.currentUser.uid}/TutorBio`), document.getElementById('usrTutorBio').value);
@@ -68,7 +55,7 @@ import {
             {/* Grid 1: Profile pic */ }
             <Grid item xs={2} sx={{ alignItems: 'center' }}>
               <Avatar 
-              alt={usrDisplayName}
+              alt={stateDisplayName}
               src={usrProfilePicURL}
               style= {{border: '1px solid lightgray'}}
               sx={{ width: 150, height: 150,}}
@@ -80,7 +67,7 @@ import {
               <Stack>
                 <Stack direction="row" spacing={2}>
                     <Typography variant="h1" gutterBottom>
-                        {usrDisplayName}
+                        {stateDisplayName}
                         {}
                     </Typography>
                     <VerifiedIcon/>
@@ -106,7 +93,7 @@ import {
                 Major: 
               </Typography>
               <Typography variant="body" gutterBottom>
-                {account.major}
+                {stateMajor}
               </Typography>
             </Stack>
             
@@ -116,7 +103,7 @@ import {
                 Class: 
               </Typography>
               <Typography variant="body" gutterBottom>
-                {account.year}
+                {stateUserClass}
               </Typography>
             </Stack>
   
@@ -134,7 +121,7 @@ import {
                   multiline
                   minRows={5}
                   maxRows={5}
-                  defaultValue={usrTutorBio}
+                  defaultValue={stateUserTutorBio}
                   margin="dense"
                   variant="outlined"
                   onBlur={handleUpdateTutorBio}

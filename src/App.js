@@ -1,3 +1,4 @@
+import { createContext, useState } from 'react';
 // routes
 import Router from './routes';
 // theme
@@ -7,7 +8,27 @@ import { AuthContextProvider } from './firebaseConfig/firebaseConfig';
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
 
+
 // ----------------------------------------------------------------------
+
+export const DBContext = createContext();
+
+const DBContextProvider = props => {
+  const [displayName, setDisplayName] = useState("display name");
+  const [major, setMajor] = useState("major");
+  const [userClass, setUserClass] = useState("class");
+  const [userBio, setUserBio] = useState("bio");
+  const [userTutorBio, setUserTutorBio] = useState("tutor bio");
+
+  return (
+    <DBContext.Provider
+      value={{ displayName: [displayName, setDisplayName], major: [major, setMajor], userClass: [userClass, setUserClass],
+      userBio: [userBio, setUserBio], userTutorBio: [userTutorBio, setUserTutorBio] }}
+    >
+      {props.children}
+    </DBContext.Provider>
+  );
+};
 
 export default function App() {
   return (
@@ -15,7 +36,9 @@ export default function App() {
       <AuthContextProvider>
         <ScrollToTop />
         <BaseOptionChartStyle />
-        <Router />
+        <DBContextProvider>
+          <Router />
+        </DBContextProvider>
       </AuthContextProvider>
     </ThemeProvider>
   );

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
@@ -11,7 +11,7 @@ import { ref, onValue } from 'firebase/database';
 import account from '../../_mock/account';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
-
+import { DBContext } from '../../App';
 import { auth } from '../../firebaseConfig/auth';
 import { database } from '../../firebaseConfig/database';
 import { useAuthState } from '../../firebaseConfig/firebaseConfig';
@@ -51,24 +51,12 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-
+  const {displayName} = useContext(DBContext);
+  const [stateDisplayName, setStateDisplayName] = displayName;
   const isDesktop = useResponsive('up', 'lg');
 
-  let usrDisplayName = '';
-  let usrProfilePicURL = '';
-  const { isAuthenticated } = useAuthState();
-  if (isAuthenticated) {
-    // User is signed in
-    const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`);
-    usrDisplayName = auth.currentUser.displayName;
-    /* onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
-      usrDisplayName = snapshot.val(); // use the snapshot.val() method to return the value in that reference
-    }); */
-    usrProfilePicURL = auth.currentUser.photoURL;
-  } else {
-    usrDisplayName = account.displayName;
-    usrProfilePicURL = account.photoURL;
-  }
+  const usrProfilePicURL = auth.currentUser.photoURL;
+  
 
   useEffect(() => {
     if (isOpenSidebar) {
@@ -94,7 +82,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Avatar src={usrProfilePicURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {usrDisplayName}
+                {stateDisplayName}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {account.role}
