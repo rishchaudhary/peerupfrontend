@@ -34,7 +34,7 @@ export class Tutor {
         Messages: ["Message ID"],
         Requests: ["Request ID"],
         Price: price,
-        Offers: ['Offer ID'],
+        RequestsYouAccepted: ['request ID'],
         Rating: 0,
         PreferredDays: days,
         PreferredTimings: times,
@@ -53,18 +53,11 @@ export class Tutor {
 
     // This function deletes a particular tutor's data from the database.
     // It sets the HasTutorAccount to false. Meaning that the given user does not have a tutor account
-    static delete_profile(userID) {
+    static async delete_profile(userID) {
         
-        remove(ref(getDatabase(), `TutorAccounts/${userID}`))
+        await remove(ref(getDatabase(), `TutorAccounts/${userID}`))
+        await set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), false);
 
-        .then(() => {
-
-            set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), false);
-            return "Data Deleted Successfully";
-        })
-        .catch((error) => {
-            return error;
-        });
 
     }
 
@@ -184,11 +177,12 @@ export class Tutor {
     static async tutor_rating(userID) {
         
         
-        const tutorData = this.getInformation(userID);
+        const tutorData = this.get_information(userID);
         const data = await tutorData.then(val => {return val;});
-        const reviews = data.RewiewsForTutor;
+        const reviews = data.ReviewsForTutor;
         let rating = data.Rating;
         const result = Object.keys(reviews).map((key) => reviews[key]);
+        console.log(`The length is ${result.length}`);
 
         if (result.length > 11) {
 
@@ -209,6 +203,7 @@ export class Tutor {
                 const reviewData =  Review.getReviewInformation(reviews[i]);
                 const info = await reviewData.then(val => {return val;});
                 sum += parseFloat(info.Rating);
+                console.log(sum);
                 
             }
             /* eslint-disable no-await-in-loop */
