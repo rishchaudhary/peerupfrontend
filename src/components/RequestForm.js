@@ -55,24 +55,25 @@ import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
 
-
-async function createSession(courseName, requestDay, requestTime, description) {
+async function createSession(courseName, dateValue, timeValue, requestDescription, requestLocation, meetingFormat) {
 
     const userID = auth.currentUser.uid;
-    const course = courseName.toString();
-    const day = requestDay.toString();
-    const time = requestTime.toString();
-    const descriptionText = description.toString();
-    const requestID = Math.random();
+    const course = courseName;
+    const day = dateValue.toString();
+    const time = timeValue.toString();
+    const descriptionText = requestDescription.toString();
 
-    REQUESTS.create_request(requestID, time, day, descriptionText, userID, course);
+    REQUESTS.create_request(userID, time, day, descriptionText, userID, course);
 }
 
-async function printData(courseValue, dateValue, timeValue, requestDescription) {
-    console.log(courseValue.toString());
-    console.log(dateValue);
-    console.log(timeValue);
+function printData(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat) {
+    console.log("Button clicked");
+    console.log(courseValue);
+    console.log(dateValue.toString());
+    console.log(timeValue.toString());
     console.log(requestDescription);
+    console.log(requestLocation);
+    console.log(meetingFormat);
 }
 
 export default function RequestForm() {
@@ -224,17 +225,18 @@ export default function RequestForm() {
             
             </Stack>
 
+           
             
-            <Stack direction="row" sx={{ py: 2 }}>
-                <p>{courseValue} </p>
-                <p>{dateValue.toString()}</p>
-                <p>{timeValue.toString()}</p>
-                <p>{requestDescription}</p>
-                <p>{requestLocation}</p>
-
-            </Stack>
-            
-            <LoadingButton fullWidth size="large" type="submit" variant="contained" >
+            <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
+                /*
+                console.log(courseValue);     
+                console.log(dateValue.toString()); 
+                console.log(timeValue.toString()); 
+                console.log(requestDescription); 
+                console.log(requestLocation); 
+                console.log(meetingFormat); 
+                */
+            }} >
                 Submit Request
             </LoadingButton>
 
