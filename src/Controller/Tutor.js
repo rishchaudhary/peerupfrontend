@@ -1,15 +1,33 @@
 import { getDatabase,set, remove, ref, get } from "firebase/database";
 import { Review } from "./Review";
-
+ 
 export class Tutor {
     
 
     // This function saves the data of a new tutor account to the database.
     // It sets the value of the HasTutorAccount field of the User class to true. This tells us that the given user is also a tutor.
     // We will use the user ID as our tutor ID.
-    static create_profile(userID, price, courses) {
+    static create_profile(userID, price, courses, preferredDays, preferredTimings) {
 
         set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), true);
+
+        const days = [false, false, false, false, false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < preferredDays.length; j += 1) {
+                if (i === preferredDays[j]) {
+                    days[i] = true;
+                }
+            }
+        }
+
+        const times = [false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < preferredTimings.length; j += 1) {
+                if (i === preferredTimings[j]) {
+                    times[i] = true;
+                }
+            }
+        }
         
         set(ref(getDatabase(), `TutorAccounts/${userID}`), {
         Sessions: ["Session ID"],
@@ -18,8 +36,8 @@ export class Tutor {
         Price: price,
         Offers: ['Offer ID'],
         Rating: 0,
-        PreferredDays: [false, false, false, false, false],
-        PreferredTimings: [false, false, false],
+        PreferredDays: days,
+        PreferredTimings: times,
         RewiewsForTutor: ["Review ID"],
         VerifiedCourses: ["Course Name"],
         NotVerifiedCourses: courses},
@@ -130,23 +148,33 @@ export class Tutor {
 
     }
 
-    // This updates the preferred days of the tutor. You guys will create a button for each value in the 
-    // PreferredDays array. Once the button is pressed, the value at that location is changed (if false then set to true and viseversa).
-    // This new value is the UpdatedValue parameter of the function and the Index parameter is the array location that has been changed.
-    // I use them both to make the required changes in the database.
-    static update_preferred_days(userID, updatedValue, index) {
+    
+    static update_preferred_days(userID, updatedValues) {
 
-        set(ref(getDatabase(), `TutorAccounts/${userID}/PreferredDays/${index}`), updatedValue);
+        const days = [false, false, false, false, false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < updatedValues.length; j += 1) {
+                if (i === updatedValues[j]) {
+                    days[i] = true;
+                }
+            }
+        }
+        set(ref(getDatabase(), `Users/${userID}/PreferredDays`), days);
         
     }
 
-    // This updates the preferred timings of the tutor. You guys will create a button for each value in the 
-    // PreferredTimings array. Once the button is pressed, the value at that location is changed (if false then set to true and viseversa).
-    // This new value is the UpdatedValue parameter of the function and the Index parameter is the array location that has been changed.
-    // I use them both to make the required changes in the database.
-    static update_preferred_times(userID, updatedValue, index) {
+    static update_preferred_times(userID, updatedValues) {
 
-        set(ref(getDatabase(), `TutorAccounts/${userID}/PreferredTimings/${index}`), updatedValue);
+        const times = [false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < updatedValues.length; j += 1) {
+                if (i === updatedValues[j]) {
+                    times[i] = true;
+                }
+            }
+        }
+
+        set(ref(getDatabase(), `Users/${userID}/PreferredTimings`), times);
         
     }
 

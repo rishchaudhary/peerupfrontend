@@ -18,6 +18,14 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 // forms
 import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import FormControl from '@mui/material/FormControl';
+
+
 
 // material
 import {
@@ -36,13 +44,19 @@ import {
   TablePagination,
 } from '@mui/material';
 
+// User data 
+import RequestForm from '../components/RequestForm';
+import { User as USER } from '../Controller/User';
+import { Requests as REQUESTS } from '../Controller/Requests';
+import { auth } from '../firebaseConfig/auth';
+
 // components
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+
 
 
 
@@ -128,7 +142,26 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+async function printUserData() {
+  // test2 is the id, pass in currently logged in userid
+  const userId = auth.currentUser.uid;
+  const userData = USER.get_information(userId);
+  const data = await userData.then(val => { return val; });
+  const requests = data.Requests;
+  const result = Object.keys(requests).map((key) => requests[key]);
+  /* eslint-disable no-await-in-loop */
+  for (let i = 1; i < result.length; i += 1) {
+    const requestData = REQUESTS.get_information(result[i]);
+    const data2 = await requestData.then(val => { return val; });
+    console.log(data2);
+  }
+  /* eslint-disable no-await-in-loop */
+}
+
+
 export default function DashboardApp() {
+
+  printUserData();
 
   const [page, setPage] = useState(0);
 
@@ -141,7 +174,7 @@ export default function DashboardApp() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  
+
 
   const [formValue, setFormValue] = React.useState('Controlled');
 
@@ -156,6 +189,9 @@ export default function DashboardApp() {
     setValue(newValue);
   };
 
+  const handleChangeCourseSelection = (event, newValue) => {
+    setValue(newValue);
+  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -205,13 +241,47 @@ export default function DashboardApp() {
 
   const isUserNotFound = filteredUsers.length === 0;
 
+  const courses = [
+    {
+      value: 'CS 180',
+    },
+    {
+      value: 'CS 182',
+    },
+    {
+      value: 'CS 240',
+    },
+    {
+      value: 'CS 250',
+    },
+    {
+      value: 'CS 251',
+    },
+    {
+      value: 'CS 252',
+    },
+    {
+      value: 'CS 307',
+    },
+    {
+      value: 'CS 373',
+    },
+  ];
+
+  const [course, setCurrency] = React.useState('EUR');
+
+  const [datevalue, setDateValue] = React.useState(null);
+
+
+
+  // ----------------------------------------------------------------------------------
   return (
     <Page title="User">
 
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-           <Tab label="Request" {...a11yProps(0)} />
+            <Tab label="Request" {...a11yProps(0)} />
             <Tab label="Matched" {...a11yProps(1)} />
             <Tab label="Scheduled" {...a11yProps(2)} />
             <Tab label="Completed" {...a11yProps(3)} />
@@ -219,58 +289,18 @@ export default function DashboardApp() {
         </Box>
         <TabPanel value={value} index={0}>
           <Container>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
                 Request
               </Typography>
             </Stack>
-            <Card sx={{px:3, py:4}}>
-              <Box
-                component="form"
-                sx={{
-                  '& .MuiTextField-root': { m: 1, width: '25ch' },
-                }}
-                noValidate
-                autoComplete="off"
-              >
-                <div>
+            <Card sx={{ px: 7, py: 4 }}>
 
-                <TextField id="outlined-search" label="Course Name" type="search" />
-                <TextField id="outlined-search" label="Location" type="search" />
-                  <TextField
-                    id="outlined-number"
-                    label="Session Length"
-                    type="number"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                <TextField id="outlined-search" label="Date" type="search" />
-                <TextField id="outlined-search" label="Time" type="search" />
-                  <TextField
-                    id="outlined-multiline-flexible"
-                    label="Description"
-                    multiline
-                    rows={4}
-                    value={formValue}
-                    onChange={handleChangeForm}
-                  />
-                  
-                  
-                </div>
-                
-                
-              </Box>
-              <Box sx={{ px: 2 }}>
-                <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill" />}>
-                  Add Attachments
-                  <input hidden accept="image/*" multiple type="file" />
-                </Button>
-               
-              </Box>
+            <RequestForm/>  
+            
+          </Card>
+         
 
-              
-            </Card>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={1}>

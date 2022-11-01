@@ -3,13 +3,33 @@ import { Requests } from "./Requests";
 import {Review} from "./Review"
 import { Tutor } from "./Tutor";
 
-
+ 
 
 export class User {
 
-    static create_account(userID, emailAddress, fullName, major, standing) {
+    static create_account(userID, emailAddress, fullName, major, standing, preferredDays, preferredTimings) {
 
-        
+        const days = [false, false, false, false, false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < preferredDays.length; j += 1) {
+                if (i === preferredDays[j]) {
+                    days[i] = true;
+                }
+            }
+        }
+
+        const times = [false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < preferredTimings.length; j += 1) {
+                if (i === preferredTimings[j]) {
+                    times[i] = true;
+                }
+            }
+        }
+
+
+
+
         set(ref(getDatabase(), `Users/${userID}`), {
         Name: fullName,
         Email: emailAddress,
@@ -20,8 +40,8 @@ export class User {
         Message: ["Message ID"],
         Major: major,
         Standing: standing,
-        PreferredDays: [false, false, false, false, false],
-        PreferredTimings: [false, false, false],
+        PreferredDays: days,
+        PreferredTimings: times,
         Bio: 'Enter Bio here',
         University: 'Purdue'
         
@@ -74,15 +94,32 @@ export class User {
     }
 
 
-    static update_preferred_days(userID, updatedValue, index) {
+    static update_preferred_days(userID, updatedValues) {
 
-        set(ref(getDatabase(), `Users/${userID}/PreferredDays/${index}`), updatedValue);
+        const days = [false, false, false, false, false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < updatedValues.length; j += 1) {
+                if (i === updatedValues[j]) {
+                    days[i] = true;
+                }
+            }
+        }
+        set(ref(getDatabase(), `Users/${userID}/PreferredDays`), days);
         
     }
 
-    static update_preferred_times(userID, updatedValue, index) {
+    static update_preferred_times(userID, updatedValues) {
 
-        set(ref(getDatabase(), `Users/${userID}/PreferredTimings/${index}`), updatedValue);
+        const times = [false, false, false];
+        for (let i = 0; i < 7; i += 1) {
+            for (let j = 0; j < updatedValues.length; j += 1) {
+                if (i === updatedValues[j]) {
+                    times[i] = true;
+                }
+            }
+        }
+
+        set(ref(getDatabase(), `Users/${userID}/PreferredTimings`), times);
         
     }
 
@@ -127,3 +164,6 @@ export class User {
     }   
     
 } 
+
+
+export default User;
