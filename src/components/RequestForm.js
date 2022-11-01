@@ -55,7 +55,7 @@ import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
 
-async function createSession(courseName, dateValue, timeValue, requestDescription, requestLocation, meetingFormat) {
+async function createSession(courseName, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
 
     const userID = auth.currentUser.uid;
     const course = courseName;
@@ -66,7 +66,7 @@ async function createSession(courseName, dateValue, timeValue, requestDescriptio
     REQUESTS.create_request(userID, time, day, descriptionText, userID, course);
 }
 
-function printData(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat) {
+function printData(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
     console.log("Button clicked");
     console.log(courseValue);
     console.log(dateValue.toString());
@@ -117,6 +117,8 @@ export default function RequestForm() {
 
     const [courseValue, setCourse] = React.useState('CS 180');
 
+    const [sessionLength, setSessionLength] = React.useState(0); 
+
     // change this to null
     const [dateValue, setDateValue] = React.useState("");
 
@@ -130,7 +132,7 @@ export default function RequestForm() {
     const [meetingFormat, setFormat] = React.useState(0);
 
     function printData() {
-        console.log(setCourse);
+        console.log(setCourse.toString());
     }
 
    
@@ -178,6 +180,21 @@ export default function RequestForm() {
                             renderInput={(params) => <TextField {...params} />}
                         />
                     </LocalizationProvider>
+                </div>
+
+
+                <div>
+                    <TextField
+                        id="outlined-number"
+                        label="Number"
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={(event) => {
+                            setSessionLength(event.target.value);
+                        }}
+                    />
                 </div>
 
 
