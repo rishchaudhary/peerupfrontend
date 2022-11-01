@@ -48,50 +48,24 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async() => {
-    // signInWithEmailAndPassword(auth, data.email, data.password)
-    //  .then((userCredential) => {
-      // Signed in 
-    //  const user = userCredential.user;
-   //   console.log('user logged in:', user.email);
-    //  navigate('/dashboard/app', { replace: true });
-      // console.log('current user email: ', auth.currentUser.email);
-   //   })
-    //  .catch((error) => {
-    //  const errorCode = error.code;
-    //  const errorMessage = error.message;
-     // console.log(errorMessage);
-     // console.log('Error code: ', errorCode);
-      // If user is not found errorCode will be auth/user-not-found
-      // If user exists but password is wrong errorCode will be auth/wrong-password
-     // });
-    // navigate('/dashboard/app', { replace: true });
-
-   // Requests.create_request("742", "1pm", "2pm", "12th Jan", "Math help", "test3", "MA354");
-  //  Requests.add_offer_to_request('743', 'offer2', '1pm', '1:30pm', 'Online', 'test')
-
-      // const userData = Requests.get_information('743');
-      // const data = await Requests.data(userData);
-      // console.log(data.Date);
-
-      // Requests.cancel_offer_for_request('743', 'offer2');
-      // Review.create_review('testReview12', 1.9, 'I enjoyed the class', 'test2', 'test')
-     // Review.delete_review('testReview4');
-
-    User.create_account('test2', 'test@g', 'XYZ', 'CS', 'Junior', [0,2,4], [1]);
-    await Requests.create_request("742", "1pm", "2pm", "12th Jan", "Math help", "test2", "MA354");
-   await Requests.create_request("743", "1pm", "2pm", "12th Jan", "Math help", "test2", "MA354");
-  await Requests.add_offer_to_request('743', 'offer1', '1pm', '1:30pm', 'Online', 'test')
-   await Requests.add_offer_to_request('743', 'offer2', '1pm', '1:30pm', 'Online', 'test')
-   await Requests.add_offer_to_request('742', 'offer3', '1pm', '1:30pm', 'Online', 'test')
-   await Requests.add_offer_to_request('742', 'offer4', '1pm', '1:30pm', 'Online', 'test')
-  await Review.create_review('testReview12', 1.9, 'I enjoyed the class', 'test2', 'test')
-    await Review.create_review('testReview13', 1.9, 'I enjoyed the class', 'test2', 'test')
-   await Tutor.create_profile('test2', 3.2, ['CS180', 'CS240'], [0,2,4], [2])
-      // User.delete_account('test2');
-
-
-
+  const onSubmit = async data => {
+      signInWithEmailAndPassword(auth, data.email, data.password)
+      .then((userCredential) => {
+        // Signed in
+         const user = userCredential.user;
+         console.log('user logged in:', user.email);
+         navigate('/dashboard/app', { replace: true });
+          console.log('current user email: ', auth.currentUser.email);
+      })
+     .catch((error) => {
+         const errorCode = error.code;
+         const errorMessage = error.message;
+         console.log(errorMessage);
+         console.log('Error code: ', errorCode);
+          // If user is not found errorCode will be auth/user-not-found
+          // If user exists but password is wrong errorCode will be auth/wrong-password
+     });
+     navigate('/dashboard/app', { replace: true });
   };
 
   return (

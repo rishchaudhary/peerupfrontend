@@ -59,7 +59,7 @@ export default function DashboardLayout() {
     setStateMajor(snapshot.val());
   });
 
-  const userClassRef = ref(database, `Users/${auth.currentUser.uid}/Class`);
+  const userClassRef = ref(database, `Users/${auth.currentUser.uid}/Standing`);
   onValue(userClassRef, (snapshot) => {
     setStateUserClass(snapshot.val());
   });

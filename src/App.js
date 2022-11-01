@@ -16,7 +16,7 @@ export const DBContext = createContext();
 const DBContextProvider = props => {
   const [displayName, setDisplayName] = useState("display name");
   const [major, setMajor] = useState("major");
-  const [userClass, setUserClass] = useState("class");
+  const [userClass, setUserClass] = useState("standing");
   const [userBio, setUserBio] = useState("bio");
   const [userTutorBio, setUserTutorBio] = useState("tutor bio");
 
