@@ -24,6 +24,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import FormControl from '@mui/material/FormControl';
+import { LoadingButton } from '@mui/lab';
 
 // material
 import {
@@ -40,101 +41,136 @@ import {
     Typography,
     TableContainer,
     TablePagination,
-  } from '@mui/material';
- 
- export default function RequestForm() {
- 
- const courses = [
-    {
-      value: 'CS 180',
-    },
-    {
-      value: 'CS 182',
-    },
-    {
-      value: 'CS 240',
-    },
-    {
-      value: 'CS 250',
-    },
-    {
-      value: 'CS 251',
-    },
-    {
-      value: 'CS 252',
-    },
-    {
-      value: 'CS 307',
-    },
-    {
-      value: 'CS 373',
-    },
-  ];
+} from '@mui/material';
 
-  const [course, setCurrency] = React.useState('EUR');
+// User data 
+import RequestForm from '../components/RequestForm';
+import { User as USER } from '../Controller/User';
+import { Requests as REQUESTS } from '../Controller/Requests';
+import { auth } from '../firebaseConfig/auth';
 
-  const [datevalue, setDateValue] = React.useState(null);
+async function createSession(courseName, requestDay, requestTime, description){
 
-  const [value, setValue] = React.useState(1);
+    const userID = auth.currentUser.uid;
+    const courseName = courseName.toString();
+    const requestDay = requestDay.toString();
+    const requestTime = requestTime.toString();
+    const description = description.toString();
+    const requestID = Math.random();
+    
+    console.log(userId);
 
-  const handleChangeCourseSelection = (event, newValue) => {
-    setValue(newValue);
-  };
+    //REQUESTS.create_request(requestID, requsetTime, requestDay, description, userID, courseName);
+}
 
-return(
-    <FormControl>
-              <Stack direction="row" spacing={2}>
-              <TextField
-                id="filled-select-course"
-                select
-                label="Select Course"
-                value={courses}
-                onChange={handleChangeCourseSelection}
-                helperText="ex: CS 180 ">
-                {courses.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </TextField>
+export default function RequestForm() {
 
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Select Date"
-                  value={value}
-                  onChange={(newValue) => {
-                    setValue(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
+    const courses = [
+        {
+            value: 'CS 180',
+        },
+        {
+            value: 'CS 182',
+        },
+        {
+            value: 'CS 240',
+        },
+        {
+            value: 'CS 250',
+        },
+        {
+            value: 'CS 251',
+        },
+        {
+            value: 'CS 252',
+        },
+        {
+            value: 'CS 307',
+        },
+        {
+            value: 'CS 373',
+        },
+    ];
+
+    const [courseValue, setCourse] = React.useState('CS 180');
+
+    const [dateValue, setDateValue] = React.useState(null);
+
+    const [timeValue, setTimeValue] = React.useState(1);
+
+    const [requestDescription, setDescription] = React.useState("");
+
+    const handleChangeCourseSelection = (event, newValue) => {
+        setCourse(newValue);
+    };
+    const handleDateSelection = (event, newValue) => {
+        setDateValue(newValue);
+    };
+
+    const handleTimeSelection = (event, newValue) => {
+        setTimeValue(newValue);
+    };
+
+    const handleDescription = (event, newValue) => {
+        setDescription(newValue);
+    };
+
+    return (
+        <FormControl>
+            <Stack direction="row" spacing={2}>
+                <TextField
+                    id="filled-select-course"
+                    select
+                    label="Select Course"
+                    value={courseValue}
+                    onChange={handleChangeCourseSelection}
+                    helperText="ex: CS 180 ">
+                    {courses.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.value}
+                        </MenuItem>
+                    ))}
+                </TextField>
 
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <TimePicker
-                    label="Basic example"
-                    value={value}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
+                    <DatePicker
+                        label="Select Date"
+                        value={dateValue}
+                        onChange={handleDateSelection}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
                 </LocalizationProvider>
 
-             
-             
-              </Stack>   
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <TimePicker
+                        label="Select Time"
+                        value={timeValue}
+                        onChange={handleTimeSelection}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
 
-              <Stack direction="row" sx={{ py: 4 }}>
-              <TextField
-                  id="outlined-multiline-static"
-                  label="Description"
-                  multiline
-                  rows={4}
-                  defaultValue="What do you need help with?"
+
+
+            </Stack>
+
+            <Stack direction="row" sx={{ py: 4 }}>
+                <TextField
+                    id="outlined-multiline-static"
+                    label="Request Description3"
+                    multiline
+                    rows={4}
+                    defaultValue={requestDescription}
+                    onChange={handleDescription}
                 />
-              </Stack>  
-              </FormControl>
-);
+            </Stack>
+
+            <LoadingButton fullWidth size="large" type="submit" variant="contained" onSubmit={createSession(courseValue, dateValue, timeValue, requestDescription)}>
+                Submit Request
+            </LoadingButton>
+
+        </FormControl>
+    );
 
 
 
