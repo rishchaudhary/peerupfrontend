@@ -4,7 +4,6 @@ import {Review} from "./Review"
 import { Tutor } from "./Tutor";
 
  
-
 export class User {
 
     static create_account(userID, emailAddress, fullName, major, standing, preferredDays, preferredTimings) {
