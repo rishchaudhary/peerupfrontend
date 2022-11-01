@@ -63,13 +63,12 @@ async function createSession(courseName, dateValue, timeValue, requestDescriptio
     const date = dateValue.toString();
     const time = timeValue.toString();
     const descriptionText = requestDescription.toString();
-    const requestID = Math.random();
+    const requestID = "69";
     if(meetingFormat === 0){
         requestLocation = "";
     }
     const length = sessionLength.toString();
     const format = meetingFormat.toString();
-    console.log(userID);
     REQUESTS.create_request(requestID, time, length, date, descriptionText, userID, course, requestLocation, format);
 }
 
