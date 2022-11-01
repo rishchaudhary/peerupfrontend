@@ -4,12 +4,12 @@ import {Tutor} from "./Tutor";
 
 export class Requests { 
 
-    static async create_request(requestID, startTime, endTime, date, description, userID, course, location, format) {
+    static async create_request(requestID, startTime, length, date, description, userID, course, location, format) {
 
         await set(ref(getDatabase(), `Requests/${requestID}`), {
 
-            StartTime: startTime,
-            EndTime: endTime,
+            Time: startTime,
+            Length: length,
             Date: date,
             Description: description,
             CreatedBy: userID,
@@ -107,11 +107,16 @@ export class Requests {
 
     }
 
-    static update_time(requestID, startTime, endTime) {
+    static update_time(requestID, startTime) {
         
         set(ref(getDatabase(), `Requests/${requestID}/StartTime`), startTime);
-        set(ref(getDatabase(), `Requests/${requestID}/EndTime`), endTime);
         
+    }
+
+    static update_length(requestID, length) {
+
+        set(ref(getDatabase(), `Requests/${requestID}/Length`), length);
+
     }
 
     static update_date(requestID, date) {
@@ -142,9 +147,6 @@ export class Requests {
 
         set(ref(getDatabase(), `Requests/${requestID}/IsOnline`), format);
 
-        if (format === true) {
-            this.update_location(requestID, 'N/A');
-        }
     }
 
     static async get_information(requestID) {
