@@ -42,11 +42,13 @@ import {
     TableContainer,
     TablePagination,
 } from '@mui/material';
+import { ReadMoreTwoTone } from '@mui/icons-material';
 
 // User data 
 import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
+
 
 async function createSession(courseName, requestDay, requestTime, description){
 
@@ -104,34 +106,76 @@ export default function RequestForm() {
 
     const [requestDescription, setDescription] = React.useState("");
 
+    const [requestData, setRequestData] = useState({
+        // course: React.useState('CS 180'),
+        // date: React.useState(null),
+        // time: React.useState(1),
+        description: "",
+    })
+
+    requestData.course = React.useState('CS 180');
+    requestData.date = React.useState(null);
+    requestData.time =  React.useState(1);
+    requestData.description = React.useState("");
+
+    function handle(e) {
+        // const newdata = {...requestData}
+        
+        // const newCourse = {... courseValue}
+        // const newDate = {...dateValue}
+        // const newTime = {...timeValue}
+        const newDescription = {...requestDescription}
+
+        // newdata[e.target.id] = e.target.value
+        // newCourse[e.target.id] = e.target.value
+        // newDate[e.target.id] = e.target.value
+        // newTime[e.target.id] = e.target.value
+        newDescription[e.target.id] = e.target.value
+        console.log(newDescription);
+        
+        // setRequestData(newdata)
+        /*
+        handleChangeCourseSelection(newCourse)
+        handleDateSelection(newDate)
+        handleTimeSelection(newTime)
+        handleDescription(newDescription)
+        */
+
+    }
+
+
+
     const handleChangeCourseSelection = (event, newValue) => {
         setCourse(newValue);
+        console.log(courseValue.toString());
     };
     const handleDateSelection = (event, newValue) => {
         setDateValue(newValue);
+        console.log(dateValue.toString());
     };
 
     const handleTimeSelection = (event, newValue) => {
         setTimeValue(newValue);
+        console.log(timeValue.toString());
     };
 
     const handleDescription = (event, newValue) => {
         setDescription(newValue);
+        console.log(requestDescription.toString());
     };
 
-  
-
-      const printData = async data => {
-
-        console.log(courseValue);
-
-      };
 
     return (
-        <FormControl onSubmit={[printData]}>
+        <FormControl>
+
+
+
             <Stack direction="row" spacing={2}>
+
+                <input onChange={handleDescription} id="description" value={requestDescription} placeholder="description" type="text"/>
+
                 <TextField
-                    id="filled-select-course"
+                    id="courseValue"
                     select
                     label="Select Course"
                     value={courseValue}
@@ -147,6 +191,7 @@ export default function RequestForm() {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Select Date"
+                        id="dateValue"
                         value={dateValue}
                         onChange={handleDateSelection}
                         renderInput={(params) => <TextField {...params} />}
@@ -156,6 +201,7 @@ export default function RequestForm() {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <TimePicker
                         label="Select Time"
+                        id="timeValue"
                         value={timeValue}
                         onChange={handleTimeSelection}
                         renderInput={(params) => <TextField {...params} />}
@@ -166,7 +212,7 @@ export default function RequestForm() {
 
             <Stack direction="row" sx={{ py: 4 }}>
                 <TextField
-                    id="outlined-multiline-static"
+                    id="requestDescription"
                     label="Request Description3"
                     multiline
                     rows={4}
