@@ -189,9 +189,6 @@ export default function DashboardApp() {
     setValue(newValue);
   };
 
-  const handleChangeCourseSelection = (event, newValue) => {
-    setValue(newValue);
-  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -240,38 +237,6 @@ export default function DashboardApp() {
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
-
-  const courses = [
-    {
-      value: 'CS 180',
-    },
-    {
-      value: 'CS 182',
-    },
-    {
-      value: 'CS 240',
-    },
-    {
-      value: 'CS 250',
-    },
-    {
-      value: 'CS 251',
-    },
-    {
-      value: 'CS 252',
-    },
-    {
-      value: 'CS 307',
-    },
-    {
-      value: 'CS 373',
-    },
-  ];
-
-  const [course, setCurrency] = React.useState('EUR');
-
-  const [datevalue, setDateValue] = React.useState(null);
-
 
 
   // ----------------------------------------------------------------------------------
