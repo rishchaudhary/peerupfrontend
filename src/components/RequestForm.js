@@ -29,6 +29,8 @@ import { LoadingButton } from '@mui/lab';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
 
 // material
 import {
@@ -102,23 +104,36 @@ export default function RequestForm() {
         },
     ];
 
+    const format = [
+        {
+            value: 'Online',
+        },
+        {
+            value: 'In-person',
+        },
+        
+    ];
+
     const [courseValue, setCourse] = React.useState('CS 180');
 
     // change this to null
     const [dateValue, setDateValue] = React.useState("");
-    
+
     // change this to null
     const [timeValue, setTimeValue] = React.useState("");
 
     const [requestDescription, setDescription] = React.useState('');
- 
-    const [inPerson, setValue] = React.useState(false);
+
+    const [requestLocation, setLocation] = React.useState('');
+
+    const [meetingFormat, setFormat] = React.useState(0);
 
     function printData() {
         console.log(setCourse);
     }
 
    
+
 
     return (
         <FormControl>
@@ -164,11 +179,14 @@ export default function RequestForm() {
                     </LocalizationProvider>
                 </div>
 
-              
+
             </Stack>
 
-            <Stack direction="row" sx={{ py: 4 }}>
-                    <div>
+        
+            <Stack direction="row" sx={{ py: 2}}>
+
+    
+                <div>
                     <TextField
                         id="outlined-multiline-flexible"
                         label="Enter Request Details"
@@ -177,19 +195,45 @@ export default function RequestForm() {
                         value={requestDescription}
                         onChange={(event) => {
                             setDescription(event.target.value);
-                          }}
+                        }}
                     />
-                    </div>
-                </Stack>
+                </div>
+            </Stack>
 
-            <Stack direction="row" sx={{ py: 4 }}>
+            <Stack direction="row" sx={{ py: 2 }} spacing={2}>
+
+                <div>
+                    <Select
+                        value={meetingFormat}
+                        onChange={(e) => setFormat(e.target.value)}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                    >
+
+                        <MenuItem value={0}>Online</MenuItem>
+                        <MenuItem value={1}>In-person</MenuItem>
+                    </Select>
+                </div>
+              
+                
+                { meetingFormat
+                    ? <div><TextField id="outlined-basic" label="Location" value={requestLocation} variant="outlined"  onChange={(event) => {
+                        setLocation(event.target.value);}}/></div>
+                    : null
+                }
+            
+            </Stack>
+
+            
+            <Stack direction="row" sx={{ py: 2 }}>
                 <p>{courseValue} </p>
                 <p>{dateValue.toString()}</p>
                 <p>{timeValue.toString()}</p>
                 <p>{requestDescription}</p>
+                <p>{requestLocation}</p>
 
             </Stack>
-
+            
             <LoadingButton fullWidth size="large" type="submit" variant="contained" >
                 Submit Request
             </LoadingButton>
