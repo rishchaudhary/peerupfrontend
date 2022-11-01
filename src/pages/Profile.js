@@ -39,7 +39,7 @@ import { User as USER } from '../Controller/User';
 
 
 async function getUserData() {
-    const dbSnap = USER.get_information('test2');
+    const dbSnap = USER.get_information(auth.currentUser.uid);
     const user = await dbSnap.then(val => {return val;});
     return user;
 }
@@ -53,7 +53,8 @@ export default function Profile() {
   const [stateUserClass, setStateUserClass] = userClass;
   const [stateUserBio, setStateUserBio] = userBio;
   const userData = getUserData();
-  // console.log(userData.Name);
+  console.log(userData);
+
   const { isAuthenticated } = useAuthState();
   const navigate = useNavigate();
   const uploadPfp = () => {
@@ -111,7 +112,7 @@ export default function Profile() {
           {/* grid 2: Name & rating */}
           <Grid item xs={6}>
             <Stack>
-              <Typography variant="h1" gutterBottom>
+              <Typography variant="h2" gutterBottom>
                 {stateDisplayName}
               </Typography>
               <Rating 
