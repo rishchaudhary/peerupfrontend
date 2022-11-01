@@ -38,12 +38,6 @@ import { User as USER } from '../Controller/User';
 // ----------------------------------------------------------------------
 
 
-async function getUserData() {
-    const dbSnap = USER.get_information(auth.currentUser.uid);
-    const user = await dbSnap.then(val => {return val;});
-    return user;
-}
-
 
 
 export default function Profile() {
@@ -52,8 +46,6 @@ export default function Profile() {
   const [stateMajor, setStateMajor] = major;
   const [stateUserClass, setStateUserClass] = userClass;
   const [stateUserBio, setStateUserBio] = userBio;
-  const userData = getUserData();
-  console.log(userData);
 
   const { isAuthenticated } = useAuthState();
   const navigate = useNavigate();
@@ -115,13 +107,13 @@ export default function Profile() {
               <Typography variant="h2" gutterBottom>
                 {stateDisplayName}
               </Typography>
-              <Rating 
+              {/*  <Rating
                 name="read-only" 
                 value={account.ratingVal} 
                 precision={0.5}
                 size="large"
                 readOnly 
-              />
+              /> */}
             </Stack>
           </Grid>
           {/* end of top section */}
@@ -165,7 +157,7 @@ export default function Profile() {
             divider={<Divider orientation="horizontal" flexItem />}
             >
               <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-                  Bio: 
+                Bio:
               </Typography>
               <TextField
                 id="userBio"

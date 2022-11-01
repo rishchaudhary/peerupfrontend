@@ -6,7 +6,17 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import {Stack, IconButton, InputAdornment, ToggleButton, ToggleButtonGroup, Typography} from '@mui/material';
+import {Stack,
+    IconButton,
+    InputAdornment,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
@@ -27,6 +37,7 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [days, setPrefDay] = useState(false);
   const [times, setPrefTime] = useState(false);
+  const [standing, setStanding] = useState('');
 
   const handlePrefDay = (event, newDay) => {
       setPrefDay(newDay);
@@ -36,11 +47,15 @@ export default function RegisterForm() {
         setPrefTime(newTime);
   }
 
+  const handleStanding = (event) => {
+      setStanding(event.target.value);
+  }
+
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
     lastName: Yup.string().required('Last name required'),
     major: Yup.string().required('Major is required'),
-    standing: Yup.string().required('Class standing required'),
+    standing: Yup.string(),
     prefDays: Yup.array(),
     prefTimes: Yup.array(),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -69,6 +84,8 @@ export default function RegisterForm() {
   } = methods;
 
   const onSubmit = async data => {
+      console.log(standing);
+      data.standing = standing;
       data.prefDays = days;
       data.prefTimes = times;
 
@@ -85,8 +102,8 @@ export default function RegisterForm() {
           user.uid,
           data.email,
           `${data.firstName} ${data.lastName}`,
-          `${data.Major}`,
-          `${data.Class}`,
+          `${data.major}`,
+          `${data.standing}`,
           data.prefDays, data.prefTimes);
 
 
@@ -118,7 +135,16 @@ export default function RegisterForm() {
 
         <RHFTextField name={"major"} label={"Major"} />
 
-        <RHFTextField name={"standing"} label={"Class"} />
+        <FormControl >
+            <InputLabel id={"classStaning"}>Class </InputLabel>
+            <Select name={"standing"} label={"Class"} value={standing} onChange={handleStanding} >
+              <MenuItem value={'Freshman'}>Freshman</MenuItem>
+              <MenuItem value={'Sophomore'}>Sophomore</MenuItem>
+              <MenuItem value={'Junior'}>Junior</MenuItem>
+              <MenuItem value={'Senior'}>Senior</MenuItem>
+            </Select>
+        </FormControl>
+
 
         <RHFTextField name="email" label="Email address" />
 
