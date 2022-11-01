@@ -1,4 +1,4 @@
-import { getDatabase, set, get, child, ref } from "firebase/database";
+import { getDatabase, set, get, ref } from "firebase/database";
 import {User} from './User'
 import { Tutor } from "./Tutor";
 
@@ -11,22 +11,26 @@ export class Review {
             Content: content,
             Disputed: false,
             CreatedBy: userID,
-            createdFor: tutorID
+            CreatedFor: tutorID
         });
 
         const userData = User.get_information(userID);
-        let data = await userData.then(val => {return val;});
+        const data = await userData.then(val => {return val;});
         const reviews = data.Reviews;
         let result = Object.keys(reviews).map((key) => reviews[key]);
         result.push(reviewID);
         set(ref(getDatabase(), `Users/${userID}/Reviews`), result);
 
-        const tutorData = Tutor.get_information(userID);
-        data = await tutorData.then(val => {return val;});
-        const reviewsForTutor = data.ReviewsForTutor;
+        const tutorData = Tutor.get_information(tutorID);
+        const data2 = await tutorData.then(val => {return val;});
+        const reviewsForTutor = data2.ReviewsForTutor;
+        // console.log(tutorID)
+        // console.log(reviewsForTutor);
         result = Object.keys(reviewsForTutor).map((key) => reviewsForTutor[key]);
         result.push(reviewID);
-        set(ref(getDatabase(), `TutorAccounts/${tutorID}/Reviews`), result);
+        set(ref(getDatabase(), `TutorAccounts/${tutorID}/ReviewsForTutor`), result);
+
+        await Tutor.tutor_rating(tutorID);
 
     }
 
@@ -38,13 +42,13 @@ export class Review {
     static async delete_review(reviewID) {
 
         const reviewData = this.getReviewInformation(reviewID);
-        let data = await reviewData.then(val => {return val;});
+        const data = await reviewData.then(val => {return val;});
         const user = data.CreatedBy;
         const tutor = data.CreatedFor;
         
         const userData = User.get_information(user);
-        data = await userData.then(val => {return val;});
-        const reviews = data.Reviews;
+        const data2 = await userData.then(val => {return val;});
+        const reviews = data2.Reviews;
         let result = Object.keys(reviews).map((key) => reviews[key]);
         
         for (let i = 0; i < result.length; i += 1) {
@@ -56,8 +60,8 @@ export class Review {
         }
 
         const tutorData = Tutor.get_information(tutor);
-        data = await tutorData.then(val => {return val;});
-        const reviewsForTutor = data.ReviewsForTutor;
+        const data3 = await tutorData.then(val => {return val;});
+        const reviewsForTutor = data3.ReviewsForTutor;
         result = Object.keys(reviewsForTutor).map((key) => reviewsForTutor[key]);
         
         for (let i = 0; i < result.length; i += 1) {
@@ -69,6 +73,7 @@ export class Review {
         }
 
         set(ref(getDatabase(), `Reviews/${reviewID}`), null);
+        await Tutor.tutor_rating(tutor);
         
     }
 

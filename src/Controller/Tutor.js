@@ -184,11 +184,12 @@ export class Tutor {
     static async tutor_rating(userID) {
         
         
-        const tutorData = this.getInformation(userID);
+        const tutorData = this.get_information(userID);
         const data = await tutorData.then(val => {return val;});
-        const reviews = data.RewiewsForTutor;
+        const reviews = data.ReviewsForTutor;
         let rating = data.Rating;
         const result = Object.keys(reviews).map((key) => reviews[key]);
+        console.log(`The length is ${result.length}`);
 
         if (result.length > 11) {
 
@@ -209,6 +210,7 @@ export class Tutor {
                 const reviewData =  Review.getReviewInformation(reviews[i]);
                 const info = await reviewData.then(val => {return val;});
                 sum += parseFloat(info.Rating);
+                console.log(sum);
                 
             }
             /* eslint-disable no-await-in-loop */
