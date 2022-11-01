@@ -169,7 +169,7 @@ export default function RequestForm() {
                 <div>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <TimePicker
-                            label="Basic example"
+                            label="Select Time"
                             value={timeValue}
                             onChange={(newValue) => {
                                 setTimeValue(newValue);
@@ -200,7 +200,7 @@ export default function RequestForm() {
                 </div>
             </Stack>
 
-            <Stack direction="row" sx={{ py: 2 }} spacing={2}>
+            <Stack direction="row" sx={{ py: 1 }} spacing={2}>
 
                 <div>
                     <Select
