@@ -1,6 +1,6 @@
 import { getDatabase, get, set, ref} from "firebase/database";
-import { Offers } from "./Offers";
-import { User } from "./User"; 
+import { Offers } from './Offers';
+import { User } from './User'; 
 
 export class Requests { 
 

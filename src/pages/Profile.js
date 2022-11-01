@@ -25,24 +25,31 @@ import Page from '../components/Page';
 // mock
 import account from '../_mock/account';
 // data 
+import { useAuthState } from '../firebaseConfig/firebaseConfig';
 import { database } from '../firebaseConfig/database';
 import { auth } from '../firebaseConfig/auth';
 import { storage } from '../firebaseConfig/storage';
+import { User as USER } from '../Controller/User';
 
 // ----------------------------------------------------------------------
-// const db = getDatabase();
-// const user = db.ref(`Users/${auth.currentUser.uid}/Name`);
 
 
+async function getUserData() {
+    const dbSnap = USER.get_information('test2');
+    const user = await dbSnap.then(val => {return val;});
+    return user;
+}
 
 
 
 export default function Profile() {
-  
-  
+
+  const userData = getUserData();
+  // console.log(userData.Name);
+  const { isAuthenticated } = useAuthState();
   const navigate = useNavigate();
   const uploadPfp = () => {
-    if (auth.currentUser != null) {
+    if (isAuthenticated) {
       const selectedFile = document.getElementById('pfp').files[0];
       const storageRef = refStorage(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
       uploadBytes(storageRef, selectedFile).then((snapshot) => {
@@ -72,7 +79,7 @@ export default function Profile() {
   let usrClass = '';
   let usrMajor = '';
   let usrBio = '';
-  if (auth.currentUser != null) {
+  if (isAuthenticated) {
     usrProfilePicURL = auth.currentUser.photoURL;
     const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
     onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
@@ -114,7 +121,7 @@ export default function Profile() {
           {/* Grid 1: Profile pic */ }
           <Grid item xs={2} sx={{ alignItems: 'center' }}>
             <Avatar
-            alt={usrDisplayName}
+            alt={userData.Name}
             src={usrProfilePicURL}
             style= {{border: '1px solid lightgray'}}
             sx={{ width: 150, height: 150,}}
@@ -125,7 +132,7 @@ export default function Profile() {
           <Grid item xs={6}>
             <Stack>
               <Typography variant="h1" gutterBottom>
-                {usrDisplayName}
+                {userData.Name}
               </Typography>
               <Rating 
                 name="read-only" 
@@ -156,7 +163,7 @@ export default function Profile() {
               Major: 
             </Typography>
             <Typography variant="body" gutterBottom>
-              {usrMajor}
+              {userData.Major}
             </Typography>
           </Stack>
           
@@ -166,7 +173,7 @@ export default function Profile() {
               Class: 
             </Typography>
             <Typography variant="body" gutterBottom>
-              {usrClass}
+              {userData.Class}
             </Typography>
           </Stack>
 
@@ -182,7 +189,7 @@ export default function Profile() {
               <TextField
                 id="userBio"
                 multiline
-                defaultValue={usrBio}
+                defaultValue={userData.Bio}
                 minRows={5}
                 maxRows={5}
                 margin="dense"
@@ -211,7 +218,7 @@ export default function Profile() {
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-              Preffered Day:
+              Preferred Day:
             </Typography>
 
             {account.dayPref.map(item => (
@@ -227,7 +234,7 @@ export default function Profile() {
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-              Preffered Time:
+              Preferred Time:
             </Typography>
 
             {account.timePref.map(item => (

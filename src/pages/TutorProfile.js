@@ -16,6 +16,7 @@ import {
   } from '@mui/material';
   import VerifiedIcon from '@mui/icons-material/Verified';
   import { ref, onValue, set } from 'firebase/database';
+  import { useAuthState } from '../firebaseConfig/firebaseConfig';
   import { auth } from '../firebaseConfig/auth';
   import { database } from '../firebaseConfig/database';
   // components
@@ -31,7 +32,8 @@ import {
     let usrDisplayName = '';
     let usrProfilePicURL = '';
     let usrTutorBio = '';
-    if (auth.currentUser != null) {
+    const { isAuthenticated } = useAuthState();
+    if (isAuthenticated) {
       // User is signed in, use values from database
       const usrDisplayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`); // get database reference to path you want
       onValue(usrDisplayNameRef, (snapshot) => { // create listener for the db reference
@@ -78,7 +80,7 @@ import {
               <Stack>
                 <Stack direction="row" spacing={2}>
                     <Typography variant="h1" gutterBottom>
-                        {account.displayName}
+                        {usrDisplayName}
                         {}
                     </Typography>
                     <VerifiedIcon/>

@@ -12,14 +12,16 @@ import Profile from './pages/Profile';
 import Message from './pages/Message';
 import Settings from './pages/Settings';
 import TutorProfile from './pages/TutorProfile';
+import { useAuthState } from './firebaseConfig/firebaseConfig';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const { isAuthenticated } = useAuthState();
   return useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: isAuthenticated ? <DashboardLayout /> : <Navigate to='/login' />,
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'document', element: <Documents /> },
@@ -31,7 +33,7 @@ export default function Router() {
     },
     {
       path: 'login',
-      element: <Login />,
+      element: isAuthenticated ? <Navigate to='/dashboard/app' /> : <Login />,
     },
     
     {
