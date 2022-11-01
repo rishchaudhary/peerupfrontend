@@ -55,17 +55,22 @@ import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
 
-//create_request(requestID, startTime, length, date, description, userID, course, location, format)
+// create_request(requestID, startTime, length, date, description, userID, course, location, format)
 async function createSession(courseName, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
 
-    const userID = auth.currentUser.uid;
+    const userID = (auth.currentUser.uid).toString();
     const course = courseName;
     const date = dateValue.toString();
     const time = timeValue.toString();
     const descriptionText = requestDescription.toString();
     const requestID = Math.random();
-
-    REQUESTS.create_request(requestID, time, sessionLength, date, descriptionText, userID, course, requestLocation, meetingFormat);
+    if(meetingFormat === 0){
+        requestLocation = "";
+    }
+    const length = sessionLength.toString();
+    const format = meetingFormat.toString();
+    console.log(userID);
+    REQUESTS.create_request(requestID, time, length, date, descriptionText, userID, course, requestLocation, format);
 }
 
 function printData(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
@@ -247,14 +252,18 @@ export default function RequestForm() {
            
             
             <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
-                /*
-                console.log(courseValue);     
+                
+                
+                console.log(courseValue );     
                 console.log(dateValue.toString()); 
                 console.log(timeValue.toString()); 
                 console.log(requestDescription); 
                 console.log(requestLocation); 
-                console.log(meetingFormat); 
-                */
+                console.log(meetingFormat.toString()); 
+                console.log(sessionLength.toString());
+                
+            
+               console.log("Creating session");
                createSession(courseValue,dateValue,timeValue,requestDescription,requestLocation,meetingFormat,sessionLength);
             }} >
                 Submit Request
