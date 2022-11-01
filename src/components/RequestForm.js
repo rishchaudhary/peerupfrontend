@@ -44,7 +44,6 @@ import {
 } from '@mui/material';
 
 // User data 
-import RequestForm from '../components/RequestForm';
 import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
@@ -52,15 +51,13 @@ import { auth } from '../firebaseConfig/auth';
 async function createSession(courseName, requestDay, requestTime, description){
 
     const userID = auth.currentUser.uid;
-    const courseName = courseName.toString();
-    const requestDay = requestDay.toString();
-    const requestTime = requestTime.toString();
-    const description = description.toString();
+    const course = courseName.toString();
+    const day = requestDay.toString();
+    const time = requestTime.toString();
+    const descriptionText = description.toString();
     const requestID = Math.random();
     
-    console.log(userId);
-
-    //REQUESTS.create_request(requestID, requsetTime, requestDay, description, userID, courseName);
+    REQUESTS.create_request(requestID, time, day, descriptionText, userID, course);
 }
 
 export default function RequestForm() {
