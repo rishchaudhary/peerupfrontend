@@ -55,15 +55,17 @@ import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 import { auth } from '../firebaseConfig/auth';
 
+//create_request(requestID, startTime, length, date, description, userID, course, location, format)
 async function createSession(courseName, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
 
     const userID = auth.currentUser.uid;
     const course = courseName;
-    const day = dateValue.toString();
+    const date = dateValue.toString();
     const time = timeValue.toString();
     const descriptionText = requestDescription.toString();
+    const requestID = Math.random();
 
-    REQUESTS.create_request(userID, time, day, descriptionText, userID, course);
+    REQUESTS.create_request(requestID, time, sessionLength, date, descriptionText, userID, course, requestLocation, meetingFormat);
 }
 
 function printData(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
