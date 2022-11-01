@@ -255,6 +255,7 @@ export default function RequestForm() {
                 console.log(requestLocation); 
                 console.log(meetingFormat); 
                 */
+               createSession(courseValue,dateValue,timeValue,requestDescription,requestLocation,meetingFormat,sessionLength);
             }} >
                 Submit Request
             </LoadingButton>
