@@ -6,7 +6,6 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@
 
 import { getAuth } from 'firebase/auth';
 import { DBContext } from '../../App';
-import { auth } from '../../firebaseConfig/auth';
 
 // components
 import MenuPopover from '../../components/MenuPopover';
@@ -14,7 +13,7 @@ import MenuPopover from '../../components/MenuPopover';
 import account from '../../_mock/account';
 
 // ----------------------------------------------------------------------
-
+const auth = getAuth();
 
 const MENU_OPTIONS = [
   {
@@ -61,7 +60,6 @@ export default function AccountPopover() {
 
   const handleLogout = () => {
     // logout
-    const auth = getAuth();
     auth.signOut();
     setOpen(null);
     console.log('User signed out.');

@@ -15,9 +15,14 @@ import {
     Stack,
 } from '@mui/material';
 
+import { ReadMoreTwoTone } from '@mui/icons-material';
+import { getAuth } from 'firebase/auth';
+
 // User data 
 import { Requests as REQUESTS } from '../Controller/Requests';
-import { auth } from '../firebaseConfig/auth';
+
+
+const auth = getAuth();
 
 async function createSession(courseName, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
 

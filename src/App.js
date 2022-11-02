@@ -1,17 +1,28 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
+import { initializeApp } from 'firebase/app';
+import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { getDatabase } from 'firebase/database';
 // routes
 import Router from './routes';
 // theme
 import ThemeProvider from './theme';
-import { AuthContextProvider } from './firebaseConfig/firebaseConfig';
+import { AuthContextProvider, firebaseConfig, firebaseObserver, loggedIn } from './firebaseConfig/firebaseConfig';
 // components
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
 
 
+
+
 // ----------------------------------------------------------------------
 
+
 export const DBContext = createContext();
+
+// const app = initializeApp(firebaseConfig);
+
+// const auth = getAuth();
+
 
 const DBContextProvider = props => {
   const [displayName, setDisplayName] = useState("display name");
@@ -30,15 +41,22 @@ const DBContextProvider = props => {
 };
 
 export default function App() {
-  return (
+  const [ authenticated, setAuthenticated ] = useState(loggedIn());
+  const [ isLoading, setIsLoading ] = useState(true);
+  useEffect(() => {
+    firebaseObserver.subscribe('authStateChanged', data => {
+      setAuthenticated(data);
+      setIsLoading(false);
+    });
+    return () => { firebaseObserver.unsubscribe('authStateChanged'); }
+  }, []);
+  return isLoading ? <div/> :
     <ThemeProvider>
-      <AuthContextProvider>
-        <ScrollToTop />
-        <BaseOptionChartStyle />
-        <DBContextProvider>
-          <Router />
-        </DBContextProvider>
-      </AuthContextProvider>
-    </ThemeProvider>
-  );
+      <ScrollToTop />
+      <BaseOptionChartStyle />
+      <DBContextProvider>
+        <Router />
+      </DBContextProvider>
+    </ThemeProvider>;
+  
 }

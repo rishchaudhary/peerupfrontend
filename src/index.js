@@ -6,8 +6,10 @@ import 'simplebar/src/simplebar.css';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { app } from './firebaseConfig/firebaseConfig';
 
+import { initializeApp } from 'firebase/app';
+import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { firebaseConfig } from './firebaseConfig/firebaseConfig';
 //
 import App from './App';
 import * as serviceWorker from './serviceWorker';

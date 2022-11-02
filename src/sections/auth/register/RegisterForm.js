@@ -19,9 +19,8 @@ import {Stack,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
-import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile, getAuth } from 'firebase/auth';
 import { ref, uploadString } from 'firebase/storage';
-import { auth } from '../../../firebaseConfig/auth';
 import { storage } from '../../../firebaseConfig/storage';
 // components
 import Iconify from '../../../components/Iconify';
@@ -30,6 +29,8 @@ import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { User as UserController } from '../../../Controller/User';
 
 // ----------------------------------------------------------------------
+
+const auth = getAuth();
 
 export default function RegisterForm() {
   const navigate = useNavigate();
