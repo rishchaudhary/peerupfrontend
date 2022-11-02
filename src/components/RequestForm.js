@@ -17,6 +17,7 @@ import {
 
 import { ReadMoreTwoTone } from '@mui/icons-material';
 import { getAuth } from 'firebase/auth';
+import AlertModal from "./AlertModal";
 
 // User data 
 import { Requests as REQUESTS } from '../Controller/Requests';
@@ -51,6 +52,8 @@ export default function RequestForm() {
 
     const [courseValue, setCourse] = React.useState('CS 180');
 
+    const [showAlert, setAlert] = React.useState(false);
+
     const [sessionLength, setSessionLength] = React.useState(0);
 
     const [dateValue, setDateValue] = React.useState(null);
@@ -63,8 +66,13 @@ export default function RequestForm() {
 
     const [meetingFormat, setFormat] = React.useState(0);
 
+
+
     return (
+
+
         <FormControl>
+            <Stack direction="row" spacing={2}> <AlertModal/> </Stack>
             <Stack direction="row" spacing={2}>
                 <div>
                     <InputLabel id="demo-simple-select-label">Course</InputLabel>
@@ -165,6 +173,7 @@ export default function RequestForm() {
 
             <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
                 console.log("Creating session");
+                
                 createSession(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength);
             }} >
                 Submit Request
