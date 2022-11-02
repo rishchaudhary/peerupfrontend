@@ -20,18 +20,6 @@ export class User {
             days[preferredDays[i]].value = true;
         }
 
-
-        // eslint-disable-next-line no-lone-blocks
-        { /*
-        const days = [false, false, false, false, false, false, false];
-        for (let i = 0; i < 7; i += 1) {
-            for (let j = 0; j < preferredDays.length; j += 1) {
-                if (i === preferredDays[j]) {
-                    days[i] = true;
-                }
-            }
-        */ }
-
         const times = [
             {key:"Morning", value: false},
             {key:"Afternoon", value: false},
@@ -40,19 +28,6 @@ export class User {
         for (let i = 0; i < preferredTimings.length; i += 1) {
             times[preferredTimings[i]].value = true;
         }
-
-        // eslint-disable-next-line no-lone-blocks
-        { /*
-        const times = [false, false, false];
-        for (let i = 0; i < 7; i += 1) {
-            for (let j = 0; j < preferredTimings.length; j += 1) {
-                if (i === preferredTimings[j]) {
-                    times[i] = true;
-                }
-            }
-        */ }
-
-
 
 
         set(ref(getDatabase(), `Users/${userID}`), {

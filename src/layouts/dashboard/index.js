@@ -42,14 +42,12 @@ const MainStyle = styled('div')(({ theme }) => ({
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
 
-  const {displayName, major, userClass, userBio, days, userTutorBio} = useContext(DBContext);
-   // const [stateDays, setDays] = days;
-  // const [stateTimes, setTimes] = times;
-  const [stateDisplayName, setStateDisplayName] = displayName;
-  const [stateMajor, setStateMajor] = major;
-  const [stateUserClass, setStateUserClass ] = userClass;
-  const [stateUserBio, setStateUserBio] = userBio;
-  const [stateUserTutorBio, setStateUserTutorBio] = userTutorBio;
+  const {displayName, major, userClass, userBio, userTutorBio} = useContext(DBContext);
+  const [, setStateDisplayName] = displayName;
+  const [, setStateMajor] = major;
+  const [, setStateUserClass ] = userClass;
+  const [, setStateUserBio] = userBio;
+  const [, setStateUserTutorBio] = userTutorBio;
 
   const displayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`);
   onValue(displayNameRef, (snapshot) => {
@@ -70,16 +68,6 @@ export default function DashboardLayout() {
   onValue(userBioRef, (snapshot) => {
     setStateUserBio(snapshot.val());
   });
-
-  // eslint-disable-next-line no-lone-blocks
-  { /*
-  const usrTimesRef = ref(database, `Users/${auth.currentUser.uid}/PreferredTimes`);
-  onValue(usrTimesRef, (snapshot) => {
-    setTimes(snapshot.val());
-  })
-
-  */ }
-
 
   const usrTutorBioRef = ref(database, `Users/${auth.currentUser.uid}/TutorBio`);
   onValue(usrTutorBioRef, (snapshot) => {

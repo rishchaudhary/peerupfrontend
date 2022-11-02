@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 // material
 import {
   Avatar,
-  Button,
   Container,
   Chip,
   Divider,
@@ -19,10 +18,9 @@ import { ref, onValue} from "firebase/database";
 import { updateProfile } from 'firebase/auth';
 import { ref as refStorage, getDownloadURL, uploadBytes } from 'firebase/storage';
 
-import {useContext, useState} from 'react';
+import {useContext} from 'react';
 import { DBContext } from '../App';
 // components
-import Iconify from '../components/Iconify';
 import Page from '../components/Page';
 // mock
 import account from '../_mock/account';
@@ -32,8 +30,6 @@ import { database } from '../firebaseConfig/database';
 import { auth } from '../firebaseConfig/auth';
 import { storage } from '../firebaseConfig/storage';
 import { User as USER } from '../Controller/User';
-import palette from "../theme/palette";
-
 
 
 // ----------------------------------------------------------------------
@@ -110,7 +106,7 @@ export default function Profile() {
       const selectedFile = document.getElementById('pfp').files[0];
       const storageRef = refStorage(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
       uploadBytes(storageRef, selectedFile).then((snapshot) => {
-        console.log('Uploaded file');
+        console.log('Uploaded file', snapshot);
         getDownloadURL(storageRef)
         .then((url) => {
           console.log(`url: ${url}`);
@@ -120,13 +116,13 @@ export default function Profile() {
             console.log(`profile picture updated to ${auth.currentUser.photoURL}`);
             navigate('/dashboard/profile', { replace: true });
           }).catch((error) => {
-            console.log('error occurred updating profile picture');
+            console.log('error occurred updating profile picture', error);
           });
         }).catch((error) => {
-          console.log('error getting download url');
+          console.log('error getting download url', error);
         });
-      }).catch(() => {
-        console.log('error occured uploading file');
+      }).catch((error) => {
+        console.log('error occurred uploading file', error);
       });
     }
   }
@@ -227,24 +223,6 @@ export default function Profile() {
               />
             </Stack>
           </Paper>
-
-          {/* stack for class currently taking
-          <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
-            <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-              Currently Taking:
-            </Typography>
-
-            {account.enrolled.map(item => (
-              <div key={item.id}>
-                <Chip 
-                label={item.class} 
-                color="primary"
-                sx={{fontWeight: 'bold'}}
-                />
-              </div>
-            ))}
-          </Stack>
-          */ }
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>

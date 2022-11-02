@@ -18,15 +18,11 @@ const DBContextProvider = props => {
   const [major, setMajor] = useState("major");
   const [userClass, setUserClass] = useState("standing");
   const [userBio, setUserBio] = useState("bio");
-  const [days, setPrefDay] = useState(false);
-  // const [times, setPrefTimes] = useState(false);
   const [userTutorBio, setUserTutorBio] = useState("tutor bio");
-// times: [times, setPrefTimes]
   return (
     <DBContext.Provider
       value={{ displayName: [displayName, setDisplayName], major: [major, setMajor], userClass: [userClass, setUserClass],
-      userBio: [userBio, setUserBio], days: [days,setPrefDay],
-        userTutorBio: [userTutorBio, setUserTutorBio]}}
+      userBio: [userBio, setUserBio], userTutorBio: [userTutorBio, setUserTutorBio]}}
     >
       {props.children}
     </DBContext.Provider>
