@@ -36,11 +36,12 @@ import {
 import { getAuth } from 'firebase/auth';
 
 // User data 
-import RequestForm from '../components/RequestForm';
 import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 
 // components
+import RequestForm from '../components/RequestForm';
+import MatchedView from '../components/StudentMatched';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
@@ -265,83 +266,8 @@ export default function DashboardApp() {
 
             </Stack>
 
-            <Card>
+            <MatchedView/>
 
-              <Scrollbar>
-                <TableContainer sx={{ minWidth: 1000 }}>
-                  <Table>
-                    <UserListHead
-                      order={order}
-                      orderBy={orderBy}
-                      headLabel={TABLE_HEAD}
-                      rowCount={USERLIST.length}
-                      numSelected={selected.length}
-                      onRequestSort={handleRequestSort}
-                      onSelectAllClick={handleSelectAllClick}
-                    />
-                    <TableBody>
-                      {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                        const { id, tutorName, dateuploaded, avatarUrl, dateAndTime, location, rate, sessionsHosted, rating } = row;
-                        const isItemSelected = selected.indexOf(tutorName) !== -1;
-
-                        return (
-                          <TableRow
-                            hover
-                            key={id}
-                            tabIndex={-1}
-                          >
-                            <TableCell />
-                            <TableCell component="th" scope="row" padding="none">
-                              <Stack direction="row" alignItems="center" spacing={2}>
-                                <Avatar alt={tutorName} src={avatarUrl} />
-                                <Typography variant="subtitle2" noWrap>
-                                  {tutorName}
-
-                                </Typography>
-                              </Stack>
-                            </TableCell>
-                            <TableCell align="left"> <Rating name="read-only" value={rating} readOnly /></TableCell>
-                            <TableCell align="left">{dateAndTime}</TableCell>
-                            <TableCell align="left">{location}</TableCell>
-                            <TableCell align="left">{rate}</TableCell>
-                            <TableCell align="left">{sessionsHosted}</TableCell>
-                            <TableCell align="left"><IconButton aria-label="delete" size="large"><CheckCircleIcon fontSize="inherit" />
-                            </IconButton></TableCell>
-                            <TableCell align="left"><IconButton aria-label="delete" size="large"><CancelIcon fontSize="inherit" />
-                            </IconButton></TableCell>
-                          </TableRow>
-                        );
-                      })}
-                      {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                          <TableCell colSpan={6} />
-                        </TableRow>
-                      )}
-                    </TableBody>
-
-                    {isUserNotFound && (
-                      <TableBody>
-                        <TableRow>
-                          <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                            <SearchNotFound searchQuery={filterName} />
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    )}
-                  </Table>
-                </TableContainer>
-              </Scrollbar>
-
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={USERLIST.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Card>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={2}>
