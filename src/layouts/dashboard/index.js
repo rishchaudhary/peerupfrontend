@@ -1,5 +1,6 @@
-import { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import ReactObserver from 'react-event-observer';
 // material
 import { styled } from '@mui/material/styles';
 //
@@ -43,6 +44,8 @@ const MainStyle = styled('div')(({ theme }) => ({
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
 
+  const [everythingLoaded, setEverythingLoaded] = useState(false);
+
   const {displayName, major, userClass, userBio, userTutorBio} = useContext(DBContext);
   const [, setStateDisplayName] = displayName;
   const [, setStateMajor] = major;
@@ -50,39 +53,103 @@ export default function DashboardLayout() {
   const [, setStateUserBio] = userBio;
   const [, setStateUserTutorBio] = userTutorBio;
 
+  const [displayNameLoaded, setDisplayNameLoaded] = useState(false);
+  const displayNameObserver = ReactObserver();
   const displayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`);
+  useEffect(() => {
+    displayNameObserver.subscribe('displayName loaded', () => {
+      setDisplayNameLoaded(true);
+      if (majorLoaded && classLoaded && bioLoaded && tutorBioLoaded) {
+        setEverythingLoaded(true);
+        console.log('everything loaded(name)');
+      }
+    });
+    return() => {displayNameObserver.unsubscribe('displayName loaded');}
+  }, []);
   onValue(displayNameRef, (snapshot) => {
     setStateDisplayName(snapshot.val());
+    displayNameObserver.publish('displayName loaded', null);
   });
 
+  const[majorLoaded, setMajorLoaded] = useState(false);
+  const majorObserver = ReactObserver();
   const majorRef = ref(database, `Users/${auth.currentUser.uid}/Major`);
+  useEffect(() => {
+    majorObserver.subscribe('major loaded', () => {
+      setMajorLoaded(true);
+      if (displayNameLoaded && classLoaded && bioLoaded && tutorBioLoaded) {
+        setEverythingLoaded(true);
+        console.log('everything loaded(major)');
+      }
+    });
+    return () => {majorObserver.unsubscribe('major loaded');}
+  }, []);
   onValue(majorRef, (snapshot) => {
     setStateMajor(snapshot.val());
+    majorObserver.publish('major loaded');
   });
 
+  const[classLoaded, setClassLoaded] = useState(false);
+  const classObserver = ReactObserver();
   const userClassRef = ref(database, `Users/${auth.currentUser.uid}/Standing`);
+  useEffect(() => {
+    classObserver.subscribe('class loaded', () => {
+      setClassLoaded(true);
+      if (displayNameLoaded && majorLoaded && bioLoaded && tutorBioLoaded) {
+        setEverythingLoaded(true);
+        console.log('everything loaded(class)');
+      }
+    });
+    return () => {classObserver.unsubscribe('class loaded');}
+  }, []);
   onValue(userClassRef, (snapshot) => {
     setStateUserClass(snapshot.val());
+    classObserver.publish('class loaded');
   });
 
+  const[bioLoaded, setBioLoaded] = useState(false);
+  const bioObserver = ReactObserver();
   const userBioRef = ref(database, `Users/${auth.currentUser.uid}/Bio`);
+  useEffect(() => {
+    bioObserver.subscribe('bio loaded', () => {
+      setBioLoaded(true);
+      if (displayNameLoaded && classLoaded && majorLoaded && tutorBioLoaded) {
+        setEverythingLoaded(true);
+        console.log('everything loaded (bio)');
+      }
+    });
+    return () => {bioObserver.unsubscribe('bio loaded');}
+  }, []);
   onValue(userBioRef, (snapshot) => {
     setStateUserBio(snapshot.val());
+    bioObserver.publish('bio loaded');
   });
 
+  const [tutorBioLoaded, setTutorBioLoaded] = useState(false);
+  const tutorBioObserver = ReactObserver();
   const usrTutorBioRef = ref(database, `Users/${auth.currentUser.uid}/TutorBio`);
+  useEffect(() => {
+    tutorBioObserver.subscribe('tutor bio loaded', () => {
+      setTutorBioLoaded(true);
+      if (displayNameLoaded && classLoaded && bioLoaded && majorLoaded) {
+        setEverythingLoaded(true);
+        console.log('everything loaded (tutor bio)');
+      }
+    });
+    return () => {tutorBioObserver.unsubscribe('tutor bio loaded');}
+  }, []);
   onValue(usrTutorBioRef, (snapshot) => {
     setStateUserTutorBio(snapshot.val());
-  })
+    tutorBioObserver.publish('tutor bio loaded');
+  });
   
 
-  return (
+  return everythingLoaded ? <div /> :
     <RootStyle>
       <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
       <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
       <MainStyle>
         <Outlet />
       </MainStyle>
-    </RootStyle>
-  );
+    </RootStyle>;
 }

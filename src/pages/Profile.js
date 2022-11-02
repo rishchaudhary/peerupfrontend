@@ -41,7 +41,6 @@ const database = getDatabase();
 
 
 function mapDays(value, index) {
-  console.log(value);
   if (value.value) {
     return (
         <div key={index}>
@@ -63,7 +62,6 @@ function mapDays(value, index) {
 }
 
 function mapTimes(value, index) {
-  console.log(value);
   if (value.value) {
     return (
         <div key={index}>
@@ -90,6 +88,8 @@ export default function Profile() {
   const [stateMajor] = major;
   const [stateUserClass] = userClass;
   const [stateUserBio] = userBio;
+
+
 
   let days = [];
   const usrDaysRef = ref(database, `Users/${auth.currentUser.uid}/PreferredDays`);
