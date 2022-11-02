@@ -42,6 +42,7 @@ import { Requests as REQUESTS } from '../Controller/Requests';
 // components
 import RequestForm from '../components/RequestForm';
 import MatchedView from '../components/StudentMatched';
+import ScheduledView from '../components/StudentScheduled';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
@@ -50,6 +51,7 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 
 // mock
 import USERLIST from '../_mock/user';
+
 
 const auth = getAuth();
 
@@ -146,7 +148,6 @@ async function printUserData() {
   }
   /* eslint-disable no-await-in-loop */
 }
-
 
 export default function DashboardApp() {
 
@@ -249,12 +250,8 @@ export default function DashboardApp() {
               </Typography>
             </Stack>
             <Card sx={{ px: 7, py: 4 }}>
-
-            <RequestForm/>  
-            
-          </Card>
-         
-
+              <RequestForm />
+            </Card>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={1}>
@@ -266,7 +263,7 @@ export default function DashboardApp() {
 
             </Stack>
 
-            <MatchedView/>
+            <MatchedView />
 
           </Container>
         </TabPanel>
@@ -279,81 +276,8 @@ export default function DashboardApp() {
 
             </Stack>
 
-            <Card>
+            <ScheduledView/>
 
-              <Scrollbar>
-                <TableContainer sx={{ minWidth: 800 }}>
-                  <Table>
-                    <UserListHead
-                      order={order}
-                      orderBy={orderBy}
-                      headLabel={TABLE_HEAD}
-                      rowCount={USERLIST.length}
-                      numSelected={selected.length}
-                      onRequestSort={handleRequestSort}
-                      onSelectAllClick={handleSelectAllClick}
-                    />
-                    <TableBody>
-                      {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                        const { id, tutorName, dateuploaded, avatarUrl, dateAndTime, location, rate, sessionsHosted, rating } = row;
-                        const isItemSelected = selected.indexOf(tutorName) !== -1;
-
-                        return (
-                          <TableRow
-                            hover
-                            key={id}
-                            tabIndex={-1}
-                            selected={isItemSelected}
-                            aria-checked={isItemSelected}>
-                            <TableCell padding="checkbox" />
-                            <TableCell component="th" scope="row" padding="none">
-                              <Stack direction="row" alignItems="center" spacing={2}>
-                                <Avatar alt={tutorName} src={avatarUrl} />
-                                <Typography variant="subtitle2" noWrap>
-                                  {tutorName}
-
-                                </Typography>
-                              </Stack>
-                            </TableCell>
-                            <TableCell align="left"> <Rating name="read-only" value={rating} readOnly /></TableCell>
-                            <TableCell align="left">{dateAndTime}</TableCell>
-                            <TableCell align="left">{location}</TableCell>
-                            <TableCell align="left">{rate}</TableCell>
-                            <TableCell align="left">{sessionsHosted}</TableCell>
-
-                          </TableRow>
-                        );
-                      })}
-                      {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                          <TableCell colSpan={6} />
-                        </TableRow>
-                      )}
-                    </TableBody>
-
-                    {isUserNotFound && (
-                      <TableBody>
-                        <TableRow>
-                          <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                            <SearchNotFound searchQuery={filterName} />
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    )}
-                  </Table>
-                </TableContainer>
-              </Scrollbar>
-
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={USERLIST.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Card>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={3}>
