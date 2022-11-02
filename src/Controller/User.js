@@ -141,27 +141,32 @@ export class User {
 
     static update_preferred_days(userID, updatedValues) {
 
-        const days = [false, false, false, false, false, false, false];
-        for (let i = 0; i < 7; i += 1) {
-            for (let j = 0; j < updatedValues.length; j += 1) {
-                if (i === updatedValues[j]) {
-                    days[i] = true;
-                }
-            }
+        const days = [
+            {key:"Mon", value: false},
+            {key:"Tue", value: false},
+            {key:"Wed", value: false},
+            {key:"Thu", value: false},
+            {key:"Fri", value: false},
+            {key:"Sat", value: false},
+            {key:"Sun", value: false},
+        ];
+        for (let i = 0; i < updatedValues.length; i += 1) {
+            days[updatedValues[i]].value = true;
         }
         set(ref(getDatabase(), `Users/${userID}/PreferredDays`), days);
+
         
     }
 
     static update_preferred_times(userID, updatedValues) {
 
-        const times = [false, false, false];
-        for (let i = 0; i < 7; i += 1) {
-            for (let j = 0; j < updatedValues.length; j += 1) {
-                if (i === updatedValues[j]) {
-                    times[i] = true;
-                }
-            }
+        const times = [
+            {key:"Morning", value: false},
+            {key:"Afternoon", value: false},
+            {key:"Evening", value: false},
+        ];
+        for (let i = 0; i < updatedValues.length; i += 1) {
+            times[updatedValues[i]].value = true;
         }
 
         set(ref(getDatabase(), `Users/${userID}/PreferredTimings`), times);

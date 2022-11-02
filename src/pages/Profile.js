@@ -134,9 +134,6 @@ export default function Profile() {
   
   const usrProfilePicURL = auth.currentUser.photoURL;
 
-  const handleUpdateBio = (event) => {
-     USER.update_bio(auth.currentUser.uid, event.target.value);
-  }
 
   return (
     <Page title="Profile">
@@ -224,7 +221,7 @@ export default function Profile() {
                 maxRows={5}
                 margin="dense"
                 variant="outlined"
-                onBlur={handleUpdateBio}
+                InputProps={{readOnly: true}}
               />
             </Stack>
           </Paper>

@@ -85,7 +85,6 @@ export default function RegisterForm() {
   } = methods;
 
   const onSubmit = async data => {
-      console.log(standing);
       data.standing = standing;
       data.prefDays = days;
       data.prefTimes = times;
