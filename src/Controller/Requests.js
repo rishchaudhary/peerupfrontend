@@ -15,9 +15,9 @@ export class Requests {
             CreatedBy: userID,
             IsOnline: format,
             Location: location,
+            LanguagePreference: 'English',
             CourseWanted: course,
-            TutorsWhoAccepted: ["N/A"],
-            StudentChoice: 'N/A'
+            TutorsWhoAccepted: ["N/A"]
         });
 
         const userData = User.get_information(userID);
@@ -111,6 +111,12 @@ export class Requests {
         
         set(ref(getDatabase(), `Requests/${requestID}/StartTime`), startTime);
         
+    }
+
+    static update_language_preference(requestID, language) {
+
+        set(ref(getDatabase(), `Requests/${requestID}/LanguagePreference`), language);
+
     }
 
     static update_length(requestID, length) {

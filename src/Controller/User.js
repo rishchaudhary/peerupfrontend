@@ -32,19 +32,21 @@ export class User {
 
 
         set(ref(getDatabase(), `Users/${userID}`), {
-        Name: fullName,
-        Email: emailAddress,
-        HasTutorAccount: false,
-        Sessions: ["Session ID"],
-        Requests: ["Request ID"],
-        Reviews: ["Review ID"],
-        Message: ["Message ID"],
-        Major: major,
-        Standing: standing,
-        PreferredDays: days,
-        PreferredTimings: times,
-        Bio: 'Enter Bio here',
-        University: 'Purdue'
+            Name: fullName,
+            Email: emailAddress,
+            HasTutorAccount: false,
+            Sessions: ["Session ID"],
+            Requests: ["Request ID"],
+            Reviews: ["Review ID"],
+            Message: ["Message ID"],
+            Major: major,
+            Standing: standing,
+            PreferredDays: days,
+            PreferredTimings: times,
+            Bio: 'Enter Bio here',
+            University: 'Purdue',
+            Language: 'English',
+            Feedback: ['Feedback ID']
         
         })
         .then(() => {
@@ -127,6 +129,11 @@ export class User {
     static update_name(userID, name) {
 
         set(ref(getDatabase(), `Users/${userID}/Name`), name);
+    }
+
+    static update_language(userID, language) {
+
+        set(ref(getDatabase(), `Users/${userID}/Language`), language);
     }
 
 

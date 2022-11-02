@@ -30,17 +30,20 @@ export class Tutor {
         }
         
         set(ref(getDatabase(), `TutorAccounts/${userID}`), {
-        Sessions: ["Session ID"],
-        Messages: ["Message ID"],
-        Requests: ["Request ID"],
-        Price: price,
-        RequestsYouAccepted: ['request ID'],
-        Rating: 0,
-        PreferredDays: days,
-        PreferredTimings: times,
-        RewiewsForTutor: ["Review ID"],
-        VerifiedCourses: ["Course Name"],
-        NotVerifiedCourses: courses},
+            Sessions: ["Session ID"],
+            Messages: ["Message ID"],
+            Requests: ["Request ID"],
+            Price: price,
+            RequestsYouAccepted: ['request ID'],
+            Rating: 0,
+            PreferredDays: days,
+            PreferredTimings: times,
+            ReviewsForTutor: ["Review ID"],
+            VerifiedCourses: ["Course Name"],
+            NotVerifiedCourses: courses,
+            Language: 'English',
+            Feedback: ['Feedback ID']
+            },
         
         ).then(() => {
             return "Data Saved Successfully";
@@ -169,6 +172,11 @@ export class Tutor {
 
         set(ref(getDatabase(), `Users/${userID}/PreferredTimings`), times);
         
+    }
+
+    static update_language(userID, language) {
+
+        set(ref(getDatabase(), `TutorAccounts/${userID}/Language`), language);
     }
 
     // This function calculates the rating for the given tutor. Called everytime a review is created for that tutor.

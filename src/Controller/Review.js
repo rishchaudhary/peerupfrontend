@@ -11,7 +11,8 @@ export class Review {
             Content: content,
             Disputed: false,
             CreatedBy: userID,
-            CreatedFor: tutorID
+            CreatedFor: tutorID,
+            WhyDisputed: 'N/A'
         });
 
         const userData = User.get_information(userID);
@@ -34,9 +35,10 @@ export class Review {
 
     }
 
-    static dispute_review(reviewID) {
+    static dispute_review(reviewID, comment) {
 
         set(ref(getDatabase(), `Reviews/${reviewID}/Disputed`),true);
+        set(ref(getDatabase(), `Reviews/${reviewID}/WhyDisputed`),comment);
     }
 
     static async delete_review(reviewID) {
