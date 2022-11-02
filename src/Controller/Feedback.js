@@ -39,15 +39,15 @@ export class Feedback {
 
     }
 
-    static dispute_review(feedbackID, comment) {
+    static dispute_feedback(feedbackID, comment) {
 
         set(ref(getDatabase(), `Feedback/${feedbackID}/Disputed`), true);
         set(ref(getDatabase(), `Feedback/${feedbackID}/WhyDisputed`), comment);
     }
 
-    static async delete_review(feedbackID) {
+    static async delete_feedback(feedbackID) {
 
-        const reviewData = this.getReviewInformation(feedbackID);
+        const reviewData = this.getFeedbackInformation(feedbackID);
         const data = await reviewData.then(val => {
             return val;
         });
@@ -89,7 +89,7 @@ export class Feedback {
     }
 
 
-    static async getReviewInformation(feedbackID) {
+    static async getFeedbackInformation(feedbackID) {
 
         const db = getDatabase();
         const feedbackRef = ref(db, `Feedback/${feedbackID}`);
