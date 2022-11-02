@@ -4,6 +4,20 @@ import {Tutor} from "./Tutor";
 
 export class Requests { 
 
+    // These function will be called when the user wants to create a new studying request.
+    // It stores the request data in the db under Requests/RequestID.
+    // The requestID is also added to the user's list of requests (Users/userID/Requests)
+    // Function inputs --
+    // requestID -- any whole number (must be hard coded for now)
+    // startTime -- a string telling when the session is supposed to start
+    // length -- a string telling how long the session will be
+    // date -- a string telling the date when the session has been requested
+    // description -- a string containing a description of what the student wants in this session
+    // userID -- can be given by auth.currentUser.uid
+    // course -- The course for which they want help. Example input 'CS180'
+    // format (string) -- Online or In-Person
+    // location (string) -- where the session is being hosted. If the Format is Online give
+    // N/A for the location.
     static async create_request(requestID, startTime, length, date, description, userID, course, location, format) {
 
         await set(ref(getDatabase(), `Requests/${requestID}`), {
@@ -29,6 +43,10 @@ export class Requests {
 
     }
 
+    // This function is used to delete a request if the student is no longer wanting
+    // the requested session.
+    // This function will remove each of the tutors who had accepted this request.
+    // It will change TutorAccounts/tutorID/RequestsYouAccepted for each of these tutors.
     static async delete_request(requestID) {
 
         const requestData = Requests.get_information(requestID);
@@ -58,6 +76,30 @@ export class Requests {
       
     }
 
+    // If the tutor wants to reject a student request, yoy must call this function
+    // It will remove the request from the tutor's list of requests.
+    // As this function is called by the tutor side of the website, you can get the tutorID
+    // by calling auth.currentUser.uid
+    static async reject_request(requestID, tutorID) {
+
+        const tutorData = Tutor.get_information(tutorID);
+        const tutor = await tutorData.then(val => {return val;});
+        const requests = tutor.Requests;
+        const result = Object.keys(requests).map((key) => requests[key]);
+
+        for (let i = 0; i < result.length; i += 1) {
+            if (requestID === result[i]) {
+                result.splice(i, 1);
+                await set(ref(getDatabase(), `TutorAccounts/${tutor}/Requests`), result);
+                break;
+            }
+        }
+    }
+
+    // if the tutor accepts the student's tutoring request call this function.
+    // It will add the tutor's ID to the list of tutor's who have accepted this request.
+    // As this function is called by the tutor side of the website, you can get the tutorID
+    // by calling auth.currentUser.uid
     static async add_tutor_to_request(requestID, tutorID) {
 
         const requestData = this.get_information(requestID);
@@ -76,7 +118,11 @@ export class Requests {
 
     }
 
-    static async remove_tutor_to_request(requestID, tutorID){
+    // If the tutor has accepted the student's tutoring request and later decides that
+    // they don't want to tutor that student then call this function.
+    // This function will remove the tutor from the list of tutor's who accepted the request
+    // but will not delete that request in the tutor profile.
+    static async remove_tutor_from_request(requestID, tutorID){
 
         const requestData = this.get_information(requestID);
         const data1 = await requestData.then(val => {return val;});
