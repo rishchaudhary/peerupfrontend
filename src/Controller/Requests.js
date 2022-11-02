@@ -1,6 +1,7 @@
 import { getDatabase, get, set, ref} from "firebase/database";
 import { User } from "./User";
 import {Tutor} from "./Tutor";
+import {MatchingAlgorithm} from "./MatchingAlgorithm";
 
 export class Requests { 
 
@@ -40,6 +41,7 @@ export class Requests {
         const result = Object.keys(requestData).map((key) => requestData[key]);
         result.push(requestID);
         await set(ref(getDatabase(), `Users/${userID}/Requests`), result);
+        await MatchingAlgorithm.match(requestID);
 
     }
 
@@ -56,7 +58,7 @@ export class Requests {
         /* eslint-disable no-await-in-loop */
         for (let i = 1; i < result.length; i += 1) {
 
-            await this.remove_tutor_to_request(requestID, result[i]);
+            await this.remove_tutor_from_request(requestID, result[i]);
         }
         /* eslint-disable no-await-in-loop */
         const userData = User.get_information(data.CreatedBy);
@@ -141,12 +143,25 @@ export class Requests {
         const tutorData = Tutor.get_information(tutorID);
         const data2 = await tutorData.then(val => {return val;});
         const data3 = data2.RequestsYouAccepted;
+        const data4 = data2.Requests;
         result = Object.keys(data3).map((key) => data3[key]);
 
         for (let i = 0; i < result.length; i += 1) {
             if (requestID === result[i]) {
                 result.splice(i, 1);
                 await set(ref(getDatabase(), `TutorAccounts/${tutorID}/RequestsYouAccepted`), result);
+                break;
+            }
+        }
+
+        result = Object.keys(data4).map((key) => data4[key]);
+        console.log(result);
+
+        for (let i = 0; i < result.length; i += 1) {
+            if (requestID === result[i]) {
+                result.splice(i, 1);
+
+                await set(ref(getDatabase(), `TutorAccounts/${tutorID}/Requests`), result);
                 return;
             }
         }
