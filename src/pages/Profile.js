@@ -15,11 +15,11 @@ import {
 } from '@mui/material';
 
 // Firebase
-import { ref, onValue, set } from "firebase/database";
-import { getAuth, onAuthStateChanged, updateProfile } from 'firebase/auth';
+import { ref, onValue} from "firebase/database";
+import { updateProfile } from 'firebase/auth';
 import { ref as refStorage, getDownloadURL, uploadBytes } from 'firebase/storage';
 
-import { useContext } from 'react';
+import {useContext, useState} from 'react';
 import { DBContext } from '../App';
 // components
 import Iconify from '../components/Iconify';
@@ -32,20 +32,76 @@ import { database } from '../firebaseConfig/database';
 import { auth } from '../firebaseConfig/auth';
 import { storage } from '../firebaseConfig/storage';
 import { User as USER } from '../Controller/User';
+import palette from "../theme/palette";
 
 
 
 // ----------------------------------------------------------------------
 
 
+function mapDays(value, index) {
+  console.log(value);
+  if (value.value) {
+    return (
+        <div key={index}>
+          <Chip
+              label={value.key}
+              sx={{bgcolor: 'primary.main', fontWeight: 'bold'}}
+          />
+        </div>
+    );
+  }
+    return (
+        <div key={index}>
+          <Chip
+              label={value.key}
+              sx={{bgcolor: 'primary.light', fontWeight: 'bold'}}
+          />
+        </div>
+    );
+}
 
+function mapTimes(value, index) {
+  console.log(value);
+  if (value.value) {
+    return (
+        <div key={index}>
+          <Chip
+              label={value.key}
+              sx={{bgcolor: 'primary.main', fontWeight: 'bold'}}
+          />
+        </div>
+    );
+  }
+  return (
+      <div key={index}>
+        <Chip
+            label={value.key}
+            sx={{bgcolor: 'primary.light', fontWeight: 'bold'}}
+        />
+      </div>
+  );
+}
 
 export default function Profile() {
   const {displayName, major, userClass, userBio} = useContext(DBContext);
-  const [stateDisplayName, setStateDisplayName] = displayName;
-  const [stateMajor, setStateMajor] = major;
-  const [stateUserClass, setStateUserClass] = userClass;
-  const [stateUserBio, setStateUserBio] = userBio;
+  const [stateDisplayName] = displayName;
+  const [stateMajor] = major;
+  const [stateUserClass] = userClass;
+  const [stateUserBio] = userBio;
+
+  let days = [];
+  const usrDaysRef = ref(database, `Users/${auth.currentUser.uid}/PreferredDays`);
+  onValue(usrDaysRef, (snapshot) => {
+    days = snapshot.val();
+  })
+
+  let times = [];
+  const usrTimesRef = ref(database, `Users/${auth.currentUser.uid}/PreferredTimings`);
+  onValue(usrTimesRef, (snapshot) => {
+    times = snapshot.val();
+  })
+
 
   const { isAuthenticated } = useAuthState();
   const navigate = useNavigate();
@@ -77,9 +133,8 @@ export default function Profile() {
   
   const usrProfilePicURL = auth.currentUser.photoURL;
 
-  const handleUpdateBio = () => {
-    set(ref(database, `Users/${auth.currentUser.uid}/Bio`), document.getElementById('userBio').value);
-    // console.log(`user bio: ${document.getElementById('userBio').value}`);
+  const handleUpdateBio = (event) => {
+     USER.update_bio(auth.currentUser.uid, event.target.value);
   }
 
   return (
@@ -107,13 +162,13 @@ export default function Profile() {
               <Typography variant="h2" gutterBottom>
                 {stateDisplayName}
               </Typography>
-              {/*  <Rating
+              <Rating
                 name="read-only" 
                 value={account.ratingVal} 
                 precision={0.5}
                 size="large"
                 readOnly 
-              /> */}
+              />
             </Stack>
           </Grid>
           {/* end of top section */}
@@ -122,13 +177,14 @@ export default function Profile() {
         {/* Stack for bottom section of profile page */}
         <Stack spacing={0.5} mt={3} mx={3}>
           
-          {/* Stack for upload profile pic button */}
+          {/* Stack for upload profile pic button
           <Stack spacing = {0.5} direction="row">
             <Button variant="contained" component="label">
               Upload profile picture
               <input hidden type="file" id="pfp" name='pfp' accept="image/*" onChange={uploadPfp} />
             </Button>
           </Stack>
+          */}
 
           {/* Stack 1: major */}
           <Stack spacing = {0.5} direction="row">
@@ -172,7 +228,7 @@ export default function Profile() {
             </Stack>
           </Paper>
 
-          {/* stack for class currently taking */}
+          {/* stack for class currently taking
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
               Currently Taking:
@@ -188,37 +244,20 @@ export default function Profile() {
               </div>
             ))}
           </Stack>
+          */ }
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
               Preferred Day:
             </Typography>
-
-            {account.dayPref.map(item => (
-              <div key={item.id}>
-                <Chip 
-                label={item.class} 
-                color="primary"
-                sx={{fontWeight: 'bold'}}
-                />
-              </div>
-            ))}
+            {days.map(mapDays)}
           </Stack>
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
               Preferred Time:
             </Typography>
-
-            {account.timePref.map(item => (
-              <div key={item.id}>
-                <Chip 
-                label={item.class} 
-                color="primary"
-                sx={{fontWeight: 'bold'}}
-                />
-              </div>
-            ))}
+            {times.map(mapTimes)}
           </Stack>
 
         </Stack>

@@ -1,15 +1,28 @@
-import {getDatabase, ref, set, remove, get, onValue} from "firebase/database";
+import {getDatabase, ref, set, remove, get} from "firebase/database";
 import { Requests } from "./Requests";
 import {Review} from "./Review"
 import { Tutor } from "./Tutor";
-import {database} from "../firebaseConfig/database";
-import {auth} from "../firebaseConfig/auth";
 
  
 export class User {
 
     static create_account(userID, emailAddress, fullName, major, standing, preferredDays, preferredTimings) {
+        const days = [
+            {key:"Mon", value: false},
+            {key:"Tue", value: false},
+            {key:"Wed", value: false},
+            {key:"Thu", value: false},
+            {key:"Fri", value: false},
+            {key:"Sat", value: false},
+            {key:"Sun", value: false},
+        ];
+        for (let i = 0; i < preferredDays.length; i += 1) {
+            days[preferredDays[i]].value = true;
+        }
 
+
+        // eslint-disable-next-line no-lone-blocks
+        { /*
         const days = [false, false, false, false, false, false, false];
         for (let i = 0; i < 7; i += 1) {
             for (let j = 0; j < preferredDays.length; j += 1) {
@@ -17,8 +30,19 @@ export class User {
                     days[i] = true;
                 }
             }
+        */ }
+
+        const times = [
+            {key:"Morning", value: false},
+            {key:"Afternoon", value: false},
+            {key:"Evening", value: false},
+        ];
+        for (let i = 0; i < preferredTimings.length; i += 1) {
+            times[preferredTimings[i]].value = true;
         }
 
+        // eslint-disable-next-line no-lone-blocks
+        { /*
         const times = [false, false, false];
         for (let i = 0; i < 7; i += 1) {
             for (let j = 0; j < preferredTimings.length; j += 1) {
@@ -26,7 +50,7 @@ export class User {
                     times[i] = true;
                 }
             }
-        }
+        */ }
 
 
 
@@ -49,10 +73,9 @@ export class User {
             Feedback: ['Feedback ID']
         
         })
-        .then(() => {
-            return "Data Saved Successfully";
-        })
+        .then(() => "Data Saved Successfully")
         .catch((error) => {
+            console.log(error)
             return error;
         });
 
