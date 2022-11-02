@@ -5,15 +5,14 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
 
-import { ref, onValue } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
+import { ref, onValue, getDatabase } from 'firebase/database';
 
 // mock
 import account from '../../_mock/account';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
 import { DBContext } from '../../App';
-import { auth } from '../../firebaseConfig/auth';
-import { database } from '../../firebaseConfig/database';
 import { useAuthState } from '../../firebaseConfig/firebaseConfig';
 
 // components
@@ -24,6 +23,9 @@ import NavSection from '../../components/NavSection';
 import navConfig from './NavConfig';
 
 // ----------------------------------------------------------------------
+
+const auth = getAuth();
+const database = getDatabase();
 
 const DRAWER_WIDTH = 280;
 

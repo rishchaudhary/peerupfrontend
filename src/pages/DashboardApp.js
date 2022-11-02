@@ -44,11 +44,12 @@ import {
   TablePagination,
 } from '@mui/material';
 
+import { getAuth } from 'firebase/auth';
+
 // User data 
 import RequestForm from '../components/RequestForm';
 import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
-import { auth } from '../firebaseConfig/auth';
 
 // components
 import Page from '../components/Page';
@@ -63,6 +64,7 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // mock
 import USERLIST from '../_mock/user';
 
+const auth = getAuth();
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

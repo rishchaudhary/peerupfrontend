@@ -16,9 +16,9 @@ import {
   } from '@mui/material';
   import VerifiedIcon from '@mui/icons-material/Verified';
   import { useContext } from 'react';
-  import { ref, onValue, set } from 'firebase/database';
-  import { auth } from '../firebaseConfig/auth';
-  import { database } from '../firebaseConfig/database';
+  import { getAuth } from 'firebase/auth';
+  import { ref, onValue, set, getDatabase } from 'firebase/database';
+  
   
   import { DBContext } from '../App';
   // components
@@ -28,6 +28,10 @@ import {
   // mock
   import account from '../_mock/account'; 
   // ----------------------------------------------------------------------
+
+  const auth = getAuth();
+  const database = getDatabase();
+
   const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
   export default function TutorProfile() {

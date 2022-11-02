@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 // firebase storage methods
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { updateProfile } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
@@ -30,11 +30,12 @@ import USERLIST from '../_mock/user';
 // firebase imports
 import { useAuthState } from '../firebaseConfig/firebaseConfig';
 import { storage, } from '../firebaseConfig/storage';
-import { auth } from '../firebaseConfig/auth'
 
 // import { database } from 'src/firebaseConfig/database';
 
 // ----------------------------------------------------------------------
+
+const auth = getAuth();
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -74,8 +75,6 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function User() {
-  const { isAuthenticated } = useAuthState();
-  
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -140,7 +139,7 @@ export default function User() {
   const isUserNotFound = filteredUsers.length === 0;
 
   const uploadDoc = () => {
-    if (isAuthenticated) {
+    if (!auth.currentUser) {
       console.log('No document uploaded, no user logged in.');
     } else {
       const selectedFile = document.getElementById('usr_doc').files[0];

@@ -3,15 +3,16 @@ import { Outlet } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 //
-import { onValue, ref } from 'firebase/database';
-import { database } from '../../firebaseConfig/database';
-import { auth } from '../../firebaseConfig/auth';
+import { getAuth } from 'firebase/auth';
+import { onValue, ref, getDatabase } from 'firebase/database';
+// import { database } from '../../firebaseConfig/database'
 import { DBContext } from '../../App';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
 
+const database = getDatabase();
 
-
+const auth = getAuth();
 
 // ----------------------------------------------------------------------
 

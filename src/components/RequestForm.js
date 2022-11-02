@@ -43,12 +43,13 @@ import {
     TablePagination,
 } from '@mui/material';
 import { ReadMoreTwoTone } from '@mui/icons-material';
-
+import { getAuth } from 'firebase/auth';
 // User data 
 import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
-import { auth } from '../firebaseConfig/auth';
 
+
+const auth = getAuth();
 
 async function createSession(courseName, requestDay, requestTime, description){
 

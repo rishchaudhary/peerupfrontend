@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,12 +8,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { Link, Stack, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { auth } from '../../../firebaseConfig/auth';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
+
+const auth = getAuth();
 
 export default function LoginForm() {
   const navigate = useNavigate();

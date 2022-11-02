@@ -15,8 +15,8 @@ import {
 } from '@mui/material';
 
 // Firebase
-import { ref, onValue, set } from "firebase/database";
-import { getAuth, onAuthStateChanged, updateProfile } from 'firebase/auth';
+import { ref, onValue, set, getDatabase } from "firebase/database";
+import { getAuth, updateProfile } from 'firebase/auth';
 import { ref as refStorage, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 import { useContext } from 'react';
@@ -27,13 +27,13 @@ import Page from '../components/Page';
 // mock
 import account from '../_mock/account';
 // data 
-import { useAuthState } from '../firebaseConfig/firebaseConfig';
-import { database } from '../firebaseConfig/database';
-import { auth } from '../firebaseConfig/auth';
+
+
 import { storage } from '../firebaseConfig/storage';
 import { User as USER } from '../Controller/User';
 
-
+const auth = getAuth();
+const database = getDatabase();
 
 // ----------------------------------------------------------------------
 
@@ -54,10 +54,9 @@ export default function Profile() {
   const [stateUserBio, setStateUserBio] = userBio;
   const userData = getUserData();
   // console.log(userData.Name);
-  const { isAuthenticated } = useAuthState();
   const navigate = useNavigate();
   const uploadPfp = () => {
-    if (isAuthenticated) {
+    if (auth.currentUser != null) {
       const selectedFile = document.getElementById('pfp').files[0];
       const storageRef = refStorage(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
       uploadBytes(storageRef, selectedFile).then((snapshot) => {
