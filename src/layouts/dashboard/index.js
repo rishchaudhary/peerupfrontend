@@ -43,11 +43,11 @@ export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
 
   const {displayName, major, userClass, userBio, userTutorBio} = useContext(DBContext);
-  const [stateDisplayName, setStateDisplayName] = displayName;
-  const [stateMajor, setStateMajor] = major;
-  const [stateUserClass, setStateUserClass ] = userClass;
-  const [stateUserBio, setStateUserBio] = userBio;
-  const [stateUserTutorBio, setStateUserTutorBio] = userTutorBio;
+  const [, setStateDisplayName] = displayName;
+  const [, setStateMajor] = major;
+  const [, setStateUserClass ] = userClass;
+  const [, setStateUserBio] = userBio;
+  const [, setStateUserTutorBio] = userTutorBio;
 
   const displayNameRef = ref(database, `Users/${auth.currentUser.uid}/Name`);
   onValue(displayNameRef, (snapshot) => {
