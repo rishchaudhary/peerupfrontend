@@ -12,6 +12,9 @@ import { LoadingButton } from '@mui/lab';
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
 
+
+
+
 // ----------------------------------------------------------------------
 
 const auth = getAuth();
@@ -42,31 +45,30 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = data => {
-    signInWithEmailAndPassword(auth, data.email, data.password)
+  const onSubmit = async data => {
+      signInWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
-      // Signed in 
-      const user = userCredential.user;
-      console.log('user logged in:', user.email);
-      navigate('/dashboard/app', { replace: true });
-      // console.log('current user email: ', auth.currentUser.email);
+        // Signed in
+         const user = userCredential.user;
+         console.log('user logged in:', user.email);
+         navigate('/dashboard/app', { replace: true });
+          console.log('current user email: ', auth.currentUser.email);
       })
-      .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorMessage);
-      console.log('Error code: ', errorCode);
-      // If user is not found errorCode will be auth/user-not-found
-      // If user exists but password is wrong errorCode will be auth/wrong-password
-      });
-    // navigate('/dashboard/app', { replace: true });
+     .catch((error) => {
+         const errorCode = error.code;
+         const errorMessage = error.message;
+         console.log(errorMessage);
+         console.log('Error code: ', errorCode);
+          // If user is not found errorCode will be auth/user-not-found
+          // If user exists but password is wrong errorCode will be auth/wrong-password
+     });
+     navigate('/dashboard/app', { replace: true });
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
         <RHFTextField name="email" label="Email address" />
-
         <RHFTextField
           name="password"
           label="Password"

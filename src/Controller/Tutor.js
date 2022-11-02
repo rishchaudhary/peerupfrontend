@@ -30,17 +30,20 @@ export class Tutor {
         }
         
         set(ref(getDatabase(), `TutorAccounts/${userID}`), {
-        Sessions: ["Session ID"],
-        Messages: ["Message ID"],
-        Requests: ["Request ID"],
-        Price: price,
-        Offers: ['Offer ID'],
-        Rating: 0,
-        PreferredDays: days,
-        PreferredTimings: times,
-        RewiewsForTutor: ["Review ID"],
-        VerifiedCourses: ["Course Name"],
-        NotVerifiedCourses: courses},
+            Sessions: ["Session ID"],
+            Messages: ["Message ID"],
+            Requests: ["Request ID"],
+            Price: price,
+            RequestsYouAccepted: ['request ID'],
+            Rating: 0,
+            PreferredDays: days,
+            PreferredTimings: times,
+            ReviewsForTutor: ["Review ID"],
+            VerifiedCourses: ["Course Name"],
+            NotVerifiedCourses: courses,
+            Language: 'English',
+            Feedback: ['Feedback ID']
+            },
         
         ).then(() => {
             return "Data Saved Successfully";
@@ -53,18 +56,11 @@ export class Tutor {
 
     // This function deletes a particular tutor's data from the database.
     // It sets the HasTutorAccount to false. Meaning that the given user does not have a tutor account
-    static delete_profile(userID) {
+    static async delete_profile(userID) {
         
-        remove(ref(getDatabase(), `TutorAccounts/${userID}`))
+        await remove(ref(getDatabase(), `TutorAccounts/${userID}`))
+        await set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), false);
 
-        .then(() => {
-
-            set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), false);
-            return "Data Deleted Successfully";
-        })
-        .catch((error) => {
-            return error;
-        });
 
     }
 
@@ -178,21 +174,27 @@ export class Tutor {
         
     }
 
+    static update_language(userID, language) {
+
+        set(ref(getDatabase(), `TutorAccounts/${userID}/Language`), language);
+    }
+
     // This function calculates the rating for the given tutor. Called everytime a review is created for that tutor.
     // If the number of reviews for a given tutor is less than 11, set the rating as 0. If equal to 11, then get the
     // rating from each review and find the average. If greater than 11, (current rating for tutor + rating from new review) / 2
     static async tutor_rating(userID) {
         
         
-        const tutorData = this.getInformation(userID);
+        const tutorData = this.get_information(userID);
         const data = await tutorData.then(val => {return val;});
-        const reviews = data.RewiewsForTutor;
+        const reviews = data.ReviewsForTutor;
         let rating = data.Rating;
         const result = Object.keys(reviews).map((key) => reviews[key]);
+        console.log(`The length is ${result.length}`);
 
-        if (result.length > 11) {
+        if (result.length > 3) {
 
-            const reviewData =  Review.getReviewInformation(reviews[result.length - 1]);
+            const reviewData =  Review.getReviewInformation(result[result.length - 1]);
             const info = await reviewData.then(val => {return val;});
             rating += parseFloat(info.Rating);
             rating /= 2;
@@ -200,15 +202,16 @@ export class Tutor {
             
         }
 
-        else if (result.length === 11 ) {
+        else if (result.length === 3 ) {
 
             
             let sum = 0.0;
             /* eslint-disable no-await-in-loop */
             for (let i = 1; i < result.length; i += 1) {
-                const reviewData =  Review.getReviewInformation(reviews[i]);
+                const reviewData =  Review.getReviewInformation(result[i]);
                 const info = await reviewData.then(val => {return val;});
                 sum += parseFloat(info.Rating);
+                console.log(sum);
                 
             }
             /* eslint-disable no-await-in-loop */

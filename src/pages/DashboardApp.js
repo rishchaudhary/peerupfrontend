@@ -16,17 +16,6 @@ import IconButton from '@mui/material/IconButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 
-// forms
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import FormControl from '@mui/material/FormControl';
-
-
-
 // material
 import {
   Card,
@@ -57,9 +46,6 @@ import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
-
-
-
 
 // mock
 import USERLIST from '../_mock/user';
@@ -191,9 +177,6 @@ export default function DashboardApp() {
     setValue(newValue);
   };
 
-  const handleChangeCourseSelection = (event, newValue) => {
-    setValue(newValue);
-  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -242,38 +225,6 @@ export default function DashboardApp() {
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
-
-  const courses = [
-    {
-      value: 'CS 180',
-    },
-    {
-      value: 'CS 182',
-    },
-    {
-      value: 'CS 240',
-    },
-    {
-      value: 'CS 250',
-    },
-    {
-      value: 'CS 251',
-    },
-    {
-      value: 'CS 252',
-    },
-    {
-      value: 'CS 307',
-    },
-    {
-      value: 'CS 373',
-    },
-  ];
-
-  const [course, setCurrency] = React.useState('EUR');
-
-  const [datevalue, setDateValue] = React.useState(null);
-
 
 
   // ----------------------------------------------------------------------------------

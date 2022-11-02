@@ -1,21 +1,4 @@
-// tabs
-import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-// tabs
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-// ratings
-import Rating from '@mui/material/Rating';
-// button
-import IconButton from '@mui/material/IconButton';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
-
 // forms
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -25,211 +8,169 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import FormControl from '@mui/material/FormControl';
 import { LoadingButton } from '@mui/lab';
-
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
 // material
 import {
-    Card,
-    Table,
     Stack,
-    Avatar,
-    Button,
-    Checkbox,
-    TableRow,
-    TableBody,
-    TableCell,
-    Container,
-    Typography,
-    TableContainer,
-    TablePagination,
 } from '@mui/material';
+
 import { ReadMoreTwoTone } from '@mui/icons-material';
 import { getAuth } from 'firebase/auth';
+
 // User data 
-import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 
 
 const auth = getAuth();
 
-async function createSession(courseName, requestDay, requestTime, description){
+async function createSession(courseName, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
 
-    const userID = auth.currentUser.uid;
-    const course = courseName.toString();
-    const day = requestDay.toString();
-    const time = requestTime.toString();
-    const descriptionText = description.toString();
-    const requestID = Math.random();
-    
-    REQUESTS.create_request(requestID, time, day, descriptionText, userID, course);
+    const userID = (auth.currentUser.uid).toString();
+    const course = courseName;
+    const date = dateValue.toString();
+    const time = `${timeValue.toString()} hrs`;
+    const descriptionText = requestDescription.toString();
+    const requestID = "69-420";
+    let sessionFormat = "";
+
+    if (meetingFormat === 0) {
+        requestLocation = "";
+        sessionFormat = "Online";
+    } else {
+        sessionFormat = "In-Person"
+    }
+    const length = sessionLength.toString();
+    const format = meetingFormat.toString();
+    REQUESTS.create_request(requestID, time, length, date, descriptionText, userID, course, requestLocation, sessionFormat);
 }
 
-async function printData(courseValue,dateValue,timeValue, requestDescription){
-    console.log(courseValue.toString());
-    console.log(dateValue);
-    console.log(timeValue);
-    console.log(requestDescription);
-}
 
 export default function RequestForm() {
 
-    const courses = [
-        {
-            value: 'CS 180',
-        },
-        {
-            value: 'CS 182',
-        },
-        {
-            value: 'CS 240',
-        },
-        {
-            value: 'CS 250',
-        },
-        {
-            value: 'CS 251',
-        },
-        {
-            value: 'CS 252',
-        },
-        {
-            value: 'CS 307',
-        },
-        {
-            value: 'CS 373',
-        },
-    ];
 
     const [courseValue, setCourse] = React.useState('CS 180');
 
+    const [sessionLength, setSessionLength] = React.useState(0);
+
     const [dateValue, setDateValue] = React.useState(null);
 
-    const [timeValue, setTimeValue] = React.useState(1);
+    const [timeValue, setTimeValue] = React.useState(null);
 
-    const [requestDescription, setDescription] = React.useState("");
+    const [requestDescription, setDescription] = React.useState('');
 
-    const [requestData, setRequestData] = useState({
-        // course: React.useState('CS 180'),
-        // date: React.useState(null),
-        // time: React.useState(1),
-        description: "",
-    })
+    const [requestLocation, setLocation] = React.useState('');
 
-    requestData.course = React.useState('CS 180');
-    requestData.date = React.useState(null);
-    requestData.time =  React.useState(1);
-    requestData.description = React.useState("");
-
-    function handle(e) {
-        // const newdata = {...requestData}
-        
-        // const newCourse = {... courseValue}
-        // const newDate = {...dateValue}
-        // const newTime = {...timeValue}
-        const newDescription = {...requestDescription}
-
-        // newdata[e.target.id] = e.target.value
-        // newCourse[e.target.id] = e.target.value
-        // newDate[e.target.id] = e.target.value
-        // newTime[e.target.id] = e.target.value
-        newDescription[e.target.id] = e.target.value
-        console.log(newDescription);
-        
-        // setRequestData(newdata)
-        /*
-        handleChangeCourseSelection(newCourse)
-        handleDateSelection(newDate)
-        handleTimeSelection(newTime)
-        handleDescription(newDescription)
-        */
-
-    }
-
-
-
-    const handleChangeCourseSelection = (event, newValue) => {
-        setCourse(newValue);
-        console.log(courseValue.toString());
-    };
-    const handleDateSelection = (event, newValue) => {
-        setDateValue(newValue);
-        console.log(dateValue.toString());
-    };
-
-    const handleTimeSelection = (event, newValue) => {
-        setTimeValue(newValue);
-        console.log(timeValue.toString());
-    };
-
-    const handleDescription = (event, newValue) => {
-        setDescription(newValue);
-        console.log(requestDescription.toString());
-    };
-
+    const [meetingFormat, setFormat] = React.useState(0);
 
     return (
         <FormControl>
-
-
-
             <Stack direction="row" spacing={2}>
+                <div>
+                    <InputLabel id="demo-simple-select-label">Course</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={courseValue}
+                        label="Course"
+                        onChange={(e) => setCourse(e.target.value)}
+                    >
+                        <MenuItem value="CS 180">CS 180</MenuItem>
+                        <MenuItem value="CS 182">CS 182</MenuItem>
+                        <MenuItem value="CS 240">CS 240</MenuItem>
+                    </Select>
+                </div>
 
-                <input onChange={handleDescription} id="description" value={requestDescription} placeholder="description" type="text"/>
+                <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Select Date"
+                            value={dateValue}
+                            onChange={(newValue) => {
+                                setDateValue(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </div>
 
-                <TextField
-                    id="courseValue"
-                    select
-                    label="Select Course"
-                    value={courseValue}
-                    onChange={handleChangeCourseSelection}
-                    helperText="ex: CS 180 ">
-                    {courses.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.value}
-                        </MenuItem>
-                    ))}
-                </TextField>
+                <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <TimePicker
+                            label="Select Time"
+                            value={timeValue}
+                            onChange={(newValue) => {
+                                setTimeValue(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </div>
 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        label="Select Date"
-                        id="dateValue"
-                        value={dateValue}
-                        onChange={handleDateSelection}
-                        renderInput={(params) => <TextField {...params} />}
+
+                <div>
+                    <TextField
+                        id="outlined-number"
+                        label="Session Length"
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={(event) => {
+                            setSessionLength(event.target.value);
+                        }}
                     />
-                </LocalizationProvider>
+                </div>
 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <TimePicker
-                        label="Select Time"
-                        id="timeValue"
-                        value={timeValue}
-                        onChange={handleTimeSelection}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </LocalizationProvider>
 
             </Stack>
 
-            <Stack direction="row" sx={{ py: 4 }}>
-                <TextField
-                    id="requestDescription"
-                    label="Request Description3"
-                    multiline
-                    rows={4}
-                    defaultValue={requestDescription}
-                    onChange={handleDescription}
-                />
+
+            <Stack direction="row" sx={{ py: 2 }}>
+                <div>
+                    <TextField
+                        id="outlined-multiline-flexible"
+                        label="Enter Request Details"
+                        multiline
+                        maxRows={4}
+                        value={requestDescription}
+                        onChange={(event) => {
+                            setDescription(event.target.value);
+                        }}
+                    />
+                </div>
             </Stack>
 
-            <LoadingButton fullWidth size="large" type="submit" variant="contained" >
+            <Stack direction="row" sx={{ py: 1 }} spacing={2}>
+                <div>
+                    <Select
+                        value={meetingFormat}
+                        onChange={(e) => setFormat(e.target.value)}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                    >
+
+                        <MenuItem value={0}>Online</MenuItem>
+                        <MenuItem value={1}>In-person</MenuItem>
+                    </Select>
+                </div>
+
+                {meetingFormat
+                    ? <div><TextField id="outlined-basic" label="Location" value={requestLocation} variant="outlined" onChange={(event) => {
+                        setLocation(event.target.value);
+                    }} /></div>
+                    : null
+                }
+            </Stack>
+
+            <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
+                console.log("Creating session");
+                createSession(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength);
+            }} >
                 Submit Request
             </LoadingButton>
 
         </FormControl>
     );
-
-
-
 
 }

@@ -6,7 +6,17 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import {Stack, IconButton, InputAdornment, ToggleButton, ToggleButtonGroup, Box, Typography} from '@mui/material';
+import {Stack,
+    IconButton,
+    InputAdornment,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile, getAuth } from 'firebase/auth';
@@ -17,6 +27,7 @@ import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
 import { User as UserController } from '../../../Controller/User';
+
 // ----------------------------------------------------------------------
 
 const auth = getAuth();
@@ -25,16 +36,29 @@ export default function RegisterForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [days, setPref] = useState(false);
+  const [days, setPrefDay] = useState(false);
+  const [times, setPrefTime] = useState(false);
+  const [standing, setStanding] = useState('');
 
   const handlePrefDay = (event, newDay) => {
-      // console.log(days);
-      setPref(newDay);
+      setPrefDay(newDay);
+  }
+
+  const handlePrefTime = (event, newTime) => {
+        setPrefTime(newTime);
+  }
+
+  const handleStanding = (event) => {
+      setStanding(event.target.value);
   }
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
     lastName: Yup.string().required('Last name required'),
+    major: Yup.string().required('Major is required'),
+    standing: Yup.string(),
+    prefDays: Yup.array(),
+    prefTimes: Yup.array(),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
   });
@@ -44,6 +68,8 @@ export default function RegisterForm() {
     lastName: '',
     major: '',
     standing: '',
+    prefDays: [],
+    prefTimes: [],
     email: '',
     password: '',
   };
@@ -59,26 +85,31 @@ export default function RegisterForm() {
   } = methods;
 
   const onSubmit = async data => {
+      console.log(standing);
+      data.standing = standing;
+      data.prefDays = days;
+      data.prefTimes = times;
+
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         // Registration was successful
-        const user = userCredential.user;
+        const {user} = userCredential;
         updateProfile(user, {displayName: `${data.firstName} ${data.lastName}`});
         sendEmailVerification(user);
         const userPath = `User_data/${user.uid}/usrconfig.txt`;
         const userRef = ref(storage, userPath);
         const userInfo = `Email: ${user.email} First name: ${data.firstName} Last name: ${data.lastName}`;
-        console.log(days);
         UserController.create_account(
-            user.uid,
-            data.email,
-            `${data.firstName} ${data.lastName}`,
-            `${data.Major}`,
-            `${data.Class}`,
-            days);
+          user.uid,
+          data.email,
+          `${data.firstName} ${data.lastName}`,
+          `${data.major}`,
+          `${data.standing}`,
+          data.prefDays, data.prefTimes);
+
 
         uploadString(userRef, userInfo).then((snapshot) => {
-          console.log('Uploaded user config data.');
+          console.log('Uploaded user config data.', snapshot);
         });
         console.log('User registered:', user.email);
         // ...
@@ -103,6 +134,19 @@ export default function RegisterForm() {
           <RHFTextField name="lastName" label="Last name" />
         </Stack>
 
+        <RHFTextField name={"major"} label={"Major"} />
+
+        <FormControl >
+            <InputLabel id={"classStaning"}>Class </InputLabel>
+            <Select name={"standing"} label={"Class"} value={standing} onChange={handleStanding} >
+              <MenuItem value={'Freshman'}>Freshman</MenuItem>
+              <MenuItem value={'Sophomore'}>Sophomore</MenuItem>
+              <MenuItem value={'Junior'}>Junior</MenuItem>
+              <MenuItem value={'Senior'}>Senior</MenuItem>
+            </Select>
+        </FormControl>
+
+
         <RHFTextField name="email" label="Email address" />
 
         <RHFTextField
@@ -123,7 +167,8 @@ export default function RegisterForm() {
             <Typography variant="body1" >
                 Preferred days:
             </Typography>
-            <ToggleButtonGroup value={days} onSubmit = {handlePrefDay} aria-label={'Preferred Days'}>
+
+            <ToggleButtonGroup value={days} name={'prefDays'} onChange={handlePrefDay} aria-label={'Preferred Days'}>
                 <ToggleButton value={0} aria-label = 'Mon'>
                     Mon
                 </ToggleButton>
@@ -144,6 +189,24 @@ export default function RegisterForm() {
                 </ToggleButton>
                 <ToggleButton value={6} aria-label = 'Sun'>
                     Sun
+                </ToggleButton>
+            </ToggleButtonGroup>
+        </Stack>
+
+        <Stack direction={"row"} spacing={3} alignItems="center" >
+            <Typography variant="body1" >
+                Preferred Times:
+            </Typography>
+
+            <ToggleButtonGroup value={times} name={'prefTimes'} onChange={handlePrefTime} aria-label={'Preferred Times'}>
+                <ToggleButton value={0} aria-label = 'Morning'>
+                    Morning
+                </ToggleButton>
+                <ToggleButton value={1} aria-label = 'Afternoon'>
+                    Afternoon
+                </ToggleButton>
+                <ToggleButton value={2} aria-label = 'Evening'>
+                    Evening
                 </ToggleButton>
             </ToggleButtonGroup>
         </Stack>

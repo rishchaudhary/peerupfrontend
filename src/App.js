@@ -27,14 +27,13 @@ export const DBContext = createContext();
 const DBContextProvider = props => {
   const [displayName, setDisplayName] = useState("display name");
   const [major, setMajor] = useState("major");
-  const [userClass, setUserClass] = useState("class");
+  const [userClass, setUserClass] = useState("standing");
   const [userBio, setUserBio] = useState("bio");
   const [userTutorBio, setUserTutorBio] = useState("tutor bio");
-
   return (
     <DBContext.Provider
       value={{ displayName: [displayName, setDisplayName], major: [major, setMajor], userClass: [userClass, setUserClass],
-      userBio: [userBio, setUserBio], userTutorBio: [userTutorBio, setUserTutorBio] }}
+      userBio: [userBio, setUserBio], userTutorBio: [userTutorBio, setUserTutorBio]}}
     >
       {props.children}
     </DBContext.Provider>

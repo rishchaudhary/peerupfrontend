@@ -29,7 +29,7 @@ const MENU_OPTIONS = [
   {
     label: 'Settings',
     icon: 'eva:settings-2-fill',
-    linkTo: '#',
+    linkTo: '/dashboard/settings',
   },
 ];
 
@@ -61,6 +61,7 @@ export default function AccountPopover() {
   const handleLogout = () => {
     // logout
     auth.signOut();
+    setOpen(null);
     console.log('User signed out.');
   };
 

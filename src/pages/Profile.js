@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 // material
 import {
   Avatar,
-  Button,
   Container,
   Chip,
   Divider,
@@ -15,14 +14,15 @@ import {
 } from '@mui/material';
 
 // Firebase
+
 import { ref, onValue, set, getDatabase } from "firebase/database";
 import { getAuth, updateProfile } from 'firebase/auth';
+
 import { ref as refStorage, getDownloadURL, uploadBytes } from 'firebase/storage';
 
-import { useContext } from 'react';
+import {useContext} from 'react';
 import { DBContext } from '../App';
 // components
-import Iconify from '../components/Iconify';
 import Page from '../components/Page';
 // mock
 import account from '../_mock/account';
@@ -32,35 +32,86 @@ import account from '../_mock/account';
 import { storage } from '../firebaseConfig/storage';
 import { User as USER } from '../Controller/User';
 
+
 const auth = getAuth();
 const database = getDatabase();
+
 
 // ----------------------------------------------------------------------
 
 
-async function getUserData() {
-    const dbSnap = USER.get_information('test2');
-    const user = await dbSnap.then(val => {return val;});
-    return user;
+function mapDays(value, index) {
+  console.log(value);
+  if (value.value) {
+    return (
+        <div key={index}>
+          <Chip
+              label={value.key}
+              sx={{bgcolor: 'primary.main', fontWeight: 'bold'}}
+          />
+        </div>
+    );
+  }
+    return (
+        <div key={index}>
+          <Chip
+              label={value.key}
+              sx={{bgcolor: 'primary.light', fontWeight: 'bold'}}
+          />
+        </div>
+    );
 }
 
-
+function mapTimes(value, index) {
+  console.log(value);
+  if (value.value) {
+    return (
+        <div key={index}>
+          <Chip
+              label={value.key}
+              sx={{bgcolor: 'primary.main', fontWeight: 'bold'}}
+          />
+        </div>
+    );
+  }
+  return (
+      <div key={index}>
+        <Chip
+            label={value.key}
+            sx={{bgcolor: 'primary.light', fontWeight: 'bold'}}
+        />
+      </div>
+  );
+}
 
 export default function Profile() {
   const {displayName, major, userClass, userBio} = useContext(DBContext);
-  const [stateDisplayName, setStateDisplayName] = displayName;
-  const [stateMajor, setStateMajor] = major;
-  const [stateUserClass, setStateUserClass] = userClass;
-  const [stateUserBio, setStateUserBio] = userBio;
-  const userData = getUserData();
-  // console.log(userData.Name);
+  const [stateDisplayName] = displayName;
+  const [stateMajor] = major;
+  const [stateUserClass] = userClass;
+  const [stateUserBio] = userBio;
+
+  let days = [];
+  const usrDaysRef = ref(database, `Users/${auth.currentUser.uid}/PreferredDays`);
+  onValue(usrDaysRef, (snapshot) => {
+    days = snapshot.val();
+  })
+
+  let times = [];
+  const usrTimesRef = ref(database, `Users/${auth.currentUser.uid}/PreferredTimings`);
+  onValue(usrTimesRef, (snapshot) => {
+    times = snapshot.val();
+  })
+
+
+ 
   const navigate = useNavigate();
   const uploadPfp = () => {
     if (auth.currentUser != null) {
       const selectedFile = document.getElementById('pfp').files[0];
       const storageRef = refStorage(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
       uploadBytes(storageRef, selectedFile).then((snapshot) => {
-        console.log('Uploaded file');
+        console.log('Uploaded file', snapshot);
         getDownloadURL(storageRef)
         .then((url) => {
           console.log(`url: ${url}`);
@@ -70,22 +121,21 @@ export default function Profile() {
             console.log(`profile picture updated to ${auth.currentUser.photoURL}`);
             navigate('/dashboard/profile', { replace: true });
           }).catch((error) => {
-            console.log('error occurred updating profile picture');
+            console.log('error occurred updating profile picture', error);
           });
         }).catch((error) => {
-          console.log('error getting download url');
+          console.log('error getting download url', error);
         });
-      }).catch(() => {
-        console.log('error occured uploading file');
+      }).catch((error) => {
+        console.log('error occurred uploading file', error);
       });
     }
   }
   
   const usrProfilePicURL = auth.currentUser.photoURL;
 
-  const handleUpdateBio = () => {
-    set(ref(database, `Users/${auth.currentUser.uid}/Bio`), document.getElementById('userBio').value);
-    // console.log(`user bio: ${document.getElementById('userBio').value}`);
+  const handleUpdateBio = (event) => {
+     USER.update_bio(auth.currentUser.uid, event.target.value);
   }
 
   return (
@@ -110,10 +160,10 @@ export default function Profile() {
           {/* grid 2: Name & rating */}
           <Grid item xs={6}>
             <Stack>
-              <Typography variant="h1" gutterBottom>
+              <Typography variant="h2" gutterBottom>
                 {stateDisplayName}
               </Typography>
-              <Rating 
+              <Rating
                 name="read-only" 
                 value={account.ratingVal} 
                 precision={0.5}
@@ -128,13 +178,14 @@ export default function Profile() {
         {/* Stack for bottom section of profile page */}
         <Stack spacing={0.5} mt={3} mx={3}>
           
-          {/* Stack for upload profile pic button */}
+          {/* Stack for upload profile pic button
           <Stack spacing = {0.5} direction="row">
             <Button variant="contained" component="label">
               Upload profile picture
               <input hidden type="file" id="pfp" name='pfp' accept="image/*" onChange={uploadPfp} />
             </Button>
           </Stack>
+          */}
 
           {/* Stack 1: major */}
           <Stack spacing = {0.5} direction="row">
@@ -163,7 +214,7 @@ export default function Profile() {
             divider={<Divider orientation="horizontal" flexItem />}
             >
               <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-                  Bio: 
+                Bio:
               </Typography>
               <TextField
                 id="userBio"
@@ -178,53 +229,18 @@ export default function Profile() {
             </Stack>
           </Paper>
 
-          {/* stack for class currently taking */}
-          <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
-            <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-              Currently Taking:
-            </Typography>
-
-            {account.enrolled.map(item => (
-              <div key={item.id}>
-                <Chip 
-                label={item.class} 
-                color="primary"
-                sx={{fontWeight: 'bold'}}
-                />
-              </div>
-            ))}
-          </Stack>
-
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
               Preferred Day:
             </Typography>
-
-            {account.dayPref.map(item => (
-              <div key={item.id}>
-                <Chip 
-                label={item.class} 
-                color="primary"
-                sx={{fontWeight: 'bold'}}
-                />
-              </div>
-            ))}
+            {days.map(mapDays)}
           </Stack>
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
               Preferred Time:
             </Typography>
-
-            {account.timePref.map(item => (
-              <div key={item.id}>
-                <Chip 
-                label={item.class} 
-                color="primary"
-                sx={{fontWeight: 'bold'}}
-                />
-              </div>
-            ))}
+            {times.map(mapTimes)}
           </Stack>
 
         </Stack>

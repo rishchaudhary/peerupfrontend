@@ -38,7 +38,7 @@ export default function Router() {
     },
     
     {
-      path: 'register',
+      path: '/register',
       element: <Register />,
     },
     {
