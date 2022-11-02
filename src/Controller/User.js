@@ -2,6 +2,7 @@ import {getDatabase, ref, set, remove, get} from "firebase/database";
 import { Requests } from "./Requests";
 import {Review} from "./Review"
 import { Tutor } from "./Tutor";
+import {Feedback} from './Feedback'
 
  
 export class User {
@@ -45,7 +46,8 @@ export class User {
             Bio: 'Enter Bio here',
             University: 'Purdue',
             Language: 'English',
-            Feedback: ['Feedback ID']
+            Feedback: ['Feedback ID'],
+            Rating: 0
         
         })
         .then(() => "Data Saved Successfully")
@@ -92,6 +94,48 @@ export class User {
             return error;
         });
 
+    }
+
+
+    static async user_rating(userID) {
+
+        const userData = this.get_information(userID);
+        const data = await userData.then(val => {return val;});
+        const feedback = data.Feedback;
+        let rating = data.Rating;
+        const result = Object.keys(feedback).map((key) => feedback[key]);
+        console.log(`The length is ${result.length}`);
+
+        if (result.length > 3) {
+
+            const feedbackData =  Feedback.getFeedbackInformation(result[result.length - 1]);
+            const info = await feedbackData.then(val => {return val;});
+            rating += parseFloat(info.Rating);
+            rating /= 2;
+            set(ref(getDatabase(), `Users/${userID}/Rating`), rating);
+
+        }
+
+        else if (result.length === 3 ) {
+
+
+            let sum = 0.0;
+            /* eslint-disable no-await-in-loop */
+            for (let i = 1; i < result.length; i += 1) {
+                const feedbackData =  Feedback.getFeedbackInformation(result[i]);
+                const info = await feedbackData.then(val => {return val;});
+                sum += parseFloat(info.Rating);
+                console.log(sum);
+
+            }
+            /* eslint-disable no-await-in-loop */
+            set(ref(getDatabase(), `Users/${userID}/Rating`), sum / (result.length - 1));
+
+        }
+
+        else {
+            set(ref(getDatabase(), `Users/${userID}/Rating`), 0);
+        }
     }
 
 

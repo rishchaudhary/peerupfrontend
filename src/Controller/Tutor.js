@@ -192,9 +192,9 @@ export class Tutor {
         const result = Object.keys(reviews).map((key) => reviews[key]);
         console.log(`The length is ${result.length}`);
 
-        if (result.length > 11) {
+        if (result.length > 3) {
 
-            const reviewData =  Review.getReviewInformation(reviews[result.length - 1]);
+            const reviewData =  Review.getReviewInformation(result[result.length - 1]);
             const info = await reviewData.then(val => {return val;});
             rating += parseFloat(info.Rating);
             rating /= 2;
@@ -202,13 +202,13 @@ export class Tutor {
             
         }
 
-        else if (result.length === 11 ) {
+        else if (result.length === 3 ) {
 
             
             let sum = 0.0;
             /* eslint-disable no-await-in-loop */
             for (let i = 1; i < result.length; i += 1) {
-                const reviewData =  Review.getReviewInformation(reviews[i]);
+                const reviewData =  Review.getReviewInformation(result[i]);
                 const info = await reviewData.then(val => {return val;});
                 sum += parseFloat(info.Rating);
                 console.log(sum);

@@ -35,7 +35,7 @@ export class Feedback {
         result.push(feedbackID);
         set(ref(getDatabase(), `Users/${userID}/Feedback`), result);
 
-        await Tutor.tutor_rating(tutorID);
+        await User.user_rating(userID);
 
     }
 
