@@ -42,7 +42,7 @@ export class Requests {
         const result = Object.keys(requestData).map((key) => requestData[key]);
         result.push(dbRef.key);
         await set(ref(getDatabase(), `Users/${userID}/Requests`), result);
-        await MatchingAlgorithm.match(requestID);
+        await MatchingAlgorithm.match(dbRef.key);
 
     }
 

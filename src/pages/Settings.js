@@ -15,11 +15,10 @@ import SettingsAuth from "../sections/Settings/SettingsAuth";
 
 export default function Settings() {
 
-
   return (
     <Page title="Settings">
       <Container>
-        <Stack alignItems={"leftAligment"} divider={<Divider orientation={"horizontal"} flexItem /> }>
+        <Stack alignItems={"leftAlignment"} divider={<Divider orientation={"horizontal"} flexItem /> }>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
             <Typography variant="h2" gutterBottom>
              Settings

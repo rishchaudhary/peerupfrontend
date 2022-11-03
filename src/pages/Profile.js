@@ -40,7 +40,8 @@ const database = getDatabase();
 // ----------------------------------------------------------------------
 
 
-function mapDays(value, index) {
+function mapToggle(value, index) {
+  // console.log(value);
   if (value.value) {
     return (
         <div key={index}>
@@ -61,29 +62,8 @@ function mapDays(value, index) {
     );
 }
 
-function mapTimes(value, index) {
-  if (value.value) {
-    return (
-        <div key={index}>
-          <Chip
-              label={value.key}
-              sx={{bgcolor: 'primary.main', fontWeight: 'bold'}}
-          />
-        </div>
-    );
-  }
-  return (
-      <div key={index}>
-        <Chip
-            label={value.key}
-            sx={{bgcolor: 'primary.light', fontWeight: 'bold'}}
-        />
-      </div>
-  );
-}
-
 export default function Profile() {
-  const {displayName, major, userClass, userBio} = useContext(DBContext);
+  const {displayName, major, userClass, userBio, userLang} = useContext(DBContext);
   const [stateDisplayName] = displayName;
   const [stateMajor] = major;
   const [stateUserClass] = userClass;
@@ -230,14 +210,23 @@ export default function Profile() {
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
               Preferred Day:
             </Typography>
-            {days.map(mapDays)}
+            {days.map(mapToggle)}
           </Stack>
 
           <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
               Preferred Time:
             </Typography>
-            {times.map(mapTimes)}
+            {times.map(mapToggle)}
+          </Stack>
+          <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
+            <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
+              Preferred Language:
+            </Typography>
+            <Chip
+                label={userLang}
+                sx={{bgcolor: 'primary.main', fontWeight: 'bold'}}
+            />
           </Stack>
 
         </Stack>

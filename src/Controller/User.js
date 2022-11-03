@@ -43,7 +43,7 @@ export class User {
             Standing: standing,
             PreferredDays: days,
             PreferredTimings: times,
-            Bio: 'Enter Bio here',
+            Bio: 'Go to settings to update your bio!',
             University: 'Purdue',
             Language: 'English',
             Feedback: ['Feedback ID'],

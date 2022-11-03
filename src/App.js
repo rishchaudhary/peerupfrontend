@@ -19,21 +19,18 @@ import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
 
 export const DBContext = createContext();
 
-// const app = initializeApp(firebaseConfig);
-
-// const auth = getAuth();
-
-
 const DBContextProvider = props => {
   const [displayName, setDisplayName] = useState("display name");
   const [major, setMajor] = useState("major");
   const [userClass, setUserClass] = useState("standing");
   const [userBio, setUserBio] = useState("bio");
+  const [userLang, setLanguage] = useState("language");
   const [userTutorBio, setUserTutorBio] = useState("tutor bio");
+
   return (
     <DBContext.Provider
       value={{ displayName: [displayName, setDisplayName], major: [major, setMajor], userClass: [userClass, setUserClass],
-      userBio: [userBio, setUserBio], userTutorBio: [userTutorBio, setUserTutorBio]}}
+      userBio: [userBio, setUserBio], userLang: [userLang, setLanguage], userTutorBio: [userTutorBio, setUserTutorBio]}}
     >
       {props.children}
     </DBContext.Provider>
