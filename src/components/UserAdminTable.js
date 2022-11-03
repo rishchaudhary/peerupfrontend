@@ -44,7 +44,6 @@ export default function UserAdminTable() {
         columns={columns}
         pageSize={20}
         rowsPerPageOptions={[5]}
-        checkboxSelection
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
     />
