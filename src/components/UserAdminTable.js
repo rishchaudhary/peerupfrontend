@@ -50,8 +50,10 @@ export default function UserAdminTable() {
     const userRef = ref(database, `Users`);
     onValue(userRef, (snapshot) => {
         userObjs = snapshot.val();
-        console.log(userObjs.firstName);
+        
     })
+
+    // console.log(userObjs.value.key);
 
     // console.log("User lists", userObjs);    
 
