@@ -31,6 +31,7 @@ import {useContext, useState} from 'react';
 import { DBContext } from '../App';
 // components
 import Page from '../components/Page';
+import UserTable from '../components/UserAdminTable';
 // mock
 import account from '../_mock/account';
 // data 
@@ -116,7 +117,7 @@ export default function AdminPanel() {
     const [inputUid, setInputUid ] = useState();
 
     // Tabs
-    const [value, setValue] = React.useState(1);
+    const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -174,21 +175,9 @@ export default function AdminPanel() {
                                     }} >
                                         Delete User
                                     </LoadingButton>
-
-
                                 </Stack>
                             </Stack>
-                            <Box sx={{ height: 500, width: '100%' }}>
-                                <DataGrid
-                                    rows={rows}
-                                    columns={columns}
-                                    pageSize={20}
-                                    rowsPerPageOptions={[5]}
-                                    checkboxSelection
-                                    disableSelectionOnClick
-                                    experimentalFeatures={{ newEditingApi: true }}
-                                />
-                            </Box>
+                          <UserTable/>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={1}>
