@@ -108,7 +108,7 @@ console.log("User Session Objects", userSesObjs);
 
 
     return (
-
+      <Card>
       <Box sx={{ height: 500, width: '100%' }}>
       <DataGrid
           rows={userSesObjs}
@@ -119,6 +119,7 @@ console.log("User Session Objects", userSesObjs);
           experimentalFeatures={{ newEditingApi: true }}
       />
   </Box>
+  </Card>
 
 
     );
