@@ -52,11 +52,13 @@ async function printUserData() {
   /* eslint-disable no-await-in-loop */
   for (let i = 1; i < result.length; i += 1) {
     const requestData = REQUESTS.get_information(result[i]);
+    // data2 is the object representing the request data
     const data2 = await requestData.then(val => { return val; });
-    console.log(data2);
+    console.log(data2); 
   }
   /* eslint-disable no-await-in-loop */
 }
+
 
 
 
@@ -146,6 +148,8 @@ export default function StudentScheduled() {
     const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
   
     const isUserNotFound = filteredUsers.length === 0;
+
+    const userData = printUserData();
 
 
     return (
