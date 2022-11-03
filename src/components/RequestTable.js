@@ -249,15 +249,14 @@ export default function RequestTable() {
   onValue(reqRef, (snapshot) => {
     userReqObjs = snapshot.val();
   });
+  console.log("Request objects", userReqObjs);
 
-  // let reqRows = [];
-  // userReqObjs.forEach((value) => {
-  //
-  // });
+  const reqRows = [];
+  for (let i = 1; i < userReqIDs.length; i += 1) {
+    reqRows.push(userReqObjs[userReqIDs[i]]);
+  }
 
-  console.log("Request lists", userReqObjs);
-  console.log("specific Item", userReqObjs[userReqIDs[1]]);
-  console.log(rows);
+  console.log("newROWS:", reqRows);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
