@@ -10,6 +10,7 @@ import { onValue, ref, getDatabase } from 'firebase/database';
 import { DBContext } from '../../App';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+import USER from "../../Controller/User";
 
 const database = getDatabase();
 
@@ -46,13 +47,39 @@ export default function DashboardLayout() {
 
   const [everythingLoaded, setEverythingLoaded] = useState(false);
 
-  const {displayName, major, userClass, userBio, userTutorBio, userLang} = useContext(DBContext);
+  const {
+    displayName,
+    major,
+    userClass,
+    userBio,
+    userTutorBio,
+    userLang,
+  } = useContext(DBContext);
   const [, setStateDisplayName] = displayName;
   const [, setStateMajor] = major;
   const [, setStateUserClass ] = userClass;
   const [, setStateUserBio] = userBio;
   const [, setStateUserTutorBio] = userTutorBio;
   const [, setStateLanguage] = userLang;
+
+  // const [requestsLoaded, setReqLoaded] = useState(false);
+  // const requestObserver = ReactObserver();
+  // const requestRef = ref(database, `Requests/${auth.currentUser.uid}`);
+  // useEffect(() => {
+  //   requestObserver.subscribe('requests loaded', () => {
+  //     setReqLoaded(true);
+  //     if (displayNameLoaded && majorLoaded && classLoaded && bioLoaded && userLangLoaded && tutorBioLoaded) {
+  //       setEverythingLoaded(true);
+  //       console.log('everything loaded(name)');
+  //     }
+  //   });
+  //   return() => {requestObserver.unsubscribe('requests loaded');}
+  // }, []);
+  // onValue(requestRef, (snapshot) => {
+  //   setStateRequests(snapshot.val());
+  //   displayNameObserver.publish('requests loaded', null);
+  // });
+
 
   const [displayNameLoaded, setDisplayNameLoaded] = useState(false);
   const displayNameObserver = ReactObserver();
