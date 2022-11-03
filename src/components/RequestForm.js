@@ -38,7 +38,7 @@ async function createSession(courseName, dateValue, timeValue, requestDescriptio
     const date = dateValue.toString();
     const time = `${timeValue.toString()} hrs`;
     const descriptionText = requestDescription.toString();
-    const requestID = "69-420";
+    const requestID = "420";
     let sessionFormat = "";
 
     if (meetingFormat === 0) {
