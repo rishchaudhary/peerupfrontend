@@ -43,62 +43,42 @@ import USERLIST from '../_mock/user';
 
 
 
-
-
-
 const columns = [
-  { field: 'id', headerName: 'ID', width: 50 },
+  { field: 'id', headerName: 'ID', width: 200 },
   {
-      field: 'firstName',
-      headerName: 'First name',
+      field: 'Tutor',
+      headerName: 'Tutor Name',
       width: 200,
       editable: false,
   },
   {
-      field: 'lastName',
-      headerName: 'Last name',
-      width: 200,
-      editable: false,
-  },
-  {
-    field: 'meetingDay',
+    field: 'Date',
     headerName: 'Meeting Day',
     width: 200,
     editable: false,
 },
   {
-      field: 'meetingTime',
+      field: 'StartTime',
       headerName: 'Meeting Time',
       width: 200,
       editable: false,
   },
   {
-    field: 'location',
+    field: 'Location',
     headerName: 'Location',
     width: 200,
     editable: false,
 },
 {
-  field: 'rate',
-  headerName: 'Rate($/hr)',
+  field: 'Format',
+  headerName: 'Meeting Format',
   width: 200,
   editable: false,
 },
  
 ];
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00' },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
-  { id: 4, lastName: 'Stark', firstName: 'Arya', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
-  {id: 5, lastName: 'Targaryen', firstName: 'Daenerys', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
-  { id: 6, lastName: 'Melisandre', firstName: null, meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00' },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00' },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
 
-];
 
 export default function StudentScheduled() {
 
@@ -131,7 +111,7 @@ console.log("User Session Objects", userSesObjs);
 
       <Box sx={{ height: 500, width: '100%' }}>
       <DataGrid
-          rows={rows}
+          rows={userSesObjs}
           columns={columns}
           pageSize={20}
           rowsPerPageOptions={[5]}
