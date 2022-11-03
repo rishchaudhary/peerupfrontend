@@ -48,7 +48,7 @@ const columns = [
   {
       field: 'Tutor',
       headerName: 'Tutor Name',
-      width: 100,
+      width: 200,
       editable: false,
   },
   {

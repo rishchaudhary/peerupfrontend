@@ -36,6 +36,7 @@ import RequestTable from '../components/RequestTable';
 import MatchedView from '../components/StudentMatched';
 import CompletedView from '../components/StudentCompleted';
 import ScheduledView from '../components/StudentScheduled';
+import TutorScheduled from '../components/TutorScheduled';
 import Page from '../components/Page';
 
 
@@ -175,7 +176,7 @@ export default function TutorDashboardApp() {
               </Typography>
             </Stack>
 
-            <ScheduledView/>
+            <TutorScheduled/>
 
           </Container>
         </TabPanel>
