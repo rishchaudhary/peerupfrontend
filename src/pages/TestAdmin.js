@@ -42,23 +42,23 @@ const auth = getAuth();
 const database = getDatabase();
 
 const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'id', headerName: 'ID', width: 200 },
     {
       field: 'firstName',
       headerName: 'First name',
-      width: 150,
+      width: 200,
       editable: false,
     },
     {
       field: 'lastName',
       headerName: 'Last name',
-      width: 150,
+      width: 200,
       editable: false,
     },
     {
       field: 'emailAddress',
       headerName: 'Email Address',
-      width: 150,
+      width: 200,
       editable: false,
     },
   ];
