@@ -18,6 +18,7 @@ import {
   import { useContext } from 'react';
   import { getAuth } from 'firebase/auth';
   import { ref, onValue, set, getDatabase } from 'firebase/database';
+  import { getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
   
   
   import { DBContext } from '../App';
@@ -45,6 +46,17 @@ import {
     const handleUpdateTutorBio = () => {
       set(ref(database, `Users/${auth.currentUser.uid}/TutorBio`), document.getElementById('usrTutorBio').value);
       // console.log(`user bio: ${document.getElementById('userBio').value}`);
+    }
+
+    const uploadTranscript = () => {
+      const storage = getStorage();
+      const selectedFile = document.getElementById('transcript').files[0];
+      const transcriptRef = storageRef(storage, `User_data/${auth.currentUser.uid}/Transcript/transcript.pdf`);
+      uploadBytes(transcriptRef, selectedFile).then(() => {
+        console.log('Uploaded transcript');
+      }).catch(() => {
+        console.log('Error uploading transcript');
+      });
     }
 
     return (
@@ -190,7 +202,7 @@ import {
                 color="secondary"
                 >
                 Upload Transcript
-                <input hidden accept="image/*" multiple type="file" />
+                <input hidden accept=".pdf" type="file" id="transcript" onChange={uploadTranscript} />
                 </Button>
             </Box>
   
