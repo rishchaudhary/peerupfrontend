@@ -1,4 +1,4 @@
-import { getDatabase, get, set, ref} from "firebase/database";
+import { getDatabase, get, set, ref, push } from "firebase/database";
 import { User } from "./User";
 import {Tutor} from "./Tutor";
 import {MatchingAlgorithm} from "./MatchingAlgorithm";
@@ -21,7 +21,8 @@ export class Requests {
     // N/A for the location.
     static async create_request(requestID, startTime, length, date, description, userID, course, location, format) {
 
-        await set(ref(getDatabase(), `Requests/${requestID}`), {
+        const dbRef = push(ref(getDatabase(), 'Requests'));
+        await set(dbRef, {
 
             Time: startTime,
             Length: length,
@@ -39,7 +40,7 @@ export class Requests {
         const data = await userData.then(val => {return val;});
         const requestData = data.Requests;
         const result = Object.keys(requestData).map((key) => requestData[key]);
-        result.push(requestID);
+        result.push(dbRef.key);
         await set(ref(getDatabase(), `Users/${userID}/Requests`), result);
         await MatchingAlgorithm.match(requestID);
 
