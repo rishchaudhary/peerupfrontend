@@ -31,8 +31,7 @@ import {
 
 // User data 
 import { getAuth } from 'firebase/auth';
-import { User as USER } from '../Controller/User';
-import { Requests as REQUESTS } from '../Controller/Requests';
+import {getDatabase, ref, onValue} from "firebase/database";
 
 // components
 import Scrollbar from './Scrollbar';
@@ -42,24 +41,9 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // mock
 import USERLIST from '../_mock/user';
 
-const auth = getAuth();
 
-async function printUserData() {
-  // test2 is the id, pass in currently logged in userid
-  const userId = auth.currentUser.uid;
-  const userData = USER.get_information(userId);
-  const data = await userData.then(val => { return val; });
-  const requests = data.Requests;
-  const result = Object.keys(requests).map((key) => requests[key]);
-  /* eslint-disable no-await-in-loop */
-  for (let i = 1; i < result.length; i += 1) {
-    const requestData = REQUESTS.get_information(result[i]);
-    // data2 is the object representing the request data
-    const data2 = await requestData.then(val => { return val; });
-    console.log(data2); 
-  }
-  /* eslint-disable no-await-in-loop */
-}
+
+
 
 
 const columns = [
@@ -118,8 +102,29 @@ const rows = [
 
 export default function StudentScheduled() {
 
-  
-    const userData = printUserData();
+  const auth = getAuth();
+const database = getDatabase();
+const userID = getAuth().currentUser.uid;
+
+console.log(userID);
+
+let userSesIDs = [];
+const sessionsIdsRef = ref(database, `Users/${userID}/Sessions`);
+onValue(sessionsIdsRef, (snapshot) => {
+  userSesIDs = snapshot.val();
+});
+
+console.log("Sessions IDS: ", userSesIDs);
+
+const userSesObjs = [];
+for(let i = 1; i < userSesIDs.length; i+= 1){
+  const sessionID = userSesIDs[i];
+  const sesRef = ref(database, `Sessions/${sessionID}`);
+  onValue(sesRef, (snapshot) => {
+    userSesObjs.push(snapshot.val());
+  });
+}
+console.log("User Session Objects", userSesObjs);
 
 
     return (
