@@ -12,6 +12,11 @@ const navConfig = [
     icon: getIcon('eva:home-fill'),
   },
   {
+    title: 'Tutor Home',
+    path: '/dashboard/tutorapp',
+    icon: getIcon('eva:home-fill'),
+  },
+  {
     title: 'Messages',
     path: '/dashboard/message',
     icon: getIcon('eva:message-circle-fill'),

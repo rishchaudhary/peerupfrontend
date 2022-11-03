@@ -46,8 +46,8 @@ import USERLIST from '../_mock/user';
 const columns = [
   { field: 'id', headerName: 'ID', width: 100 },
   {
-      field: 'Tutor',
-      headerName: 'Tutor Name',
+      field: 'Student',
+      headerName: 'Student Name',
       width: 200,
       editable: false,
   },
@@ -80,7 +80,7 @@ const columns = [
 
 
 
-export default function StudentScheduled() {
+export default function TutorScheduled() {
 
   const auth = getAuth();
 const database = getDatabase();
