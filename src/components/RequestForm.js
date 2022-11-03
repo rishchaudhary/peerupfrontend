@@ -44,7 +44,7 @@ async function createSession(courseName, dateValue, timeValue, requestDescriptio
     let sessionFormat = "";
 
     if (meetingFormat === 0) {
-        requestLocation = "";
+        requestLocation = "Online";
         sessionFormat = "Online";
     } else {
         sessionFormat = "In-Person"
@@ -85,7 +85,7 @@ export default function RequestForm() {
 
 
         <FormControl>
-            <Stack direction="row" spacing={2}> 
+            <Stack direction="row" spacing={2}>
             
                 <Box sx={{ width: '100%' }}>
                     <Collapse in={open}>

@@ -3,7 +3,7 @@ import { User } from "./User";
 import {Tutor} from "./Tutor";
 import {MatchingAlgorithm} from "./MatchingAlgorithm";
 
-export class Requests { 
+export class Requests {
 
     // These function will be called when the user wants to create a new studying request.
     // It stores the request data in the db under Requests/RequestID.
@@ -19,7 +19,7 @@ export class Requests {
     // format (string) -- Online or In-Person
     // location (string) -- where the session is being hosted. If the Format is Online give
     // N/A for the location.
-    static async create_request(requestID, startTime, length, date, description, userID, course, location, format) {
+    static async create_request( startTime, length, date, description, userID, course, location, format) {
 
         const dbRef = push(ref(getDatabase(), `Requests/${userID}`));
         await set(dbRef, {
@@ -29,7 +29,7 @@ export class Requests {
             Date: date,
             Description: description,
             CreatedBy: userID,
-            IsOnline: format,
+            Format: format,
             Location: location,
             LanguagePreference: 'English',
             CourseWanted: course,
@@ -41,8 +41,10 @@ export class Requests {
         const requestData = data.Requests;
         const result = Object.keys(requestData).map((key) => requestData[key]);
         result.push(dbRef.key);
+
         await set(ref(getDatabase(), `Users/${userID}/Requests`), result);
-        await MatchingAlgorithm.match(dbRef.key);
+        await MatchingAlgorithm.match(`${userID}/${dbRef.key}`);
+
 
     }
 
@@ -52,13 +54,18 @@ export class Requests {
     // It will change TutorAccounts/tutorID/RequestsYouAccepted for each of these tutors.
     static async delete_request(requestID) {
 
+        const requestIDUser = requestID.split('/');
+
         const requestData = Requests.get_information(requestID);
         const data = await requestData.then(val => {return val;});
         const requestInfo = data.TutorsWhoAccepted;
         let result = Object.keys(requestInfo).map((key) => requestInfo[key]);
+        console.log(result)
         /* eslint-disable no-await-in-loop */
         for (let i = 1; i < result.length; i += 1) {
+            console.log(result[i])
             await this.remove_tutor_from_request(requestID, result[i]);
+
         }
         /* eslint-disable no-await-in-loop */
         const userData = User.get_information(data.CreatedBy);
@@ -67,24 +74,24 @@ export class Requests {
         result = Object.keys(userinfo).map((key) => userinfo[key]);
 
         for (let i = 0; i < result.length; i += 1) {
-            if (requestID === result[i]) {
+            if (requestIDUser[1] === result[i]) {
                 result.splice(i, 1);
                 await set(ref(getDatabase(), `Users/${data.CreatedBy}/Requests`), result);
                 break;
             }
         }
-        
+
         set(ref(getDatabase(), `Requests/${requestID}`), null);
-      
+
     }
 
     // If the tutor wants to reject a student request, yoy must call this function
     // It will remove the request from the tutor's list of requests.
     // As this function is called by the tutor side of the website, you can get the tutorID
     // by calling auth.currentUser.uid
-    static async reject_request(requestID, tutorID) {
+    static async reject_request(requestID, tutorID,) {
 
-        const tutorData = Tutor.get_information(tutorID);
+        const tutorData = Tutor.get_information(requestID);
         const tutor = await tutorData.then(val => {return val;});
         const requests = tutor.Requests;
         const result = Object.keys(requests).map((key) => requests[key]);
@@ -92,7 +99,7 @@ export class Requests {
         for (let i = 0; i < result.length; i += 1) {
             if (requestID === result[i]) {
                 result.splice(i, 1);
-                await set(ref(getDatabase(), `TutorAccounts/${tutor}/Requests`), result);
+                await set(ref(getDatabase(), `TutorAccounts/${tutorID}/Requests`), result);
                 break;
             }
         }
@@ -103,6 +110,7 @@ export class Requests {
     // As this function is called by the tutor side of the website, you can get the tutorID
     // by calling auth.currentUser.uid
     static async add_tutor_to_request(requestID, tutorID) {
+
 
         const requestData = this.get_information(requestID);
         const data1 = await requestData.then(val => {return val;});
@@ -127,6 +135,7 @@ export class Requests {
     static async remove_tutor_from_request(requestID, tutorID){
 
         const requestData = this.get_information(requestID);
+        console.log('I am here');
         const data1 = await requestData.then(val => {return val;});
         const data = data1.TutorsWhoAccepted;
         let result = Object.keys(data).map((key) => data[key]);
@@ -145,7 +154,7 @@ export class Requests {
         const data3 = data2.RequestsYouAccepted;
         const data4 = data2.Requests;
         result = Object.keys(data3).map((key) => data3[key]);
-
+        console.log('I am here');
         for (let i = 0; i < result.length; i += 1) {
             if (requestID === result[i]) {
                 result.splice(i, 1);
@@ -156,11 +165,10 @@ export class Requests {
 
         result = Object.keys(data4).map((key) => data4[key]);
         console.log(result);
-
+        console.log('I am here');
         for (let i = 0; i < result.length; i += 1) {
             if (requestID === result[i]) {
                 result.splice(i, 1);
-
                 await set(ref(getDatabase(), `TutorAccounts/${tutorID}/Requests`), result);
                 return;
             }
@@ -169,9 +177,9 @@ export class Requests {
     }
 
     static update_time(requestID, startTime) {
-        
-        set(ref(getDatabase(), `Requests/${requestID}/StartTime`), startTime);
-        
+
+        set(ref(getDatabase(), `Requests/${requestID}/Time`), startTime);
+
     }
 
     static update_language_preference(requestID, language) {
@@ -189,19 +197,19 @@ export class Requests {
     static update_date(requestID, date) {
 
         set(ref(getDatabase(), `Requests/${requestID}/Date`), date);
-        
+
     }
 
     static update_description(requestID, description) {
-        
+
         set(ref(getDatabase(), `Requests/${requestID}/Description`), description);
-        
+
     }
 
     static update_course(requestID, course) {
-        
+
         set(ref(getDatabase(), `Requests/${requestID}/Course`), course);
-        
+
     }
 
     static update_location(requestID, location) {
@@ -212,7 +220,7 @@ export class Requests {
 
     static update_format(requestID, format) {
 
-        set(ref(getDatabase(), `Requests/${requestID}/IsOnline`), format);
+        set(ref(getDatabase(), `Requests/${requestID}/Format`), format);
 
     }
 
@@ -222,7 +230,7 @@ export class Requests {
         const requestRef = ref(db, `Requests/${requestID}`);
         const snapshot = (await (get(requestRef))).toJSON();
         return snapshot;
-        
+
     }
 
     static async data(snapshot) {
