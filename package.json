@@ -92,8 +92,5 @@
   },
   "overrides": {
     "@svgr/webpack": "^6.2.1"
-  },
-  "engines": {
-    "node": "16.17.1"
   }
 }
