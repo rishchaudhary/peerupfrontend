@@ -32,6 +32,7 @@ import { DBContext } from '../App';
 // components
 import Page from '../components/Page';
 import UserTable from '../components/UserAdminTable';
+import TranscriptTable from '../components/TranscriptVerificationTable';
 // mock
 import account from '../_mock/account';
 // data 
@@ -184,11 +185,11 @@ export default function AdminPanel() {
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
-               Transcripts
+               Transcript Verification
               </Typography>
 
             </Stack>
-
+            <TranscriptTable/>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={2}>
