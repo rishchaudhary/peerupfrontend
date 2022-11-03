@@ -27,7 +27,8 @@ export class Sessions{
             Tutor: tutorID,
             Completed: false,
             Location: location,
-            Format: format
+            Format: format,
+            id: sessionID
         });
 
         await Requests.delete_request(requestID);
