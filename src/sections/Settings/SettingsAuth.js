@@ -15,7 +15,8 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
-import { getAuth } from 'firebase/auth';
+import { getAuth, updateEmail, updatePassword, sendEmailVerification } from 'firebase/auth';
+import { ref, set, getDatabase } from 'firebase/database';
 import { storage } from '../../firebaseConfig/storage';
 // components
 import Iconify from '../../components/Iconify';
@@ -53,7 +54,29 @@ export default function SettingsAuth() {
     } = methods;
 
     const onSubmit = async data => {
-        const userID = auth.currentUser.uid;
+        const email = data.email;
+        const password = data.password;
+        if (email !== auth.currentUser.email) {
+            await updateEmail(auth.currentUser, email).then(() => {
+                const database = getDatabase();
+                set(ref(database, `Users/${auth.currentUser.uid}/Email`), email);
+                sendEmailVerification(auth.currentUser).then(() => {
+                    console.log('Email verification sent');
+                }).catch(() => {
+                    console.log('Error sending verification email');
+                });
+                console.log(`User email updated to: ${email}`);
+            }).catch(() => {
+                console.log('Error updating email');
+            })
+        }
+        if (password !== '') {
+            await updatePassword(auth.currentUser, password).then(() => {
+                console.log('Password Updated');
+            }).catch(() => {
+                console.log('Error updating password');
+            })
+        }
     };
 
     return (
