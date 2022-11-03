@@ -60,6 +60,7 @@ async function printUserData() {
 
 
 
+
 export default function StudentScheduled() {
 
     const [page, setPage] = useState(0);
@@ -146,6 +147,8 @@ export default function StudentScheduled() {
     const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
   
     const isUserNotFound = filteredUsers.length === 0;
+
+    const userData = printUserData();
 
 
     return (
