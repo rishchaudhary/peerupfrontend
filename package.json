@@ -48,6 +48,7 @@
     "@mui/joy": "^5.0.0-alpha.49",
     "@mui/lab": "^5.0.0-alpha.88",
     "@mui/material": "^5.8.6",
+    "@mui/x-data-grid": "^5.17.9",
     "@mui/x-date-pickers": "^5.0.6",
     "@testing-library/jest-dom": "^5.16.4",
     "apexcharts": "^3.35.3",
