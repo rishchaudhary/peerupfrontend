@@ -101,7 +101,9 @@ for(let i = 1; i < userSesIDs.length; i+= 1){
   const sessionID = userSesIDs[i];
   const sesRef = ref(database, `Sessions/${sessionID}`);
   onValue(sesRef, (snapshot) => {
-    userSesObjs.push(snapshot.val());
+    if(!snapshot.toJSON().Completed){
+      userSesObjs.push(snapshot.val());
+    }
   });
 }
 console.log("User Session Objects", userSesObjs);
