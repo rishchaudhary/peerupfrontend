@@ -17,8 +17,12 @@ import {
     TextField,
     Paper,
     Divider,
+    Collapse,
+    IconButton, Box, Button,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { LoadingButton } from '@mui/lab';
+import {Alert} from "@mui/joy";
 
 import {onValue, ref, getDatabase} from "firebase/database";
 import { getAuth } from 'firebase/auth';
@@ -28,6 +32,7 @@ import { FormProvider } from '../../components/hook-form';
 
 import {User as UserController} from '../../Controller/User';
 import {DBContext} from "../../App";
+
 
 // ----------------------------------------------------------------------
 
@@ -44,23 +49,19 @@ export default function SettingsProfile() {
     const navigate = useNavigate();
     const database = getDatabase();
     const auth = getAuth();
+    const userID = auth.currentUser.uid;
 
-    const {displayName, major, userClass, userBio} = useContext(DBContext);
+    const {displayName, major, userClass, userBio, userLang} = useContext(DBContext);
     const [standing, setStanding] = useState(() => userClass);
     const [updatedBio, setBio] = useState(() => userBio);
     const [updatedName, setName] = useState(() => displayName);
     const [updatedMajor, setMajor] = useState(() => major);
+    const [updatedLang, setLanguage] = useState("English");
 
     let currDays = [];
     const usrDaysRef = ref(database, `Users/${auth.currentUser.uid}/PreferredDays`);
     onValue(usrDaysRef, (snapshot) => {
         currDays = snapshot.val();
-    })
-
-    let currTimes = [];
-    const usrTimesRef = ref(database, `Users/${auth.currentUser.uid}/PreferredTimings`);
-    onValue(usrTimesRef, (snapshot) => {
-        currTimes = snapshot.val();
     })
 
     const initDays = [];
@@ -70,9 +71,15 @@ export default function SettingsProfile() {
         }
     }
 
+    let currTimes = [];
+    const usrTimesRef = ref(database, `Users/${auth.currentUser.uid}/PreferredTimings`);
+    onValue(usrTimesRef, (snapshot) => {
+        currTimes = snapshot.val();
+    })
+
     const initTimes = [];
-    for (let i = 0; i < currDays.length; i += 1) {
-        if (currDays[i].value) {
+    for (let i = 0; i < currTimes.length; i += 1) {
+        if (currTimes[i].value) {
             initTimes.push(i);
         }
     }
@@ -82,45 +89,58 @@ export default function SettingsProfile() {
 
     const handlePrefDay = (event, newDay) => {
         setPrefDay(newDay);
-        UserController.update_preferred_days(auth.currentUser.uid, newDay);
+        UserController.update_preferred_days(userID, newDay);
     }
 
     const handlePrefTime = (event, newTime) => {
         setPrefTime(newTime);
-        UserController.update_preferred_times(auth.currentUser.uid, newTime);
+        UserController.update_preferred_times(userID, newTime);
     }
 
-    const handleStanding = (event, newClass) => {
-        setStanding(newClass);
+    const handleName = (event) => {
+        setName(event.target.value);
+        UserController.update_name(userID, event.target.value);
     }
 
-    const handleUpdateBio = (event, newBio ) => {
-        setBio(newBio);
-    }
-    const handleName = (event, newName) => {
-        setName(newName);
+    const handleMajor = (event) => {
+        setMajor(event.target.value);
+        UserController.update_major(userID, event.target.value);
     }
 
-    const handleMajor = (event, newMajor) => {
-        setMajor(newMajor);
+    const handleStanding = (event) => {
+        setStanding(event.target.value);
+        UserController.update_standing(userID, event.target.value);
     }
+
+    const handleUpdateBio = (event) => {
+        setBio(event.target.value);
+        UserController.update_bio(userID, event.target.value);
+    }
+
+    const handleLanguage = (event) => {
+        setLanguage(event.target.value);
+        UserController.update_language(userID, event.target.value);
+    }
+
 
     const RegisterSchema = Yup.object().shape({
-        Name: Yup.string().required('Name cannot be empty'),
-        Major: Yup.string().required('Major cannot be empty'),
+        Name: Yup.string(),
+        Major: Yup.string(),
         standing: Yup.string(),
         bio: Yup.string(),
         prefDays: Yup.array(),
         prefTimes: Yup.array(),
+        Language: Yup.string()
     });
 
     const defaultValues = {
-        Name: displayName,
-        Major: major,
-        standing: userClass,
-        bio: userBio,
+        Name: {displayName},
+        Major: {major},
+        standing: {userClass},
+        bio: {userBio},
         prefDays: [],
         prefTimes: [],
+        Language: {userLang}
     };
 
     const methods = useForm({
@@ -134,19 +154,16 @@ export default function SettingsProfile() {
     } = methods;
 
     const onSubmit = async data => {
-        const userID = auth.currentUser.uid;
+        console.log(data);
+
         data.Name = updatedName;
         data.Major = updatedMajor;
         data.standing = standing;
         data.bio = updatedBio;
         data.prefDays = days;
         data.prefTimes = times;
+        data.Language = updatedLang;
 
-        UserController.update_name(userID, data.Name);
-        console.log(updatedName);
-        UserController.update_major(userID, data.Major);
-        UserController.update_standing(auth.currentUser.uid, data.standing);
-        UserController.update_bio(auth.currentUser.uid, data.bio);
         navigate('/profile', {replace: true});
     };
 
@@ -172,11 +189,11 @@ export default function SettingsProfile() {
                         {"Edit Class:"}
                     </Typography>
                     <FormControl sx={{m: 1, width: 300}} size={"small"}>
-                        <InputLabel id={"classStanding"}>{userClass}</InputLabel>
+                        <InputLabel id={"classStanding"}>Class</InputLabel>
                         <Select
                             name={"standing"}
                             label={"Class"}
-                            value={standing}
+                            value={userClass}
                             onChange={handleStanding}
                             renderValue={(selected) => {
                                 if (!selected) {
@@ -207,7 +224,7 @@ export default function SettingsProfile() {
                         <TextField
                             id="userBio"
                             multiline
-                            defaultValue={userBio}
+                            label={"Enter new Bio"}
                             minRows={5}
                             maxRows={5}
                             margin="dense"
@@ -233,6 +250,13 @@ export default function SettingsProfile() {
                     <ToggleButtonGroup value={times} name={'prefTimes'} onChange={handlePrefTime} aria-label={'Preferred Times'}>
                         {currTimes.map(mapToggles)}
                     </ToggleButtonGroup>
+                </Stack>
+
+                <Stack direction={"row"} spacing={2} alignItems="center">
+                    <Typography variant={"h6"} fontWeight={'medium'}>
+                        {"Preferred Language:"}
+                    </Typography>
+                    <TextField name="Language" label={userLang} onBlur={handleLanguage} />
                 </Stack>
 
                 <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>

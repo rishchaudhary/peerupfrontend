@@ -46,12 +46,13 @@ export default function DashboardLayout() {
 
   const [everythingLoaded, setEverythingLoaded] = useState(false);
 
-  const {displayName, major, userClass, userBio, userTutorBio} = useContext(DBContext);
+  const {displayName, major, userClass, userBio, userTutorBio, userLang} = useContext(DBContext);
   const [, setStateDisplayName] = displayName;
   const [, setStateMajor] = major;
   const [, setStateUserClass ] = userClass;
   const [, setStateUserBio] = userBio;
   const [, setStateUserTutorBio] = userTutorBio;
+  const [, setStateLanguage] = userLang;
 
   const [displayNameLoaded, setDisplayNameLoaded] = useState(false);
   const displayNameObserver = ReactObserver();
@@ -59,7 +60,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     displayNameObserver.subscribe('displayName loaded', () => {
       setDisplayNameLoaded(true);
-      if (majorLoaded && classLoaded && bioLoaded && tutorBioLoaded) {
+      if (majorLoaded && classLoaded && bioLoaded && userLangLoaded && tutorBioLoaded) {
         setEverythingLoaded(true);
         console.log('everything loaded(name)');
       }
@@ -77,7 +78,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     majorObserver.subscribe('major loaded', () => {
       setMajorLoaded(true);
-      if (displayNameLoaded && classLoaded && bioLoaded && tutorBioLoaded) {
+      if (displayNameLoaded && classLoaded && bioLoaded && userLangLoaded && tutorBioLoaded) {
         setEverythingLoaded(true);
         console.log('everything loaded(major)');
       }
@@ -95,7 +96,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     classObserver.subscribe('class loaded', () => {
       setClassLoaded(true);
-      if (displayNameLoaded && majorLoaded && bioLoaded && tutorBioLoaded) {
+      if (displayNameLoaded && majorLoaded && bioLoaded && userLangLoaded && tutorBioLoaded) {
         setEverythingLoaded(true);
         console.log('everything loaded(class)');
       }
@@ -113,7 +114,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     bioObserver.subscribe('bio loaded', () => {
       setBioLoaded(true);
-      if (displayNameLoaded && classLoaded && majorLoaded && tutorBioLoaded) {
+      if (displayNameLoaded && classLoaded && majorLoaded && userLangLoaded && tutorBioLoaded) {
         setEverythingLoaded(true);
         console.log('everything loaded (bio)');
       }
@@ -125,13 +126,31 @@ export default function DashboardLayout() {
     bioObserver.publish('bio loaded');
   });
 
+  const [userLangLoaded, setLanguageLoaded] = useState(false);
+  const langObs = ReactObserver();
+  const languageRef = ref(database, `Users/${auth.currentUser.uid}/Language`);
+  useEffect(() => {
+    langObs.subscribe('Language Loaded', () => {
+      setLanguageLoaded(true);
+      if (displayNameLoaded && classLoaded && bioLoaded && majorLoaded && tutorBioLoaded) {
+        setEverythingLoaded(true);
+        console.log('everything loaded (language)');
+      }
+    });
+    return () => {langObs.unsubscribe('Language Loaded');}
+  }, []);
+  onValue(languageRef, (snapshot) => {
+    setStateLanguage(snapshot.val());
+    langObs.publish('Language Loaded');
+  });
+
   const [tutorBioLoaded, setTutorBioLoaded] = useState(false);
   const tutorBioObserver = ReactObserver();
   const usrTutorBioRef = ref(database, `Users/${auth.currentUser.uid}/TutorBio`);
   useEffect(() => {
     tutorBioObserver.subscribe('tutor bio loaded', () => {
       setTutorBioLoaded(true);
-      if (displayNameLoaded && classLoaded && bioLoaded && majorLoaded) {
+      if (displayNameLoaded && classLoaded && bioLoaded && majorLoaded && userLangLoaded) {
         setEverythingLoaded(true);
         console.log('everything loaded (tutor bio)');
       }
