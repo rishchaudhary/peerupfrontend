@@ -82,7 +82,7 @@ const columns = [
 
 export default function StudentCompleted() {
 
-  const auth = getAuth();
+const auth = getAuth();
 const database = getDatabase();
 const userID = getAuth().currentUser.uid;
 
@@ -107,12 +107,16 @@ for(let i = 1; i < userSesIDs.length; i+= 1){
  
   });
 }
+
+
+
 console.log("Completed User Session Objects", userSesObjs);
+
 
 
     return (
       <Card>
-      <Box sx={{ height: 500, width: '100%' }}>
+      <Box sx={{ height: 250, width: '100%' }}>
       <DataGrid
           rows={userSesObjs}
           columns={columns}
@@ -123,7 +127,6 @@ console.log("Completed User Session Objects", userSesObjs);
       />
   </Box>
   </Card>
-
 
     );
 

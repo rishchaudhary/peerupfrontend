@@ -148,10 +148,11 @@ export default function DashboardApp() {
             </Stack>
             <Card sx={{ px: 7, py: 4 }}>
               <RequestForm />
-            </Card>
-            <Card sx={{ px: 7, py: 4 }}>
               <RequestTable/>
             </Card>
+
+            
+            
           </Container>
         </TabPanel>
         <TabPanel value={value} index={1}>
@@ -188,6 +189,14 @@ export default function DashboardApp() {
             </Stack>
 
           <CompletedView/>
+
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} sx={{ py: 2 }}>
+              <Typography variant="h3" gutterBottom>
+                Reviews
+              </Typography>
+            </Stack>
+
+            <CompletedView/>
 
           </Container>
         </TabPanel>

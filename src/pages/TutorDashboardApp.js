@@ -176,6 +176,12 @@ export default function TutorDashboardApp() {
 
             <TutorCompleted/>
 
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+              <Typography variant="h3" gutterBottom>
+                Reviews
+              </Typography>
+            </Stack>
+
           </Container>
         </TabPanel>
       </Box>
