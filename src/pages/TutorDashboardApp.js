@@ -134,28 +134,13 @@ export default function TutorDashboardApp() {
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-            <Tab label="Request" {...a11yProps(0)} />
-            <Tab label="Matched" {...a11yProps(1)} />
+            <Tab label="Matched" {...a11yProps(0)} />
             <Tab label="Scheduled" {...a11yProps(2)} />
             <Tab label="Completed" {...a11yProps(3)} />
           </Tabs>
         </Box>
+      
         <TabPanel value={value} index={0}>
-          <Container>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-              <Typography variant="h3" gutterBottom>
-                Request
-              </Typography>
-            </Stack>
-            <Card sx={{ px: 7, py: 4 }}>
-              <RequestForm />
-            </Card>
-            <Card sx={{ px: 7, py: 4 }}>
-              <RequestTable/>
-            </Card>
-          </Container>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
@@ -168,7 +153,7 @@ export default function TutorDashboardApp() {
 
           </Container>
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={value} index={1}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
@@ -180,7 +165,7 @@ export default function TutorDashboardApp() {
 
           </Container>
         </TabPanel>
-        <TabPanel value={value} index={3}>
+        <TabPanel value={value} index={2}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
