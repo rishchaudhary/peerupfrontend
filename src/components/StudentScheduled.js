@@ -27,6 +27,10 @@ import {
   TablePagination,
 } from '@mui/material';
 
+// User data 
+import { getAuth } from 'firebase/auth';
+import { User as USER } from '../Controller/User';
+import { Requests as REQUESTS } from '../Controller/Requests';
 
 // components
 import Scrollbar from './Scrollbar';
@@ -36,7 +40,23 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // mock
 import USERLIST from '../_mock/user';
 
+const auth = getAuth();
 
+async function printUserData() {
+  // test2 is the id, pass in currently logged in userid
+  const userId = auth.currentUser.uid;
+  const userData = USER.get_information(userId);
+  const data = await userData.then(val => { return val; });
+  const requests = data.Requests;
+  const result = Object.keys(requests).map((key) => requests[key]);
+  /* eslint-disable no-await-in-loop */
+  for (let i = 1; i < result.length; i += 1) {
+    const requestData = REQUESTS.get_information(result[i]);
+    const data2 = await requestData.then(val => { return val; });
+    console.log(data2);
+  }
+  /* eslint-disable no-await-in-loop */
+}
 
 
 export default function StudentScheduled() {
@@ -130,7 +150,7 @@ export default function StudentScheduled() {
     return (
 
         <Card>
-
+            <Button onClick={() => {printUserData()}}>Click</Button>
               <Scrollbar>
                 <TableContainer sx={{ minWidth: 800 }}>
                   <Table>
