@@ -209,6 +209,27 @@ export class User {
         set(ref(getDatabase(), `Users/${userID}/University`), university);
     }
 
+        static async get_user_requests(userID) {
+        const db = getDatabase();
+        const userRef = ref(db, `Users/${userID}/Requests`);
+        const snapshot = (await get(userRef)).toJSON();
+
+        const reqObjects = [];
+        for (let i = 0; i < Object.entries(snapshot).length; i+= 1){
+            const value = Object.entries(snapshot)[i];
+            const reqRef = ref(db, `Requests/${value[1]}`);
+            const request = (await get(reqRef)).toJSON();
+            if (request !== null) {
+                reqObjects.push(request);
+            }
+        }
+        // console.log(reqObjects);
+
+        return reqObjects;
+
+    }
+
+
     static async get_information(userID) {
 
         const db = getDatabase();

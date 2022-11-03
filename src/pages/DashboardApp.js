@@ -41,6 +41,26 @@ import Page from '../components/Page';
 
 // mock
 import USERLIST from '../_mock/user';
+// import {onValue, ref} from "firebase/database";
+//
+// let requests = [];
+// const reqRef = ref(database, `Requests/${userID}`);
+// onValue(reqRef, (snapshot) => {
+//   requests = snapshot.val();
+// })
+// console.log(requests);
+// console.log(requests);
+//
+// const TABLE_HEAD = [
+//
+//   { id: 'Status', label: 'Status', alignRight: false },
+//   { id: 'Course', label: 'Course', alignRight: false },
+//   { id: 'Meeting Time', label: 'Meeting Time', alignRight: false },
+//   { id: 'Session Length', label: 'Session Length', alignRight: false },
+//   { id: 'Location', label: 'Location', alignRight: false },
+//   { id: 'Meeting Format', label: 'Meeting Format', alignRight: false },
+//
+// ];
 
 
 const auth = getAuth();
@@ -100,6 +120,8 @@ export default function DashboardApp() {
   // tabs
   const [value, setValue] = React.useState(1);
 
+  const userRequests = USER.get_user_requests(auth.currentUser.uid);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -149,7 +171,6 @@ export default function DashboardApp() {
               <Typography variant="h3" gutterBottom>
                 Scheduled
               </Typography>
-
             </Stack>
 
             <ScheduledView/>
@@ -162,7 +183,6 @@ export default function DashboardApp() {
               <Typography variant="h3" gutterBottom>
                 Completed
               </Typography>
-
             </Stack>
 
           <CompletedView/>
