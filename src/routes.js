@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import Message from './pages/Message';
 import Settings from './pages/Settings';
 import TutorProfile from './pages/TutorProfile';
+import AdminPanel from './pages/TestAdmin';
 
 // ----------------------------------------------------------------------
 
@@ -31,6 +32,10 @@ export default function Router() {
         { path: 'profile', element: <Profile /> },
         { path: 'tutorProfile', element: <TutorProfile />}
       ],
+    },
+    {
+      path: 'admin',
+      element: loggedIn() ? <AdminPanel /> : <Navigate to="login" />
     },
     {
       path: 'login',
