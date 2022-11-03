@@ -51,7 +51,7 @@ async function createSession(courseName, dateValue, timeValue, requestDescriptio
     }
     const length = sessionLength.toString();
     const format = meetingFormat.toString();
-    REQUESTS.create_request(requestID, time, length, date, descriptionText, userID, course, requestLocation, sessionFormat);
+    REQUESTS.create_request(time, length, date, descriptionText, userID, course, requestLocation, sessionFormat);
 }
 
 
