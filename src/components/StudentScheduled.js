@@ -9,6 +9,8 @@ import IconButton from '@mui/material/IconButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { filter } from 'lodash';
+import { DataGrid } from '@mui/x-data-grid';
+import Box from '@mui/material/Box';
 
 // material
 import {
@@ -60,7 +62,59 @@ async function printUserData() {
 }
 
 
+const columns = [
+  { field: 'id', headerName: 'ID', width: 50 },
+  {
+      field: 'firstName',
+      headerName: 'First name',
+      width: 200,
+      editable: false,
+  },
+  {
+      field: 'lastName',
+      headerName: 'Last name',
+      width: 200,
+      editable: false,
+  },
+  {
+    field: 'meetingDay',
+    headerName: 'Meeting Day',
+    width: 200,
+    editable: false,
+},
+  {
+      field: 'meetingTime',
+      headerName: 'Meeting Time',
+      width: 200,
+      editable: false,
+  },
+  {
+    field: 'location',
+    headerName: 'Location',
+    width: 200,
+    editable: false,
+},
+{
+  field: 'rate',
+  headerName: 'Rate($/hr)',
+  width: 200,
+  editable: false,
+},
+ 
+];
 
+const rows = [
+  { id: 1, lastName: 'Snow', firstName: 'Jon', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
+  { id: 2, lastName: 'Lannister', firstName: 'Cersei', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00' },
+  { id: 3, lastName: 'Lannister', firstName: 'Jaime', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
+  { id: 4, lastName: 'Stark', firstName: 'Arya', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
+  {id: 5, lastName: 'Targaryen', firstName: 'Daenerys', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
+  { id: 6, lastName: 'Melisandre', firstName: null, meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00' },
+  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00' },
+  { id: 8, lastName: 'Frances', firstName: 'Rossini', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
+  { id: 9, lastName: 'Roxie', firstName: 'Harvey', meetingDay:'Tues Jun 26' , meetingTime:'3:00pm', location: 'PMU' , rate: '26.00'},
+
+];
 
 export default function StudentScheduled() {
 
@@ -154,81 +208,16 @@ export default function StudentScheduled() {
 
     return (
 
-        <Card>
-            <Button onClick={() => {printUserData()}}>Click</Button>
-              <Scrollbar>
-                <TableContainer sx={{ minWidth: 800 }}>
-                  <Table>
-                    <UserListHead
-                      order={order}
-                      orderBy={orderBy}
-                      headLabel={TABLE_HEAD}
-                      rowCount={USERLIST.length}
-                      numSelected={selected.length}
-                      onRequestSort={handleRequestSort}
-                      onSelectAllClick={handleSelectAllClick}
-                    />
-                    <TableBody>
-                      {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                        const { id, tutorName, dateuploaded, avatarUrl, dateAndTime, location, rate, sessionsHosted, rating } = row;
-                        const isItemSelected = selected.indexOf(tutorName) !== -1;
-
-                        return (
-                          <TableRow
-                            hover
-                            key={id}
-                            tabIndex={-1}
-                            selected={isItemSelected}
-                            aria-checked={isItemSelected}>
-                            <TableCell padding="checkbox" />
-                            <TableCell component="th" scope="row" padding="none">
-                              <Stack direction="row" alignItems="center" spacing={2}>
-                                <Avatar alt={tutorName} src={avatarUrl} />
-                                <Typography variant="subtitle2" noWrap>
-                                  {tutorName}
-
-                                </Typography>
-                              </Stack>
-                            </TableCell>
-                            <TableCell align="left"> <Rating name="read-only" value={rating} readOnly /></TableCell>
-                            <TableCell align="left">{dateAndTime}</TableCell>
-                            <TableCell align="left">{location}</TableCell>
-                            <TableCell align="left">{rate}</TableCell>
-                            <TableCell align="left">{sessionsHosted}</TableCell>
-
-                          </TableRow>
-                        );
-                      })}
-                      {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                          <TableCell colSpan={6} />
-                        </TableRow>
-                      )}
-                    </TableBody>
-
-                    {isUserNotFound && (
-                      <TableBody>
-                        <TableRow>
-                          <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                            <SearchNotFound searchQuery={filterName} />
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    )}
-                  </Table>
-                </TableContainer>
-              </Scrollbar>
-
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={USERLIST.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Card>
+      <Box sx={{ height: 500, width: '100%' }}>
+      <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={20}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          experimentalFeatures={{ newEditingApi: true }}
+      />
+  </Box>
 
 
     );
