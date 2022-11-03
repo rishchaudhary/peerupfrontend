@@ -58,7 +58,6 @@ export class Requests {
         let result = Object.keys(requestInfo).map((key) => requestInfo[key]);
         /* eslint-disable no-await-in-loop */
         for (let i = 1; i < result.length; i += 1) {
-
             await this.remove_tutor_from_request(requestID, result[i]);
         }
         /* eslint-disable no-await-in-loop */
