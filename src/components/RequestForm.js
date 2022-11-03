@@ -10,6 +10,12 @@ import FormControl from '@mui/material/FormControl';
 import { LoadingButton } from '@mui/lab';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
+import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
+import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
 // material
 import {
     Stack,
@@ -17,6 +23,7 @@ import {
 
 import { ReadMoreTwoTone } from '@mui/icons-material';
 import { getAuth } from 'firebase/auth';
+import AlertModal from "./AlertModal";
 
 // User data 
 import { Requests as REQUESTS } from '../Controller/Requests';
@@ -48,8 +55,11 @@ async function createSession(courseName, dateValue, timeValue, requestDescriptio
 
 export default function RequestForm() {
 
+    const [open, setOpen] = React.useState(false);
 
     const [courseValue, setCourse] = React.useState('CS 180');
+
+    const [showAlert, setAlert] = React.useState(false);
 
     const [sessionLength, setSessionLength] = React.useState(0);
 
@@ -63,8 +73,37 @@ export default function RequestForm() {
 
     const [meetingFormat, setFormat] = React.useState(0);
 
+
+
     return (
+
+
         <FormControl>
+            <Stack direction="row" spacing={2}> 
+            
+                <Box sx={{ width: '100%' }}>
+                    <Collapse in={open}>
+                        <Alert
+                            action={
+                                <IconButton
+                                    aria-label="close"
+                                    color="inherit"
+                                    size="medium"
+                                    onClick={() => {
+                                        setOpen(false);
+                                    }}
+                                >
+                                    <CloseIcon fontSize="inherit" />
+                                </IconButton>
+                            }
+                            sx={{ mb: 2 }}
+                        >
+                            Request Posted
+                        </Alert>
+                    </Collapse>
+                  
+                </Box>
+            </Stack>
             <Stack direction="row" spacing={2}>
                 <div>
                     <InputLabel id="demo-simple-select-label">Course</InputLabel>
@@ -165,6 +204,7 @@ export default function RequestForm() {
 
             <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
                 console.log("Creating session");
+                setOpen(true);
                 createSession(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength);
             }} >
                 Submit Request
