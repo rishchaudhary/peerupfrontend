@@ -54,34 +54,39 @@ export class Requests {
     // It will change TutorAccounts/tutorID/RequestsYouAccepted for each of these tutors.
     static async delete_request(requestID) {
 
-        const requestIDUser = requestID.split('/');
-
-        const requestData = Requests.get_information(requestID);
-        const data = await requestData.then(val => {return val;});
-        const requestInfo = data.TutorsWhoAccepted;
-        let result = Object.keys(requestInfo).map((key) => requestInfo[key]);
-        console.log(result)
         /* eslint-disable no-await-in-loop */
-        for (let i = 1; i < result.length; i += 1) {
-            console.log(result[i])
-            await this.remove_tutor_from_request(requestID, result[i]);
+        for (let i = 0; i < requestIDs.length; i += 1 ) {
+            const requestIDUser = requestIDs[i].split('/');
 
-        }
-        /* eslint-disable no-await-in-loop */
-        const userData = User.get_information(data.CreatedBy);
-        const user = await userData.then(val => {return val;});
-        const userinfo = user.Requests;
-        result = Object.keys(userinfo).map((key) => userinfo[key]);
+            const requestData = Requests.get_information(requestIDs[i]);
+            const data = await requestData.then(val => {return val;});
+            const requestInfo = data.TutorsWhoAccepted;
+            let result = Object.keys(requestInfo).map((key) => requestInfo[key]);
+            console.log(result)
+            /* eslint-disable no-await-in-loop */
+            for (let i = 1; i < result.length; i += 1) {
+                console.log(result[i])
+                await this.remove_tutor_from_request(requestIDs[i], result[i]);
 
-        for (let i = 0; i < result.length; i += 1) {
-            if (requestIDUser[1] === result[i]) {
-                result.splice(i, 1);
-                await set(ref(getDatabase(), `Users/${data.CreatedBy}/Requests`), result);
-                break;
             }
-        }
+            /* eslint-disable no-await-in-loop */
+            const userData = User.get_information(data.CreatedBy);
+            const user = await userData.then(val => {return val;});
+            const userinfo = user.Requests;
+            result = Object.keys(userinfo).map((key) => userinfo[key]);
 
-        set(ref(getDatabase(), `Requests/${requestID}`), null);
+            for (let i = 0; i < result.length; i += 1) {
+                if (requestIDUser[1] === result[i]) {
+                    result.splice(i, 1);
+                    await set(ref(getDatabase(), `Users/${data.CreatedBy}/Requests`), result);
+                    break;
+                }
+            }
+
+            await set(ref(getDatabase(), `Requests/${requestIDs[i]}`), null);
+
+        }
+        /* eslint-disable no-await-in-loop */
 
     }
 
