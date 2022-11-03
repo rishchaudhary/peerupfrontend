@@ -37,6 +37,7 @@ import MatchedView from '../components/StudentMatched';
 import CompletedView from '../components/StudentCompleted';
 import ScheduledView from '../components/StudentScheduled';
 import TutorScheduled from '../components/TutorScheduled';
+import TutorCompleted from '../components/TutorCompleted';
 import Page from '../components/Page';
 
 
@@ -173,7 +174,7 @@ export default function TutorDashboardApp() {
               </Typography>
             </Stack>
 
-          <CompletedView/>
+            <TutorCompleted/>
 
           </Container>
         </TabPanel>

@@ -80,7 +80,7 @@ const columns = [
 
 
 
-export default function TutorScheduled() {
+export default function TutorCompleted() {
 
   const auth = getAuth();
 const database = getDatabase();
@@ -94,20 +94,20 @@ onValue(sessionsIdsRef, (snapshot) => {
   userSesIDs = snapshot.val();
 });
 
-console.log("Sessions IDS: ", userSesIDs);
+console.log("Completed Sessions IDS: ", userSesIDs);
 
 const userSesObjs = [];
 for(let i = 1; i < userSesIDs.length; i+= 1){
   const sessionID = userSesIDs[i];
   const sesRef = ref(database, `Sessions/${sessionID}`);
   onValue(sesRef, (snapshot) => {
-    if(!snapshot.toJSON().Completed){
-        userSesObjs.push(snapshot.val());
+    if(snapshot.toJSON().Completed){
+      userSesObjs.push(snapshot.val());
     }
-
+ 
   });
 }
-console.log("User Session Objects", userSesObjs);
+console.log("Completed User Session Objects", userSesObjs);
 
 
     return (
