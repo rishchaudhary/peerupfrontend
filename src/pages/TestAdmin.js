@@ -22,10 +22,7 @@ import { LoadingButton } from '@mui/lab';
 
 
 // Firebase
-import { ref, onValue, set, getDatabase } from "firebase/database";
-import { getAuth, updateProfile, deleteUser } from 'firebase/auth';
-
-import { ref as refStorage, getDownloadURL, uploadBytes } from 'firebase/storage';
+import { ref, getDownloadURL, getStorage } from 'firebase/storage';
 
 import {useContext, useState} from 'react';
 import { DBContext } from '../App';
@@ -36,14 +33,9 @@ import TranscriptTable from '../components/TranscriptVerificationTable';
 // mock
 import account from '../_mock/account';
 // data 
-
-
-import { storage } from '../firebaseConfig/storage';
 import { User as USER } from '../Controller/User';
 
 
-const auth = getAuth();
-const database = getDatabase();
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 200 },
@@ -162,11 +154,6 @@ export default function AdminPanel() {
                                     />
                                     <LoadingButton size="large" type="submit" variant="contained" onClick={() => {
                                         console.log("Deleting user...");
-                                        deleteUser(inputUid).then(() => {
-                                            console.log('User deleted from auth successfully');
-                                        }).catch((error) => {
-                                            console.log(error.message);
-                                        });
                                         USER.delete_account(inputUid).then(() => {
                                             console.log('User deleted from database successfully');
                                         }).catch(() => {
@@ -204,20 +191,17 @@ export default function AdminPanel() {
         }}
     />
     <LoadingButton size="large" type="submit" variant="contained" onClick={() => {
-        console.log("Deleting user...");
-        deleteUser(inputUid).then(() => {
-            console.log('User deleted from auth successfully');
-        }).catch((error) => {
-            console.log(error.message);
-        });
-        USER.delete_account(inputUid).then(() => {
-            console.log('User deleted from database successfully');
-        }).catch(() => {
-            console.log('Error deleting user from database');
-        });
-
+      // View transcript
+      getDownloadURL(ref(getStorage(), `User_data/${inputUid}/Transcript/transcript.pdf`))
+      .then((url) => {
+        const element = document.createElement("a");
+        element.href = url;
+        element.click();
+      }).catch((error) => {
+        console.log(error);
+      })
     }} >
-        Delete User
+        View Transcript
     </LoadingButton>
 </Stack>
 </Stack>                       
