@@ -27,7 +27,7 @@ export default function TransitionAlerts() {
           }
           sx={{ mb: 2 }}
         >
-          Close me!
+          Request Posted
         </Alert>
       </Collapse>
       <Button
