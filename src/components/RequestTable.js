@@ -27,6 +27,9 @@ import {
   TablePagination,
 } from '@mui/material';
 
+// firebase
+import {getDatabase, ref, onValue} from "firebase/database";
+import {getAuth} from "firebase/auth";
 
 // components
 import Scrollbar from './Scrollbar';
@@ -36,30 +39,46 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // mock
 import USERLIST from '../_mock/user';
 
+
+
 export default function RequestTable() {
 
+  const database = getDatabase();
+  const userID = getAuth().currentUser.uid;
 
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  let userReqIDs = [];
+  const reqIdsRef = ref(database, `Users/${userID}/Requests`);
+  onValue(reqIdsRef, (snapshot) => {
+    userReqIDs = snapshot.val();
+  })
+
+  console.log("REQUESTS IDS:", userReqIDs);
+
+  let userReqObjs = [];
+  const reqRef = ref(database, `Requests/${userID}`);
+  onValue(reqRef, (snapshot) => {
+    userReqObjs = snapshot.val();
+  })
+
+  console.log("Request lists", userReqObjs);
+  console.log("Request item:", userReqObjs[userID]);
 
   const TABLE_HEAD = [
-   
+
+    { id: 'Status', label: 'Status', alignRight: false },
     { id: 'Course', label: 'Course', alignRight: false },
     { id: 'Meeting Time', label: 'Meeting Time', alignRight: false },
     { id: 'Session Length', label: 'Session Length', alignRight: false },
     { id: 'Location', label: 'Location', alignRight: false },
     { id: 'Meeting Format', label: 'Meeting Format', alignRight: false },
-   
+
   ];
 
 
@@ -129,7 +148,7 @@ export default function RequestTable() {
     <Card>
 
       <Scrollbar>
-        <TableContainer sx={{ minWidth: 1000 }}>
+        <TableContainer sx={{ minWidth: 800 }}>
           <Table>
             <UserListHead
               order={order}
