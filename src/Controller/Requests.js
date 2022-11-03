@@ -21,7 +21,7 @@ export class Requests {
     // N/A for the location.
     static async create_request(requestID, startTime, length, date, description, userID, course, location, format) {
 
-        const dbRef = push(ref(getDatabase(), 'Requests'));
+        const dbRef = push(ref(getDatabase(), `Requests/${userID}`));
         await set(dbRef, {
 
             Time: startTime,
