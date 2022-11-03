@@ -44,11 +44,11 @@ import USERLIST from '../_mock/user';
 
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 200 },
+  { field: 'id', headerName: 'ID', width: 100 },
   {
       field: 'Tutor',
       headerName: 'Tutor Name',
-      width: 200,
+      width: 100,
       editable: false,
   },
   {
