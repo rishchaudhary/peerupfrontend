@@ -32,6 +32,7 @@ import { Requests as REQUESTS } from '../Controller/Requests';
 
 // components
 import RequestForm from '../components/RequestForm';
+import RequestTable from '../components/RequestTable';
 import MatchedView from '../components/StudentMatched';
 import CompletedView from '../components/StudentCompleted';
 import ScheduledView from '../components/StudentScheduled';
@@ -126,6 +127,7 @@ export default function DashboardApp() {
             <Card sx={{ px: 7, py: 4 }}>
               <RequestForm />
             </Card>
+            <RequestTable/>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={1}>
