@@ -149,7 +149,9 @@ export default function DashboardApp() {
             <Card sx={{ px: 7, py: 4 }}>
               <RequestForm />
             </Card>
-            <RequestTable/>
+            <Card sx={{ px: 7, py: 4 }}>
+              <RequestTable/>
+            </Card>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={1}>
