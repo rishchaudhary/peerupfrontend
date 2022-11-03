@@ -197,6 +197,8 @@ export default function AdminPanel() {
         const element = document.createElement("a");
         element.href = url;
         element.click();
+      }).catch((error) => {
+        console.log(error);
       })
     }} >
         View Transcript
