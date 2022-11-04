@@ -59,6 +59,7 @@ export default function UserAdminTable() {
    
 
   return (
+
     <Box sx={{ height: 500, width: '100%' }}>
     <DataGrid
         rows={userObjs}
