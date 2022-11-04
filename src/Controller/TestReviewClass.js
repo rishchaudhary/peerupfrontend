@@ -35,16 +35,26 @@ export class TestReviewClass {
 
     async test_delete_review() {
 
+        const user1 = this.reviewID.split('/');
+        console.log(user1)
+        const data4 = TestReviewClass.list_of_reviews(user1[0]);
+        const data3 = await data4.then(val => {
+            return val;
+        });
+        console.log(data3)
+        const data5 = Object.keys(data3);
         await Review.delete_review(this.reviewID);
         const user = this.reviewID.split('/');
-        const data = TestReviewClass.list_of_reviews(user[1]);
+        const data = TestReviewClass.list_of_reviews(user[0]);
         const data1 = await data.then(val => {return val;});
         if (data1 === null) {
+            console.log(`The list of reviews before deleting -- ${data5}`)
             console.log(`The deleted reviewID is ${this.reviewID}`)
             console.log(`The list of reviews are now empty`);
             return;
         }
         const data2 = Object.keys(data1);
+        console.log(`The list of reviews before deleting -- ${data5}`)
         console.log(`The deleted reviewID is ${this.reviewID}`)
         console.log(`The list of reviews are -- ${data2}`);
 
@@ -53,7 +63,7 @@ export class TestReviewClass {
     static async list_of_reviews(userID) {
 
         const db = getDatabase();
-        const tutorRef = ref(db, `Requests/${userID}`);
+        const tutorRef = ref(db, `Reviews/${userID}`);
         const snapshot = (await (get(tutorRef))).toJSON();
         return snapshot;
     }
