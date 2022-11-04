@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 // tabs
 import * as React from 'react';
 import { useState } from 'react';
@@ -25,8 +27,13 @@ import {
     Typography,
     TableContainer,
     TablePagination,
+    Toolbar,
+    alpha,
+    Tooltip,
 } from '@mui/material';
 
+import DeleteIcon from '@mui/icons-material/Delete';
+import FilterListIcon from '@mui/icons-material/FilterList';
 // firebase
 import {getDatabase, onValue, ref} from "firebase/database";
 import {getAuth} from "firebase/auth";
@@ -40,6 +47,11 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 import USERLIST from '../_mock/user';
 import {Requests as REQ} from "../Controller/Requests";
 
+
+const tutorID = getAuth().currentUser.uid;
+
+
+
 function createData(matchID, Name, Course, MeetingDate, MeetingTime, Location, Description) {
     return {
         matchID,
@@ -51,6 +63,117 @@ function createData(matchID, Name, Course, MeetingDate, MeetingTime, Location, D
         Description
     };
 }
+
+function applySortFilter(array, comparator, query) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) return order;
+        return a[1] - b[1];
+    });
+    if (query) {
+        return filter(array, (_match) => _match.Name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    }
+    return stabilizedThis.map((el) => el[0]);
+}
+
+function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
+}
+
+function getComparator(order, orderBy) {
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+
+function EnhancedTableToolbar(props) {
+    const { numSelected, checked } = props;
+    const userID = getAuth().currentUser.uid
+    const [deleteItem, setDelete] = React.useState(false);
+    const [acceptItem, setAccepted] = React.useState(false);
+
+    const handleAccept = (event) => {
+        console.log("Accepted Requests:", checked);
+        checked.forEach(requestID => REQ.add_tutor_to_request(requestID, tutorID));
+        setAccepted(true);
+    }
+
+
+    const handleDelete = (event) => {
+        console.log("Deleted Requests:", checked);
+
+        checked.forEach(requestID => REQ.delete_request(requestID, tutorID));
+
+        setDelete(true);
+    }
+
+    return (
+        <Toolbar
+            sx={{
+                pl: { sm: 2 },
+                pr: { xs: 1, sm: 1 },
+                ...(numSelected > 0 && {
+                    bgcolor: (theme) =>
+                        alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+                }),
+            }}
+        >
+            {numSelected > 0 ? (
+                <Typography
+                    sx={{ flex: '1 1 100%' }}
+                    color="inherit"
+                    variant="subtitle1"
+                    component="div"
+                >
+                    {numSelected} selected
+                </Typography>
+            ) : (
+                <Typography
+                    sx={{ flex: '1 1 100%' }}
+                    variant="h6"
+                    id="tableTitle"
+                    component="div"
+                >
+                    Select Match
+                </Typography>
+            )}
+
+            {numSelected > 0 ? (
+                <Stack direction={"row"} spacing={5}>
+                    <Tooltip title="Accept">
+                        <IconButton onClick={handleAccept}>
+                            <CheckCircleIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                        <IconButton onClick={handleDelete}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Stack>
+            ) : (
+                <Tooltip title="Filter list">
+                    <IconButton>
+                        <FilterListIcon />
+                    </IconButton>
+                </Tooltip>
+            )}
+        </Toolbar>
+    );
+}
+
+EnhancedTableToolbar.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+    checked: PropTypes.array.isRequired
+};
 
 
 export default function TutorMatched() {
@@ -68,11 +191,9 @@ export default function TutorMatched() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const [deleteReq, setDelete] = useState(false);
-    const [acceptReq, setAccept] = useState(true);
 
     const database = getDatabase();
-    const tutorID = getAuth().currentUser.uid;
+
 
     let matchIDs = [];
     const matchIdsRef = ref(database, `TutorAccounts/${tutorID}/Requests`);
@@ -131,34 +252,20 @@ export default function TutorMatched() {
         setSelected([]);
     };
 
-    function applySortFilter(array, comparator, query) {
-        const stabilizedThis = array.map((el, index) => [el, index]);
-        stabilizedThis.sort((a, b) => {
-            const order = comparator(a[0], b[0]);
-            if (order !== 0) return order;
-            return a[1] - b[1];
-        });
-        if (query) {
-            return filter(array, (_match) => _match.Name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    const handleClick = (event, matchID) => {
+        const selectedIndex = selected.indexOf(matchID);
+        let newSelected = [];
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, matchID);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
         }
-        return stabilizedThis.map((el) => el[0]);
-    }
-
-    function descendingComparator(a, b, orderBy) {
-        if (b[orderBy] < a[orderBy]) {
-            return -1;
-        }
-        if (b[orderBy] > a[orderBy]) {
-            return 1;
-        }
-        return 0;
-    }
-
-    function getComparator(order, orderBy) {
-        return order === 'desc'
-            ? (a, b) => descendingComparator(a, b, orderBy)
-            : (a, b) => -descendingComparator(a, b, orderBy);
-    }
+        setSelected(newSelected);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -169,27 +276,23 @@ export default function TutorMatched() {
         setPage(0);
     };
 
+    const handleFilterByName = (event) => {
+        setPage(0);
+        setFilterName(event.target.value);
+    };
+
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - matchRows.length) : 0;
 
     const filteredUsers = applySortFilter(matchRows, getComparator(order, orderBy), filterName);
 
     const isUserNotFound = filteredUsers.length === 0;
 
-    const handleAccept = (event) => {
-        console.log("Accepted request:", event.target.parentElement.parentElement.id);
-        // REQ.add_tutor_to_request(event.target.parentNode.parentNode.id, tutorID);
-    }
-
-    const handleDelete = (event) => {
-        console.log("Rejected request:", event.target.parentElement.parentElement.id);
-
-        // REQ.reject_request(event.target.parentNode.parentNode.id);
-    }
-
 
     return (
 
         <Card>
+            <EnhancedTableToolbar checked={selected} numSelected={selected.length} />
+
             <Scrollbar>
                 <TableContainer sx={{minWidth: 800}}>
                     <Table>
@@ -213,16 +316,17 @@ export default function TutorMatched() {
                                     Location,
                                     Description,
                                 } = row;
-                                const isItemSelected = selected.indexOf(Name) !== -1;
+                                const selectedMatch = selected.indexOf(matchID) !== -1;
 
                                 return (
                                     <TableRow
-                                        id={matchID}
                                         hover
                                         key={matchID}
                                         tabIndex={-1}
                                     >
-                                        <TableCell/>
+                                        <TableCell padding="checkbox">
+                                            <Checkbox checked={selectedMatch} onChange={(event) => handleClick(event, matchID)} />
+                                        </TableCell>
                                         <TableCell component="th" scope="row" padding="none">
                                             <Stack direction="row" alignItems="center" spacing={2}>
                                                 { /* <Avatar alt={tutorName} src={avatarUrl}/> */ }
@@ -236,16 +340,16 @@ export default function TutorMatched() {
                                         <TableCell align="left">{MeetingTime}</TableCell>
                                         <TableCell align="left">{Location}</TableCell>
                                         <TableCell align="left">{Description}</TableCell>
-                                        <TableCell align="left">
-                                            <IconButton aria-label="accept" size="large" onClick={handleAccept}>
-                                                <CheckCircleIcon fontSize="inherit"/>
-                                            </IconButton>
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            <IconButton aria-label="delete" size="large" onClick={handleDelete}>
-                                                <CancelIcon fontSize="inherit"/>
-                                            </IconButton>
-                                        </TableCell>
+                                        {/* <TableCell align="left"> */}
+                                        {/*    <IconButton aria-label="accept" size="large" onClick={handleAccept}> */}
+                                        {/*        <CheckCircleIcon fontSize="inherit"/> */}
+                                        {/*    </IconButton> */}
+                                        {/* </TableCell> */}
+                                        {/* <TableCell align="left"> */}
+                                        {/*    <IconButton value={index} aria-label="delete" size="large" onClick={handleDelete}> */}
+                                        {/*        <CancelIcon fontSize="inherit"/> */}
+                                        {/*    </IconButton> */}
+                                        {/* </TableCell> */}
                                     </TableRow>
                                 );
                             })}
