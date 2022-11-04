@@ -48,19 +48,26 @@ import USERLIST from '../_mock/user';
 
 const auth = getAuth();
 
-async function createReview(rating, content,tutorID){
+async function disputeReview(reviewID, content){
 
-    const reviewID = "420-69";
-    const userID = (auth.currentUser.uid).toString();
-
-    console.log(rating.toString());
+    const userID = getAuth().currentUser.uid;
+    const reviewUserID = `${userID}/${reviewID}`;
+    console.log(reviewUserID.toString());
     console.log(content.toString());
-    console.log("tutorid:",tutorID.toString());
 
-    REVIEW.create_review(reviewID, rating, content.toString(), userID, tutorID.toString());
+    REVIEW.dispute_review(reviewUserID, content.toString());
 
 }
 
+function createData(Rating, CreatedBy, CreatedFor,Comment, ReviewID) {
+    return {
+      Rating,
+      CreatedBy,
+      CreatedFor,
+      Comment,
+      ReviewID
+    };
+  }
 
 export default function ReviewCard() {
 
@@ -82,15 +89,41 @@ console.log("Review IDs", userReviewIDs);
 const userReviewObject = [];
 for(let i = 1; userReviewIDs.length; i+=1){
     const reviewID = userReviewIDs[i];
-    const reviewRef = ref(database, `Reviews/${userID}/${reviewID}`);
+    const reviewRef = ref(database, `Reviews/${reviewID}`);
     onValue(reviewRef, (snapshot) =>{
-        if(snapshot.toJSON()){
             userReviewObject.push(snapshot.val());
-        }
     });
 }
 
+
 console.log("User review object:", userReviewObject);
+
+/*
+let userReviewObject = [];
+const revRef = ref(database, `Reviews/${userID}`);
+onValue(revRef, (snapshot) => {
+    userReviewObject = snapshot.val();
+});
+
+console.log("User review ID length:", userReviewIDs.length);
+console.log("User review object length:", userReviewObject.length);
+
+const reqData = [];
+for (let i = 1; i < userReviewIDs.length; i += 1) {
+  const reqObj = userReviewObject[userReviewIDs[i]];
+  console.log("reqobj:", reqObj);
+  reqData.push(createData(
+      reqObj.Rating,
+      reqObj.CreatedBy,
+      reqObj.CreatedFor,
+      reqObj.Comment,
+      userReviewIDs[i]
+  ));
+}
+
+    console.log(reqData.length);
+
+*/
 
 
 let userSesIDs = [];
@@ -143,8 +176,8 @@ for (let i = 0; i < userSesObjs.length; i+= 1) {
                 </div>
                 <div paddingleft={2}>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
-                console.log("Creating Review");
-                createReview(value, comment,userSesObjs[i].TutorID)
+                console.log("Creating Dispute");
+                disputeReview("CqsJ2lFXfcYqiMLcHz9",comment);
             }} >
                 Dispute Review
             </LoadingButton>
