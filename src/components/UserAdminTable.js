@@ -62,7 +62,7 @@ export default function UserAdminTable() {
 
     <Box sx={{ height: 500, width: '100%' }}>
     <DataGrid
-        rows={userObjs}
+        rows={userIDs}
         columns={columns}
         pageSize={20}
         rowsPerPageOptions={[5]}

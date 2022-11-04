@@ -23,6 +23,7 @@ import { LoadingButton } from '@mui/lab';
 
 // Firebase
 import { ref, getDownloadURL, getStorage } from 'firebase/storage';
+import {ref as refDatabase, get, set, getDatabase } from 'firebase/database';
 
 import {useContext, useState} from 'react';
 import { DBContext } from '../App';
@@ -30,10 +31,13 @@ import { DBContext } from '../App';
 import Page from '../components/Page';
 import UserTable from '../components/UserAdminTable';
 import TranscriptTable from '../components/TranscriptVerificationTable';
+import DisputedReviewTable from '../components/DisputedReviewTable';
+import UserList from '../components/UserList';
 // mock
 import account from '../_mock/account';
 // data 
 import { User as USER } from '../Controller/User';
+import { Tutor as TUTOR } from '../Controller/Tutor';
 
 
 
@@ -108,6 +112,47 @@ function a11yProps(index) {
 
 export default function AdminPanel() {
     const [inputUid, setInputUid ] = useState();
+    const [inputCourse, setInputCourse ] = useState();
+
+    async function verifyTutorCourses() {
+      const notVerifiedRef = refDatabase(getDatabase(), `TutorAccounts/${inputUid}/NotVerifiedCourses`);
+      let oldNotVerified = [];
+      await get(notVerifiedRef).then((snapshot) => {
+        oldNotVerified = snapshot.val();
+        console.log(`oldNotVerified: ${oldNotVerified}`);
+      }).catch((error) => {
+        console.log(error);
+      });
+
+      const verifiedRef = refDatabase(getDatabase(), `TutorAccounts/${inputUid}/VerifiedCourses`);
+      let oldVerified = [];
+      await get(verifiedRef).then((snapshot) => {
+        oldVerified = snapshot.val();
+        console.log(`oldVerified: ${oldVerified}`);
+      }).catch((error) => {
+        console.log(error);
+      });
+
+      const indexNotVerified = oldNotVerified.indexOf(inputCourse);
+      if (indexNotVerified > -1) {
+        const notVerifiedRemoved = oldNotVerified.splice(indexNotVerified, 1);
+
+        console.log(`Removed ${notVerifiedRemoved} from array`);
+      }
+      console.log(`newNotVerified: ${oldNotVerified}`);
+      const indexVerified = oldVerified.indexOf(inputCourse);
+      if (indexVerified === -1 ) {
+        const elemsPushed = oldVerified.push(inputCourse);
+        console.log(`new Verified length: ${elemsPushed}`);
+        const indexNA = oldVerified.indexOf('N/A');
+        if (indexNA > -1) {
+          oldVerified.splice(indexNA, 1);
+        }
+      }
+      console.log(`new oldVerified: ${oldVerified}`);
+
+      TUTOR.update_by_admin(inputUid, oldVerified, oldNotVerified);
+    }
 
     // Tabs
     const [value, setValue] = React.useState(0);
@@ -165,7 +210,7 @@ export default function AdminPanel() {
                                     </LoadingButton>
                                 </Stack>
                             </Stack>
-                          <UserTable/>
+                          <UserList/>
           </Container>
         </TabPanel>
         <TabPanel value={value} index={1}>
@@ -204,6 +249,18 @@ export default function AdminPanel() {
     }} >
         View Transcript
     </LoadingButton>
+    <TextField 
+      id="outlined-multiline-flexible"
+      label="Enter course to verify"
+      multiline
+      maxRows={4}
+      onChange={(event) => {
+        setInputCourse(event.target.value);
+      }}
+    />
+    <LoadingButton size="large" type="submit" variant="contained" onClick={() => verifyTutorCourses()}>
+      Verify user for course
+    </LoadingButton>
 </Stack>
 </Stack>                       
 
@@ -218,41 +275,37 @@ export default function AdminPanel() {
               </Typography>
 
             </Stack>
-            <Stack spacing={0.5} mt={3} mx={3}>
+                <Stack spacing={0.5} mt={3} mx={3}>
 
-{/* User ID */}
-<Stack spacing={0.5} direction="row">
-    <TextField
-        id="outlined-multiline-flexible"
-        label="Enter User ID"
-        multiline
-        maxRows={4}
-        onChange={(event) => {
-            setInputUid(event.target.value);
-        }}
-    />
-    <LoadingButton size="large" type="submit" variant="contained" onClick={() => {
-        console.log("Deleting user...");
-        USER.delete_account(inputUid).then(() => {
-            console.log('User deleted from database successfully');
-        }).catch(() => {
-            console.log('Error deleting user from database');
-        });
+                  {/* User ID */}
+                  <Stack spacing={0.5} direction="row">
+                    <TextField
+                      id="outlined-multiline-flexible"
+                      label="Enter Review ID"
+                      multiline
+                      maxRows={4}
+                      onChange={(event) => {
+                        setInputUid(event.target.value);
+                      }}
+                    />
+                    <LoadingButton size="large" type="submit" variant="contained" onClick={() => {
+                      console.log("Deleting user...");
+                      USER.delete_account(inputUid).then(() => {
+                        console.log('User deleted from database successfully');
+                      }).catch(() => {
+                        console.log('Error deleting user from database');
+                      });
 
-    }} >
-        Delete Review
-    </LoadingButton>
-</Stack>
-</Stack>
+                    }} >
+                      Delete Review
+                    </LoadingButton>
+                  </Stack>
+                </Stack>
+                <DisputedReviewTable/>
           </Container>
         </TabPanel>
       
       </Box>
-
-
-
-
-       
       </Container>
     </Page>
     )
