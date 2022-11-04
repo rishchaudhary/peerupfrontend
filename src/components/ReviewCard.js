@@ -79,17 +79,20 @@ const userID = getAuth().currentUser.uid;
 console.log(userID);
 
 let userReviewIDs = [];
+let reviewIDs = [];
 const userReviewIdsRef = ref(database, `Reviews/${userID}`);
 onValue(userReviewIdsRef, (snapshot) => {
   userReviewIDs = snapshot.val();
+  reviewIDs = Object.keys(userReviewIDs);
+  console.log("keys:",Object.keys(userReviewIDs));
 });
 
-console.log("Review IDs", userReviewIDs);
+console.log("User review ids:",reviewIDs.length);3
 
 const userReviewObject = [];
 for(let i = 1; userReviewIDs.length; i+=1){
     const reviewID = userReviewIDs[i];
-    const reviewRef = ref(database, `Reviews/${reviewID}`);
+    const reviewRef = ref(database, `Reviews/${userID}/${reviewID}`);
     onValue(reviewRef, (snapshot) =>{
             userReviewObject.push(snapshot.val());
     });
