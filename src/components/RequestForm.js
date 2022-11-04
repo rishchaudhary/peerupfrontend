@@ -33,7 +33,14 @@ import { DBContext } from '../App';
 
 const auth = getAuth();
 
-async function createSession(courseName, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength) {
+async function createSession(courseName,
+                             dateValue,
+                             timeValue,
+                             requestDescription,
+                             requestLocation,
+                             meetingFormat,
+                             sessionLength,
+                             displayName) {
 
     const userID = (auth.currentUser.uid).toString();
     const course = courseName;
@@ -50,11 +57,13 @@ async function createSession(courseName, dateValue, timeValue, requestDescriptio
     }
     const length = sessionLength.toString();
     const format = meetingFormat.toString();
-    REQUESTS.create_request(time, length, date, descriptionText, userID, course, requestLocation, sessionFormat);
+    REQUESTS.create_request(time, length, date, descriptionText, userID, course, requestLocation, sessionFormat, displayName);
 }
 
 
 export default function RequestForm() {
+
+    const {displayName} = useContext(DBContext);
 
     const [open, setOpen] = React.useState(false);
 
@@ -219,7 +228,14 @@ export default function RequestForm() {
             <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
                 console.log("Creating session");
                 setOpen(true);
-                createSession(courseValue, dateValue, timeValue, requestDescription, requestLocation, meetingFormat, sessionLength);
+                createSession(courseValue,
+                    dateValue,
+                    timeValue,
+                    requestDescription,
+                    requestLocation,
+                    meetingFormat,
+                    sessionLength,
+                    displayName);
             }} >
                 Submit Request
             </LoadingButton>

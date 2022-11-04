@@ -19,7 +19,7 @@ export class Requests {
     // format (string) -- Online or In-Person
     // location (string) -- where the session is being hosted. If the Format is Online give
     // N/A for the location.
-    static async create_request( startTime, length, date, description, userID, course, location, format) {
+    static async create_request( startTime, length, date, description, userID, course, location, format, name) {
 
         const dbRef = push(ref(getDatabase(), `Requests/${userID}`));
         await set(dbRef, {
@@ -29,6 +29,7 @@ export class Requests {
             Date: date,
             Description: description,
             CreatedBy: userID,
+            Name: name,
             Format: format,
             Location: location,
             LanguagePreference: 'English',
