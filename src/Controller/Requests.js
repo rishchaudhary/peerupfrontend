@@ -91,11 +91,11 @@ export class Requests {
 
     }
 
-    // If the tutor wants to reject a student request, yoy must call this function
+    // If the tutor wants to reject a student request, you must call this function
     // It will remove the request from the tutor's list of requests.
     // As this function is called by the tutor side of the website, you can get the tutorID
     // by calling auth.currentUser.uid
-    static async reject_request(requestID, tutorID,) {
+    static async reject_request(requestID, tutorID) {
 
         const tutorData = Tutor.get_information(requestID);
         const tutor = await tutorData.then(val => {return val;});

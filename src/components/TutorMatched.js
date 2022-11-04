@@ -38,10 +38,12 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 
 // mock
 import USERLIST from '../_mock/user';
+import {Requests as REQ} from "../Controller/Requests";
 
-function createData(StudentName, Course, MeetingDate, MeetingTime, Location, Description) {
+function createData(matchID, Name, Course, MeetingDate, MeetingTime, Location, Description) {
     return {
-        StudentName,
+        matchID,
+        Name,
         Course,
         MeetingDate,
         MeetingTime,
@@ -66,6 +68,9 @@ export default function TutorMatched() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    const [deleteReq, setDelete] = useState(false);
+    const [acceptReq, setAccept] = useState(true);
+
     const database = getDatabase();
     const tutorID = getAuth().currentUser.uid;
 
@@ -75,7 +80,7 @@ export default function TutorMatched() {
         matchIDs = snapshot.val();
     });
     // console.log("MatchIDs: ", matchIDs);
-    const reqMatchObjs = [];
+    const matchRows = [];
 
     matchIDs.slice(1).forEach((match,) => {
         let reqMatch;
@@ -83,39 +88,24 @@ export default function TutorMatched() {
         onValue(reqMatchRef, (snapshot) => {
             reqMatch = snapshot.val();
         });
-        reqMatchObjs.push(reqMatch);
+        if (reqMatch != null) {
+            matchRows.push(createData(
+                match,
+                reqMatch.Name,
+                reqMatch.CourseWanted,
+                reqMatch.Date,
+                reqMatch.Time,
+                reqMatch.Location,
+                reqMatch.Description,
+            ));
+        }
     })
 
-    console.log("Match Objects", reqMatchObjs);
-
-    // const matchRows = [];
-    // reqMatchObjs.forEach((match) => {
-    //     let student;
-    //     console.log(match.CreatedBy);
-    //     const studentRef = ref(database, `Users/${match.CreatedBy}`);
-    //     onValue(studentRef, (snapshot) => {
-    //         student = snapshot.val();
-    //     });
-    //     console.log("Name:", student);
-    //     // matchRows.push(createData(
-    //     //     studentName,
-    //     //     match.CourseWanted,
-    //     //     match.MeetingDate,
-    //     //     match.MeetingTime,
-    //     //     match.Location,
-    //     //     match.Description
-    //     //     ));
-    // })
-    // console.log("Match Rows", matchRows);
-
-
-
-
-
+    console.log("Match Objects", matchRows);
 
 
     const TABLE_HEAD = [
-        {id: 'StudentName', label: 'Student Name', alignRight: false},
+        {id: 'Name', label: 'Student Name', alignRight: false},
         {id: 'Course', label: 'Course', alignRight: false},
         {id: 'MeetingDate', label: 'Date', alignRight: false},
         {id: 'MeetingTime', label: 'Time', alignRight: false},
@@ -134,7 +124,7 @@ export default function TutorMatched() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = USERLIST.map((n) => n.name);
+            const newSelecteds = matchRows.map((n) => n.matchID);
             setSelected(newSelecteds);
             return;
         }
@@ -149,7 +139,7 @@ export default function TutorMatched() {
             return a[1] - b[1];
         });
         if (query) {
-            return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+            return filter(array, (_match) => _match.Name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
         }
         return stabilizedThis.map((el) => el[0]);
     }
@@ -179,24 +169,35 @@ export default function TutorMatched() {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - matchRows.length) : 0;
 
-    const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+    const filteredUsers = applySortFilter(matchRows, getComparator(order, orderBy), filterName);
 
     const isUserNotFound = filteredUsers.length === 0;
+
+    const handleAccept = (event) => {
+        console.log("Accepted request:", event.target.parentElement.parentElement.id);
+        // REQ.add_tutor_to_request(event.target.parentNode.parentNode.id, tutorID);
+    }
+
+    const handleDelete = (event) => {
+        console.log("Rejected request:", event.target.parentElement.parentElement.id);
+
+        // REQ.reject_request(event.target.parentNode.parentNode.id);
+    }
 
 
     return (
 
         <Card>
             <Scrollbar>
-                <TableContainer sx={{minWidth: 1000}}>
+                <TableContainer sx={{minWidth: 800}}>
                     <Table>
                         <UserListHead
                             order={order}
                             orderBy={orderBy}
                             headLabel={TABLE_HEAD}
-                            rowCount={USERLIST.length}
+                            rowCount={matchRows.length}
                             numSelected={selected.length}
                             onRequestSort={handleRequestSort}
                             onSelectAllClick={handleSelectAllClick}
@@ -204,46 +205,47 @@ export default function TutorMatched() {
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                 const {
-                                    id,
-                                    tutorName,
-                                    dateuploaded,
-                                    avatarUrl,
-                                    dateAndTime,
-                                    location,
-                                    rate,
-                                    sessionsHosted,
-                                    rating
+                                    matchID,
+                                    Name,
+                                    Course,
+                                    MeetingDate,
+                                    MeetingTime,
+                                    Location,
+                                    Description,
                                 } = row;
-                                const isItemSelected = selected.indexOf(tutorName) !== -1;
+                                const isItemSelected = selected.indexOf(Name) !== -1;
 
                                 return (
                                     <TableRow
+                                        id={matchID}
                                         hover
-                                        key={id}
+                                        key={matchID}
                                         tabIndex={-1}
                                     >
                                         <TableCell/>
                                         <TableCell component="th" scope="row" padding="none">
                                             <Stack direction="row" alignItems="center" spacing={2}>
-                                                <Avatar alt={tutorName} src={avatarUrl}/>
+                                                { /* <Avatar alt={tutorName} src={avatarUrl}/> */ }
                                                 <Typography variant="subtitle2" noWrap>
-                                                    {tutorName}
+                                                    {Name}
                                                 </Typography>
                                             </Stack>
                                         </TableCell>
-                                        <TableCell align="left"> <Rating name="read-only" value={rating}
-                                                                         readOnly/></TableCell>
-                                        <TableCell align="left">{dateAndTime}</TableCell>
-                                        <TableCell align="left">{location}</TableCell>
-                                        <TableCell align="left">{rate}</TableCell>
-                                        <TableCell align="left">{sessionsHosted}</TableCell>
-                                        <TableCell align="left"><IconButton aria-label="delete"
-                                                                            size="large"><CheckCircleIcon
-                                            fontSize="inherit"/>
-                                        </IconButton></TableCell>
-                                        <TableCell align="left"><IconButton aria-label="delete" size="large"><CancelIcon
-                                            fontSize="inherit"/>
-                                        </IconButton></TableCell>
+                                        <TableCell align="left">{Course}</TableCell>
+                                        <TableCell align="left">{MeetingDate}</TableCell>
+                                        <TableCell align="left">{MeetingTime}</TableCell>
+                                        <TableCell align="left">{Location}</TableCell>
+                                        <TableCell align="left">{Description}</TableCell>
+                                        <TableCell align="left">
+                                            <IconButton aria-label="accept" size="large" onClick={handleAccept}>
+                                                <CheckCircleIcon fontSize="inherit"/>
+                                            </IconButton>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <IconButton aria-label="delete" size="large" onClick={handleDelete}>
+                                                <CancelIcon fontSize="inherit"/>
+                                            </IconButton>
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -270,7 +272,7 @@ export default function TutorMatched() {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={USERLIST.length}
+                count={matchRows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
