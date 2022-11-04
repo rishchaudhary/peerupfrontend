@@ -234,7 +234,7 @@ export default function SettingsProfile() {
                     </Stack>
                 </Paper>
                 <Stack direction={"row"} spacing={3} alignItems="center">
-                    <Typography variant="h6" >
+                    <Typography variant="h6" fontWeight={"medium"}>
                         New Preferred Days:
                     </Typography>
                     <ToggleButtonGroup value={days} name={'prefDays'} onChange={handlePrefDay} aria-label={'Preferred Days'}>
@@ -243,7 +243,7 @@ export default function SettingsProfile() {
                 </Stack>
 
                 <Stack direction={"row"} spacing={3} alignItems="center" >
-                    <Typography variant="h6" >
+                    <Typography variant="h6" fontWeight={"medium"}>
                         New Preferred Times:
                     </Typography>
 
