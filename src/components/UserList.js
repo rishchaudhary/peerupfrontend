@@ -88,7 +88,8 @@ export default function UserList() {
         });
    }
 
-   console.log(userIDs);
+ 
+   console.log(userObjs);
 
 const items  = [];
 const [value, setValue] = React.useState(0);
