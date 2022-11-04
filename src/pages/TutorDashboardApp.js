@@ -44,6 +44,7 @@ import Page from '../components/Page';
 
 // mock
 import USERLIST from '../_mock/user';
+import TutorMatched from "../components/TutorMatched";
 // import {onValue, ref} from "firebase/database";
 //
 // let requests = [];
@@ -151,7 +152,7 @@ export default function TutorDashboardApp() {
 
             </Stack>
 
-            <MatchedView />
+            <TutorMatched />
 
           </Container>
         </TabPanel>

@@ -128,7 +128,6 @@ export default function StudentMatched() {
   return (
 
     <Card>
-
       <Scrollbar>
         <TableContainer sx={{ minWidth: 1000 }}>
           <Table>
