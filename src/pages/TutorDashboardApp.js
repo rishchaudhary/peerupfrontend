@@ -36,6 +36,7 @@ import RequestTable from '../components/RequestTable';
 import MatchedView from '../components/StudentMatched';
 import CompletedView from '../components/StudentCompleted';
 import ScheduledView from '../components/StudentScheduled';
+import TutorReview from '../components/TutorReview';
 import TutorScheduled from '../components/TutorScheduled';
 import TutorCompleted from '../components/TutorCompleted';
 import Page from '../components/Page';
@@ -181,6 +182,8 @@ export default function TutorDashboardApp() {
                 Reviews
               </Typography>
             </Stack>
+
+            <TutorReview/>
 
           </Container>
         </TabPanel>

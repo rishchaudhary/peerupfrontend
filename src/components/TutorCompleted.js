@@ -112,7 +112,7 @@ console.log("Completed User Session Objects", userSesObjs);
 
     return (
       <Card>
-      <Box sx={{ height: 500, width: '100%' }}>
+      <Box sx={{ height: 250, width: '100%' }}>
       <DataGrid
           rows={userSesObjs}
           columns={columns}

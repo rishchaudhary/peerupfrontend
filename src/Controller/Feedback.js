@@ -1,12 +1,13 @@
-import { getDatabase, set, get, ref } from "firebase/database";
+import {getDatabase, set, get, ref, push} from "firebase/database";
 import {User} from './User'
 import { Tutor } from "./Tutor";
 
 export class Feedback {
 
-    static async create_feedback(feedbackID, rating, content, userID, tutorID) {
+    static async create_feedback(rating, content, userID, tutorID) {
 
-        set(ref(getDatabase(), `Feedback/${feedbackID}`), {
+        const dbRef = push(ref(getDatabase(), `Feedback/${userID}`));
+        await set(dbRef, {
             Rating: rating,
             Content: content,
             Disputed: false,
@@ -21,7 +22,7 @@ export class Feedback {
         });
         const reviews = data.Feedback;
         let result = Object.keys(reviews).map((key) => reviews[key]);
-        result.push(feedbackID);
+        result.push(dbRef.key);
         set(ref(getDatabase(), `TutorAccounts/${tutorID}/Feedback`), result);
 
         const userData = User.get_information(userID);
@@ -32,7 +33,7 @@ export class Feedback {
         // console.log(tutorID)
         // console.log(reviewsForTutor);
         result = Object.keys(reviewsForUser).map((key) => reviewsForUser[key]);
-        result.push(feedbackID);
+        result.push(`${tutorID}/${dbRef.key}`);
         set(ref(getDatabase(), `Users/${userID}/Feedback`), result);
 
         await User.user_rating(userID);
@@ -47,6 +48,7 @@ export class Feedback {
 
     static async delete_feedback(feedbackID) {
 
+        const feedbackUserID = feedbackID.split('/');
         const reviewData = this.getFeedbackInformation(feedbackID);
         const data = await reviewData.then(val => {
             return val;
@@ -77,7 +79,7 @@ export class Feedback {
         result = Object.keys(reviewsForTutor).map((key) => reviewsForTutor[key]);
 
         for (let i = 0; i < result.length; i += 1) {
-            if (feedbackID === result[i]) {
+            if (feedbackUserID[1] === result[i]) {
                 result.splice(i, 1);
                 set(ref(getDatabase(), `TutorAccounts/${tutor}/Feedback`), result);
                 break;

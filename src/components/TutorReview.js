@@ -36,7 +36,7 @@ import {
 // User data 
 import { getAuth } from 'firebase/auth';
 import {getDatabase, ref, onValue} from "firebase/database";
-import {Review as REVIEW} from '../Controller/Review';
+import {Feedback as FEEDBACK} from '../Controller/Feedback';
 
 // components
 import Scrollbar from './Scrollbar';
@@ -57,7 +57,7 @@ async function createReview(rating, content,studentID){
     console.log(content.toString());
     console.log("tutorid:",studentID.toString());
 
-    REVIEW.create_review(reviewID, rating, content.toString(), userID, studentID.toString());
+    FEEDBACK.create_feedback(reviewID, rating, content.toString(), studentID.toString(), userID);
 
 }
 
