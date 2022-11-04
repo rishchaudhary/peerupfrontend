@@ -48,7 +48,6 @@ import USERLIST from '../_mock/user';
 import {Requests as REQ} from "../Controller/Requests";
 
 
-const tutorID = getAuth().currentUser.uid;
 
 
 
@@ -99,6 +98,8 @@ function EnhancedTableToolbar(props) {
     const userID = getAuth().currentUser.uid
     const [deleteItem, setDelete] = React.useState(false);
     const [acceptItem, setAccepted] = React.useState(false);
+    const tutorID = getAuth().currentUser.uid;
+
 
     const handleAccept = (event) => {
         console.log("Accepted Requests:", checked);
@@ -193,6 +194,8 @@ export default function TutorMatched() {
 
 
     const database = getDatabase();
+    const tutorID = getAuth().currentUser.uid;
+
 
 
     let matchIDs = [];
