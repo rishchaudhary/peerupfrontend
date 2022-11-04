@@ -4,7 +4,7 @@ import { Tutor } from "./Tutor";
 
 export class Feedback {
 
-    static async create_feedback(feedbackID, rating, content, userID, tutorID) {
+    static async create_feedback(rating, content, userID, tutorID) {
 
         const dbRef = push(ref(getDatabase(), `Feedback/${userID}`));
         await set(dbRef, {
