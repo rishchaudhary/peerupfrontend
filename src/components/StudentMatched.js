@@ -207,48 +207,51 @@ export default function TutorMatched() {
   console.log("REQUESTS IDS:", userReqIDs);
 
   const matchRows = [];
-  userReqIDs.slice(1).forEach( (reqID) => {
-    let reqObject;
-    const reqRef = ref(database, `Requests/${userID}/${reqID}`)
-    onValue(reqRef, (snapshot) => {
-      reqObject = snapshot.val()
-    })
-    console.log("Request:", reqObject)
-    if (reqObject !== null) {
-      const tutorsAcc = reqObject.TutorsWhoAccepted
-      if (tutorsAcc.length > 1) {
-        tutorsAcc.slice(1).forEach((tutorID, index) => {
-          let tutorName;
-          const tutorNameRef = ref(database, `Users/${tutorID}/Name`)
-          onValue(tutorNameRef, (snapshot) => {
-            tutorName = snapshot.val()
-          })
+  setTimeout(() => {
+    userReqIDs.slice(1).forEach( (reqID) => {
+      let reqObject;
+      const reqRef = ref(database, `Requests/${userID}/${reqID}`)
+      onValue(reqRef, (snapshot) => {
+        reqObject = snapshot.val()
+      })
+      console.log("Request:", reqObject)
+      if (reqObject !== null) {
+        const tutorsAcc = reqObject.TutorsWhoAccepted
+        if (tutorsAcc.length > 1) {
+          tutorsAcc.slice(1).forEach((tutorID, index) => {
+            let tutorName;
+            const tutorNameRef = ref(database, `Users/${tutorID}/Name`)
+            onValue(tutorNameRef, (snapshot) => {
+              tutorName = snapshot.val()
+            })
 
-          let tutorPrice;
-          const tutorPriceRef = ref(database, `TutorAccounts/${tutorID}/Price`)
-          onValue(tutorPriceRef, (snapshot) => {
-            tutorPrice = snapshot.val()
-          })
+            let tutorPrice;
+            const tutorPriceRef = ref(database, `TutorAccounts/${tutorID}/Price`)
+            onValue(tutorPriceRef, (snapshot) => {
+              tutorPrice = snapshot.val()
+            })
 
-          if (tutorName != null && reqObject != null && tutorPrice != null) {
-            console.log("Request", reqObject)
-            console.log("Name", tutorName)
-            console.log("Tutor rate", tutorPrice)
-            matchRows.push(createData(
-                index,
-                `${userID}/${reqID}`,
-                tutorName,
-                reqObject.CourseWanted,
-                reqObject.Date,
-                reqObject.Time,
-                reqObject.Location,
-                tutorPrice,
-            ))
-          }
-        })
+            if (tutorName != null && reqObject != null && tutorPrice != null) {
+              console.log("Request", reqObject)
+              console.log("Name", tutorName)
+              console.log("Tutor rate", tutorPrice)
+              matchRows.push(createData(
+                  index,
+                  `${userID}/${reqID}`,
+                  tutorName,
+                  reqObject.CourseWanted,
+                  reqObject.Date,
+                  reqObject.Time,
+                  reqObject.Location,
+                  tutorPrice,
+              ))
+            }
+          })
+        }
       }
-    }
-  })
+    })
+  }, 1)
+
 
   console.log("Match Objects", matchRows);
 
