@@ -126,7 +126,7 @@ for (let i = 0; i < userSesObjs.length; i+= 1) {
                 <div>
                 <Rating name="read-only" value={value} readOnly />
                 </div>
-                <div>
+                <div paddingleft={2}>
                     <TextField
                         id="outlined-read-only-input"
                         label="Comment"
@@ -136,12 +136,12 @@ for (let i = 0; i < userSesObjs.length; i+= 1) {
                         }}
                     />
                 </div>
-                <div>
+                <div paddingleft={2}>
                 <TextField id="outlined-basic" label="Enter Dispute Comment" variant="outlined" value={comment} onChange={(event) => {
                             setComment(event.target.value);
                         }} />
                 </div>
-                <div>
+                <div paddingleft={2}>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
                 console.log("Creating Review");
                 createReview(value, comment,userSesObjs[i].TutorID)
