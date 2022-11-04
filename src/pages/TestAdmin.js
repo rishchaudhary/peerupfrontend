@@ -273,7 +273,32 @@ export default function AdminPanel() {
               </Typography>
 
             </Stack>
+            <Stack spacing={0.5} mt={3} mx={3}>
 
+{/* User ID */}
+<Stack spacing={0.5} direction="row">
+    <TextField
+        id="outlined-multiline-flexible"
+        label="Enter User ID"
+        multiline
+        maxRows={4}
+        onChange={(event) => {
+            setInputUid(event.target.value);
+        }}
+    />
+    <LoadingButton size="large" type="submit" variant="contained" onClick={() => {
+        console.log("Deleting user...");
+        USER.delete_account(inputUid).then(() => {
+            console.log('User deleted from database successfully');
+        }).catch(() => {
+            console.log('Error deleting user from database');
+        });
+
+    }} >
+        Delete Review
+    </LoadingButton>
+</Stack>
+</Stack>
           </Container>
         </TabPanel>
       
