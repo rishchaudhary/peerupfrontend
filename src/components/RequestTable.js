@@ -23,6 +23,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import {getDatabase, ref, onValue} from "firebase/database";
 import {getAuth} from "firebase/auth";
+import {Requests as REQ} from "../Controller/Requests";
 
 function createData(CourseWanted, Time, Length, Location, IsOnline, reqID) {
   return {
@@ -156,11 +157,18 @@ EnhancedTableHead.propTypes = {
 
 function EnhancedTableToolbar(props) {
   const { numSelected, checked } = props;
+  const userID = getAuth().currentUser.uid
   const [deleteItem, setDelete] = React.useState(false);
 
   const handleDelete = (event) => {
-    console.log(checked);
-    console.log(event);
+    console.log("Deleted Requests:", checked);
+    const deletedIDs = [];
+    checked.forEach(value => {
+      deletedIDs.push(`${userID}/${value}`);
+    });
+
+    REQ.delete_request(deletedIDs);
+
     setDelete(true);
   }
 
@@ -267,19 +275,18 @@ export default function RequestTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = reqRows.map((n,) => n.index);
-      console.log("newSelected:", newSelected);
+      const newSelected = reqRows.map((n,) => n.reqID);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, course) => {
-    const selectedIndex = selected.indexOf(course);
+  const handleClick = (event, reqID) => {
+    const selectedIndex = selected.indexOf(reqID);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, course);
+      newSelected = newSelected.concat(selected, reqID);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -307,7 +314,7 @@ export default function RequestTable() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (course) => selected.indexOf(course) !== -1;
+  const isSelected = (reqID) => selected.indexOf(reqID) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -337,17 +344,17 @@ export default function RequestTable() {
                 {stableSort(reqRows, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                      const isItemSelected = isSelected(row.CourseWanted);
+                      const isItemSelected = isSelected(row.reqID);
                       const labelId = `enhanced-table-checkbox-${index}`;
 
                       return (
                           <TableRow
                               hover
-                              onClick={(event) => handleClick(event, row.CourseWanted)}
+                              onClick={(event) => handleClick(event, row.reqID)}
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}
-                              key={row.CourseWanted}
+                              key={row.reqID}
                               selected={isItemSelected}
                           >
                             <TableCell padding="checkbox">
