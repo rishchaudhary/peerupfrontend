@@ -7,7 +7,7 @@ import {Feedback} from './Feedback'
  
 export class User {
 
-    static create_account(userID, emailAddress, fullName, major, standing, preferredDays, preferredTimings) {
+    static async create_account(userID, emailAddress, fullName, major, standing, preferredDays, preferredTimings) {
         const days = [
             {key:"Mon", value: false},
             {key:"Tue", value: false},
