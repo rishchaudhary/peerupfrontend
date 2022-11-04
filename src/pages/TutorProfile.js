@@ -25,6 +25,7 @@ import {
   // components
   import Page from '../components/Page';
   import Iconify from '../components/Iconify';
+  import ReviewCard from '../components/ReviewCard';
   
   // mock
   import account from '../_mock/account'; 
@@ -198,6 +199,10 @@ import {
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
               Reviews
             </Typography>
+          </Stack>
+
+          <Stack spacing={1} direction="col" pt={3} sx={{ alignItems: 'center' }}>
+            <ReviewCard/>
           </Stack>
 
         
