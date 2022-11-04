@@ -11,6 +11,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { filter } from 'lodash';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Divider from '@mui/material/Divider';
 
 // material
 import {
@@ -41,46 +43,7 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // mock
 import USERLIST from '../_mock/user';
 
-
-
-const columns = [
-  { field: 'id', headerName: 'ID', width: 100 },
-  {
-      field: 'Tutor',
-      headerName: 'Tutor Name',
-      width: 200,
-      editable: false,
-  },
-  {
-    field: 'Date',
-    headerName: 'Meeting Day',
-    width: 200,
-    editable: false,
-},
-  {
-      field: 'StartTime',
-      headerName: 'Meeting Time',
-      width: 200,
-      editable: false,
-  },
-  {
-    field: 'Location',
-    headerName: 'Location',
-    width: 200,
-    editable: false,
-},
-{
-  field: 'Format',
-  headerName: 'Meeting Format',
-  width: 200,
-  editable: false,
-},
- 
-];
-
-
-
-export default function StudentCompleted() {
+export default function StudentReview() {
 
 const auth = getAuth();
 const database = getDatabase();
@@ -102,30 +65,52 @@ for(let i = 1; i < userSesIDs.length; i+= 1){
   const sesRef = ref(database, `Sessions/${sessionID}`);
   onValue(sesRef, (snapshot) => {
     if(snapshot.toJSON().Completed){
-      userSesObjs.push(snapshot.val());
+      userSesObjs.push(snapshot.toJSON());
     }
  
   });
 }
 
+const items  = [];
+const [value, setValue] = React.useState(2);
+
+// <li>{userSesObjs[i].Tutor}</li>
+
+for (let i = 0; i < userSesObjs.length; i+= 1) {
+    items.push( 
+        <Paper elevation={24} padding={2}>
+            <Stack direction="row" spacing={4} padding={4}>
+                <div paddingleft={2}>
+                {userSesObjs[i].Tutor}
+                </div>
+                <div>
+                <Rating
+                    name="simple-controlled"
+                    value={value}
+                    onChange={(event, newValue) => {
+                        setValue(newValue);
+                    }}
+                />
+                </div>
+            </Stack>
+            <Divider />
+        </Paper>
+        
+        
+
+    );
+  }
+
 console.log("Completed User Session Objects", userSesObjs);
 
     return (
-      <Card>
-        <Box sx={{ height: 250, width: '100%' }}>
-          <DataGrid
-            rows={userSesObjs}
-            columns={columns}
-            pageSize={20}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            experimentalFeatures={{ newEditingApi: true }}
-          />
-        </Box>
-      </Card>
-
+    
+        <div>
+            {items}
+            
+        </div>
       
- 
+    
 
     );
 

@@ -36,6 +36,7 @@ import RequestTable from '../components/RequestTable';
 import MatchedView from '../components/StudentMatched';
 import CompletedView from '../components/StudentCompleted';
 import ScheduledView from '../components/StudentScheduled';
+import StudentReview from '../components/StudentReview';
 import Page from '../components/Page';
 
 
@@ -196,7 +197,7 @@ export default function DashboardApp() {
               </Typography>
             </Stack>
 
-            <CompletedView/>
+            <StudentReview/>
 
           </Container>
         </TabPanel>
