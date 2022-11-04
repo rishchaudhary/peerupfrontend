@@ -87,7 +87,7 @@ onValue(userReviewIdsRef, (snapshot) => {
   console.log("keys:",Object.keys(userReviewIDs));
 });
 
-console.log("User review ids:",reviewIDs.length);3
+console.log("User review ids:",reviewIDs.length);
 
 const userReviewObject = [];
 for(let i = 1; userReviewIDs.length; i+=1){
