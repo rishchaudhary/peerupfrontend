@@ -110,7 +110,7 @@ function EnhancedTableToolbar(props) {
     const handleDelete = (event) => {
         console.log("Deleted Requests:", checked);
 
-        checked.forEach(requestID => REQ.delete_request(requestID, tutorID));
+        checked.forEach(requestID => REQ.reject_request(requestID, tutorID));
 
         setDelete(true);
     }
