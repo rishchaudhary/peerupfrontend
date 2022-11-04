@@ -25,7 +25,6 @@ import {
   // components
   import Page from '../components/Page';
   import Iconify from '../components/Iconify';
-  import ProfileReview from '../components/ProfileReview';
   
   // mock
   import account from '../_mock/account'; 
@@ -201,9 +200,7 @@ import {
             </Typography>
           </Stack>
 
-          <Stack spacing={1} direction="col" pt={3} sx={{ alignItems: 'center' }}>
-            <ProfileReview/>
-          </Stack>
+        
 
 
 
