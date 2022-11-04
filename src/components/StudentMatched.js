@@ -44,8 +44,7 @@ import SearchNotFound from './SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 
 // mock
-import USERLIST from '../_mock/user';
-import {Requests as REQ} from "../Controller/Requests";
+import {Sessions as SESSION} from "../Controller/Sessions";
 
 
 
@@ -104,7 +103,7 @@ function EnhancedTableToolbar(props) {
 
   const handleAccept = (event) => {
     console.log("Accepted Requests:", checked);
-    checked.forEach(requestID => REQ.add_tutor_to_request(requestID, tutorID));
+    // checked.forEach(requestID => SESSION.create_session(checked, tutorID));
     setAccepted(true);
   }
 
@@ -112,7 +111,7 @@ function EnhancedTableToolbar(props) {
   const handleDelete = (event) => {
     console.log("Deleted Requests:", checked);
 
-    checked.forEach(requestID => REQ.reject_request(requestID, tutorID));
+    // checked.forEach(requestID => REQ.reject_request(requestID, tutorID));
 
     setDelete(true);
   }

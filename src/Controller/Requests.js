@@ -97,7 +97,7 @@ export class Requests {
     // by calling auth.currentUser.uid
     static async reject_request(requestID, tutorID) {
 
-        const tutorData = Tutor.get_information(requestID);
+        const tutorData = Tutor.get_information(tutorID);
         const tutor = await tutorData.then(val => {return val;});
         const requests = tutor.Requests;
         const result = Object.keys(requests).map((key) => requests[key]);
