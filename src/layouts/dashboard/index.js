@@ -54,6 +54,7 @@ export default function DashboardLayout() {
     userBio,
     userTutorBio,
     userLang,
+    hasTutorAcc,
   } = useContext(DBContext);
   const [, setStateDisplayName] = displayName;
   const [, setStateMajor] = major;
@@ -61,24 +62,26 @@ export default function DashboardLayout() {
   const [, setStateUserBio] = userBio;
   const [, setStateUserTutorBio] = userTutorBio;
   const [, setStateLanguage] = userLang;
+  const [, setStateTutorAcc] = hasTutorAcc;
 
-  // const [requestsLoaded, setReqLoaded] = useState(false);
-  // const requestObserver = ReactObserver();
-  // const requestRef = ref(database, `Requests/${auth.currentUser.uid}`);
-  // useEffect(() => {
-  //   requestObserver.subscribe('requests loaded', () => {
-  //     setReqLoaded(true);
-  //     if (displayNameLoaded && majorLoaded && classLoaded && bioLoaded && userLangLoaded && tutorBioLoaded) {
-  //       setEverythingLoaded(true);
-  //       console.log('everything loaded(name)');
-  //     }
-  //   });
-  //   return() => {requestObserver.unsubscribe('requests loaded');}
-  // }, []);
-  // onValue(requestRef, (snapshot) => {
-  //   setStateRequests(snapshot.val());
-  //   displayNameObserver.publish('requests loaded', null);
-  // });
+
+  const [tutorAccLoad, setTutorAccLoad] = useState(false);
+  const tutorAccObs = ReactObserver();
+  const tutorAccRef = ref(database, `Users/${auth.currentUser.uid}/HasTutorAccount`);
+  useEffect(() => {
+    tutorAccObs.subscribe('tutorAcc loaded', () => {
+      setTutorAccLoad(true);
+      if (majorLoaded && classLoaded && bioLoaded && userLangLoaded && tutorBioLoaded && displayNameLoaded) {
+        setEverythingLoaded(true);
+        console.log('everything loaded(tutorAcc)');
+      }
+    });
+    return() => {tutorAccObs.unsubscribe('tutorAcc loaded');}
+  }, []);
+  onValue(tutorAccRef, (snapshot) => {
+    setStateTutorAcc(snapshot.val());
+    tutorAccObs.publish('tutorAcc loaded', null);
+  });
 
 
   const [displayNameLoaded, setDisplayNameLoaded] = useState(false);
@@ -87,7 +90,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     displayNameObserver.subscribe('displayName loaded', () => {
       setDisplayNameLoaded(true);
-      if (majorLoaded && classLoaded && bioLoaded && userLangLoaded && tutorBioLoaded) {
+      if (majorLoaded && classLoaded && bioLoaded && userLangLoaded && tutorBioLoaded && tutorAccLoad) {
         setEverythingLoaded(true);
         console.log('everything loaded(name)');
       }
@@ -105,7 +108,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     majorObserver.subscribe('major loaded', () => {
       setMajorLoaded(true);
-      if (displayNameLoaded && classLoaded && bioLoaded && userLangLoaded && tutorBioLoaded) {
+      if (displayNameLoaded && classLoaded && bioLoaded && userLangLoaded && tutorBioLoaded && tutorAccLoad) {
         setEverythingLoaded(true);
         console.log('everything loaded(major)');
       }
@@ -123,7 +126,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     classObserver.subscribe('class loaded', () => {
       setClassLoaded(true);
-      if (displayNameLoaded && majorLoaded && bioLoaded && userLangLoaded && tutorBioLoaded) {
+      if (displayNameLoaded && majorLoaded && bioLoaded && userLangLoaded && tutorBioLoaded && tutorAccLoad) {
         setEverythingLoaded(true);
         console.log('everything loaded(class)');
       }
@@ -141,7 +144,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     bioObserver.subscribe('bio loaded', () => {
       setBioLoaded(true);
-      if (displayNameLoaded && classLoaded && majorLoaded && userLangLoaded && tutorBioLoaded) {
+      if (displayNameLoaded && classLoaded && majorLoaded && userLangLoaded && tutorBioLoaded && tutorAccLoad) {
         setEverythingLoaded(true);
         console.log('everything loaded (bio)');
       }
@@ -159,7 +162,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     langObs.subscribe('Language Loaded', () => {
       setLanguageLoaded(true);
-      if (displayNameLoaded && classLoaded && bioLoaded && majorLoaded && tutorBioLoaded) {
+      if (displayNameLoaded && classLoaded && bioLoaded && majorLoaded && tutorBioLoaded && tutorAccLoad) {
         setEverythingLoaded(true);
         console.log('everything loaded (language)');
       }
@@ -177,7 +180,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     tutorBioObserver.subscribe('tutor bio loaded', () => {
       setTutorBioLoaded(true);
-      if (displayNameLoaded && classLoaded && bioLoaded && majorLoaded && userLangLoaded) {
+      if (displayNameLoaded && classLoaded && bioLoaded && majorLoaded && userLangLoaded && tutorAccLoad) {
         setEverythingLoaded(true);
         console.log('everything loaded (tutor bio)');
       }

@@ -1,4 +1,5 @@
-
+// React
+import {useContext} from "react";
 // material
 import {
   Stack,
@@ -7,13 +8,18 @@ import {
   Divider,
 } from '@mui/material';
 // components
+
 import Page from '../components/Page';
 
 import SettingsProfile from '../sections/Settings/SettingsProfile';
 import SettingsAuth from "../sections/Settings/SettingsAuth";
+import {DBContext} from "../App";
+
 
 
 export default function Settings() {
+
+  const {hasTutorAcc} = useContext(DBContext);
 
   return (
     <Page title="Settings">
@@ -40,6 +46,16 @@ export default function Settings() {
 
             <SettingsAuth />
           </Stack>
+
+          {!hasTutorAcc[0] ?
+              <Stack alignItems={"center"} mb={5}>
+                <Typography variant={"h3"} mb={5}>
+                  Become a tutor!
+                </Typography>
+                <tutorApplication />
+              </Stack>
+              : null
+          }
 
         </Stack>
       </Container>

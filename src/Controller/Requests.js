@@ -52,7 +52,7 @@ export class Requests {
     // the requested session.
     // This function will remove each of the tutors who had accepted this request.
     // It will change TutorAccounts/tutorID/RequestsYouAccepted for each of these tutors.
-    static async delete_request(requestID) {
+    static async delete_request(requestIDs) {
 
         /* eslint-disable no-await-in-loop */
         for (let i = 0; i < requestIDs.length; i += 1 ) {
