@@ -48,16 +48,16 @@ import USERLIST from '../_mock/user';
 
 const auth = getAuth();
 
-async function createReview(rating, content,tutorID){
+async function createReview(rating, content,studentID){
 
     const reviewID = "420-69";
     const userID = (auth.currentUser.uid).toString();
 
     console.log(rating.toString());
     console.log(content.toString());
-    console.log("tutorid:",tutorID.toString());
+    console.log("tutorid:",studentID.toString());
 
-    REVIEW.create_review(reviewID, rating, content.toString(), userID, tutorID.toString());
+    REVIEW.create_review(reviewID, rating, content.toString(), userID, studentID.toString());
 
 }
 
@@ -102,7 +102,7 @@ for (let i = 0; i < userSesObjs.length; i+= 1) {
         <Paper elevation={24} padding={2}>
             <Stack direction="row" spacing={4} padding={4}>
                 <div paddingleft={2}>
-                {userSesObjs[i].Tutor}
+                {userSesObjs[i].Student}
                 </div>
                 <div>
                 <Rating
@@ -121,7 +121,7 @@ for (let i = 0; i < userSesObjs.length; i+= 1) {
                 <div>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
                 console.log("Creating Review");
-                createReview(value, comment,userSesObjs[i].TutorID)
+                createReview(value, comment,userSesObjs[i].StudentID)
             }} >
                 Submit Review
             </LoadingButton>
