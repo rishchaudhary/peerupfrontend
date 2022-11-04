@@ -57,7 +57,16 @@ async function createSession(courseName,
     }
     const length = sessionLength.toString();
     const format = meetingFormat.toString();
-    REQUESTS.create_request(time, length, date, descriptionText, userID, course, requestLocation, sessionFormat, displayName);
+    REQUESTS.create_request(time,
+        length,
+        date,
+        descriptionText,
+        userID,
+        course,
+        requestLocation,
+        sessionFormat,
+        displayName[0]
+    );
 }
 
 
