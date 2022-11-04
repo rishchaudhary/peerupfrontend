@@ -64,9 +64,9 @@ export class Requests {
             let result = Object.keys(requestInfo).map((key) => requestInfo[key]);
             console.log(result)
             /* eslint-disable no-await-in-loop */
-            for (let i = 1; i < result.length; i += 1) {
+            for (let j = 1; j < result.length; j += 1) {
                 console.log(result[i])
-                await this.remove_tutor_from_request(requestIDs[i], result[i]);
+                await this.remove_tutor_from_request(requestIDs[i], result[j]);
 
             }
             /* eslint-disable no-await-in-loop */
@@ -75,9 +75,9 @@ export class Requests {
             const userinfo = user.Requests;
             result = Object.keys(userinfo).map((key) => userinfo[key]);
 
-            for (let i = 0; i < result.length; i += 1) {
-                if (requestIDUser[1] === result[i]) {
-                    result.splice(i, 1);
+            for (let k = 0; k < result.length; k += 1) {
+                if (requestIDUser[1] === result[k]) {
+                    result.splice(k, 1);
                     await set(ref(getDatabase(), `Users/${data.CreatedBy}/Requests`), result);
                     break;
                 }
