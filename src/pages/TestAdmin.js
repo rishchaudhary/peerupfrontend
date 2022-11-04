@@ -171,49 +171,12 @@ export default function AdminPanel() {
         <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-            <Tab label="Users" {...a11yProps(0)} />
-            <Tab label="Transcripts" {...a11yProps(1)} />
-            <Tab label="Reviews" {...a11yProps(2)} />
+            <Tab label="Transcripts" {...a11yProps(0)} />
+            <Tab label="Reviews" {...a11yProps(1)} />
           </Tabs>
         </Box>
+        
         <TabPanel value={value} index={0}>
-          <Container>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-              <Typography variant="h3" gutterBottom>
-                Users
-              </Typography>
-            </Stack>
-           
-            <Stack spacing={0.5} mt={3} mx={3}>
-
-                                {/* User ID */}
-                                <Stack spacing={0.5} direction="row">
-                                    <TextField
-                                        id="outlined-multiline-flexible"
-                                        label="Enter User ID"
-                                        multiline
-                                        maxRows={4}
-                                        onChange={(event) => {
-                                            setInputUid(event.target.value);
-                                        }}
-                                    />
-                                    <LoadingButton size="large" type="submit" variant="contained" onClick={() => {
-                                        console.log("Deleting user...");
-                                        USER.delete_account(inputUid).then(() => {
-                                            console.log('User deleted from database successfully');
-                                        }).catch(() => {
-                                            console.log('Error deleting user from database');
-                                        });
-
-                                    }} >
-                                        Delete User
-                                    </LoadingButton>
-                                </Stack>
-                            </Stack>
-                          <UserList/>
-          </Container>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
@@ -267,7 +230,7 @@ export default function AdminPanel() {
             <TranscriptTable/>
           </Container>
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={value} index={1}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>

@@ -5,35 +5,34 @@ import { DataGrid } from '@mui/x-data-grid';
 const columns = [
     { field: 'id', headerName: 'ID', width: 200 },
     {
-        field: 'firstName',
+        field: 'reviewID',
         headerName: 'Review ID',
         width: 200,
         editable: false,
     },
     {
-        field: 'lastName',
-        headerName: 'Rating',
+        field: 'comment',
+        headerName: 'Review Comment',
         width: 200,
         editable: false,
     },
     {
-        field: 'emailAddress',
-        headerName: 'Content',
+      field: 'rating',
+      headerName: 'Rating',
+      width: 200,
+      editable: false,
+  },
+    {
+        field: 'disputeComment',
+        headerName: 'Dispute Comment',
         width: 200,
         editable: false,
     },
 ];
 
 const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', emailAddress:'Jon.Snow@purdue.edu' },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei',emailAddress:'Lannister.Cersei@purdue.edu' },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', emailAddress:'Lannister.Jaime@purdue.edu'  },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', emailAddress:'Arya.Stark@purdue.edu'  },
-    {id: 5, lastName: 'Targaryen', firstName: 'Daenerys', emailAddress:'Daenerys.Targaryen@purdue.edu'  },
-    { id: 6, lastName: 'Melisandre', firstName: null, emailAddress:'Melisandre@purdue.edu' },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', emailAddress:'Ferrara.Clifford@purdue.edu'  },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', emailAddress:'Rossini.Frances@purdue.edu' },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', emailAddress:'Harvey.Roxie@purdue.edu'  },
+    { id: 1, reviewID: 'CqsJ2lFXfcYqiMLcHz9', comment: 'An Alright tutor', rating:'2', disputeComment: 'Not true' },
+
   ];
 
 export default function DisputedReviewTable() {
