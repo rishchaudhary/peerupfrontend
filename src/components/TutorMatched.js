@@ -223,7 +223,7 @@ export default function TutorMatched() {
                 reqMatch.Description,
             ));
         }
-    })
+    });
 
     console.log("Match Objects", matchRows);
 
@@ -235,8 +235,6 @@ export default function TutorMatched() {
         {id: 'MeetingTime', label: 'Time', alignRight: false},
         {id: 'Location', label: 'Location', alignRight: false},
         {id: 'Description', label: 'More info', alignRight: false},
-        {id: 'Accept', label: '', alignRight: false},
-        {id: 'Reject', label: '', alignRight: false},
     ];
 
 
