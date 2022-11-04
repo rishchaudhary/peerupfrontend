@@ -56,4 +56,4 @@ export class Sessions{
         await set(ref(getDatabase(), `TutorAccounts/${tutorID}/Sessions`), result);
 
     }
-
+}
