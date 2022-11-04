@@ -1,12 +1,13 @@
-import { getDatabase, set, get, ref } from "firebase/database";
+import {getDatabase, set, get, ref, push} from "firebase/database";
 import {User} from './User'
 import { Tutor } from "./Tutor";
 
 export class Review {
 
-    static async create_review(reviewID, rating, content, userID, tutorID) {
-        
-        set(ref(getDatabase(), `Reviews/${reviewID}`), { 
+    static async create_review(rating, content, userID, tutorID) {
+
+        const dbRef = push(ref(getDatabase(), `Reviews/${userID}`));
+        await set(dbRef,  {
             Rating: rating,
             Content: content,
             Disputed: false,
@@ -19,7 +20,7 @@ export class Review {
         const data = await userData.then(val => {return val;});
         const reviews = data.Reviews;
         let result = Object.keys(reviews).map((key) => reviews[key]);
-        result.push(reviewID);
+        result.push(dbRef.key);
         set(ref(getDatabase(), `Users/${userID}/Reviews`), result);
 
         const tutorData = Tutor.get_information(tutorID);
@@ -28,7 +29,7 @@ export class Review {
         // console.log(tutorID)
         // console.log(reviewsForTutor);
         result = Object.keys(reviewsForTutor).map((key) => reviewsForTutor[key]);
-        result.push(reviewID);
+        result.push(`${userID}/${dbRef.key}`);
         set(ref(getDatabase(), `TutorAccounts/${tutorID}/ReviewsForTutor`), result);
 
         await Tutor.tutor_rating(tutorID);
@@ -43,6 +44,7 @@ export class Review {
 
     static async delete_review(reviewID) {
 
+        const reviewUserID = reviewID.split('/');
         const reviewData = this.getReviewInformation(reviewID);
         const data = await reviewData.then(val => {return val;});
         const user = data.CreatedBy;
@@ -54,7 +56,7 @@ export class Review {
         let result = Object.keys(reviews).map((key) => reviews[key]);
         
         for (let i = 0; i < result.length; i += 1) {
-            if (reviewID === result[i]) {
+            if (reviewUserID[1] === result[i]) {
                 result.splice(i, 1);
                 set(ref(getDatabase(), `Users/${user}/Reviews`), result);
                 break;
