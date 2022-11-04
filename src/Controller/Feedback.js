@@ -6,7 +6,7 @@ export class Feedback {
 
     static async create_feedback(rating, content, userID, tutorID) {
 
-        const dbRef = push(ref(getDatabase(), `Feedback/${userID}`));
+        const dbRef = push(ref(getDatabase(), `Feedback/${tutorID}`));
         await set(dbRef, {
             Rating: rating,
             Content: content,
