@@ -207,7 +207,7 @@ export default function TutorMatched() {
   console.log("REQUESTS IDS:", userReqIDs);
 
   const matchRows = [];
-  setTimeout(() => {
+  // setTimeout(() => {
     userReqIDs.slice(1).forEach( (reqID) => {
       let reqObject;
       const reqRef = ref(database, `Requests/${userID}/${reqID}`)
@@ -250,7 +250,7 @@ export default function TutorMatched() {
         }
       }
     })
-  }, 1)
+  // }, 1)
 
 
   console.log("Match Objects", matchRows);
@@ -338,12 +338,13 @@ export default function TutorMatched() {
                 {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                   const {
                     matchID,
+                    SessionID,
                     Name,
                     Course,
                     MeetingDate,
                     MeetingTime,
                     Location,
-                    Description,
+                    Rate,
                   } = row;
                   const selectedMatch = selected.indexOf(matchID) !== -1;
 
@@ -368,7 +369,7 @@ export default function TutorMatched() {
                         <TableCell align="left">{MeetingDate}</TableCell>
                         <TableCell align="left">{MeetingTime}</TableCell>
                         <TableCell align="left">{Location}</TableCell>
-                        <TableCell align="left">{Description}</TableCell>
+                        <TableCell align="left">{Rate}</TableCell>
                         {/* <TableCell align="left"> */}
                         {/*    <IconButton aria-label="accept" size="large" onClick={handleAccept}> */}
                         {/*        <CheckCircleIcon fontSize="inherit"/> */}

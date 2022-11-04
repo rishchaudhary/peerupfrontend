@@ -253,7 +253,7 @@ export default function RequestTable() {
     userReqObjs = snapshot.val();
   })
 
-  setTimeout(() => {
+   // setTimeout(() => {
     console.log("Request objects", userReqObjs);
     for (let i = 1; i < userReqIDs.length; i += 1) {
       const reqObj = userReqObjs[userReqIDs[i]];
@@ -266,7 +266,7 @@ export default function RequestTable() {
           userReqIDs[i]
       ));
     }
-  }, 1)
+    // }, 1)
 
 
   console.log("newROWS:", reqRows);
