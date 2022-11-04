@@ -16,7 +16,7 @@ export class Review {
         });
 
         const userData = User.get_information(userID);
-        const data = await userData.then(val => {return val;});reg
+        const data = await userData.then(val => {return val;});
         const reviews = data.Reviews;
         let result = Object.keys(reviews).map((key) => reviews[key]);
         result.push(reviewID);
