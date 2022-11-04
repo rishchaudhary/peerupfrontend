@@ -5,10 +5,12 @@ import { useState } from 'react';
 // ratings
 import Rating from '@mui/material/Rating';
 // button
+import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { filter } from 'lodash';
+import { LoadingButton } from '@mui/lab';
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -34,6 +36,7 @@ import {
 // User data 
 import { getAuth } from 'firebase/auth';
 import {getDatabase, ref, onValue} from "firebase/database";
+import {Review as REVIEW} from '../Controller/Review';
 
 // components
 import Scrollbar from './Scrollbar';
@@ -43,11 +46,28 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // mock
 import USERLIST from '../_mock/user';
 
+const auth = getAuth();
+
+async function createReview(rating, content,tutorID){
+
+    const reviewID = "420-69";
+    const userID = (auth.currentUser.uid).toString();
+
+    console.log(rating.toString());
+    console.log(content.toString());
+    console.log("tutorid:",tutorID.toString());
+
+    REVIEW.create_review(reviewID, rating, content.toString(), userID, tutorID.toString());
+
+}
+
+
 export default function StudentReview() {
 
-const auth = getAuth();
+
 const database = getDatabase();
 const userID = getAuth().currentUser.uid;
+
 
 console.log(userID);
 
@@ -72,7 +92,8 @@ for(let i = 1; i < userSesIDs.length; i+= 1){
 }
 
 const items  = [];
-const [value, setValue] = React.useState(2);
+const [value, setValue] = React.useState(0);
+const [comment, setComment] = React.useState('');
 
 // <li>{userSesObjs[i].Tutor}</li>
 
@@ -91,6 +112,19 @@ for (let i = 0; i < userSesObjs.length; i+= 1) {
                         setValue(newValue);
                     }}
                 />
+                </div>
+                <div>
+                <TextField id="outlined-basic" label="Enter Comment" variant="outlined" value={comment} onChange={(event) => {
+                            setComment(event.target.value);
+                        }} />
+                </div>
+                <div>
+                <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
+                console.log("Creating Review");
+                createReview(value, comment,userSesObjs[i].TutorID)
+            }} >
+                Submit Review
+            </LoadingButton>
                 </div>
             </Stack>
             <Divider />
