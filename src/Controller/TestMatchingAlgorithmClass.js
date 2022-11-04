@@ -22,7 +22,7 @@ export class TestMatchingAlgorithmClass {
         const data2 = data1.Requests;
         const result = Object.keys(data2).map((key) => data2[key]);
 
-        await Requests.create_request('1 pm', '2 hrs', '10 jan', 'CS help', 'test7', 'CS180', 'N/A', 'Online');
+        await Requests.create_request('1 pm', '2 hrs', '10 jan', 'CS help', 'test7', 'CS180', 'N/A', 'Online', 'request 127');
 
         const data3 = Tutor.get_information('test8');
         const data4 = await data3.then(val => {
