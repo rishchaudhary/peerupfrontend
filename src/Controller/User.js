@@ -30,6 +30,10 @@ export class User {
             times[preferredTimings[i]].value = true;
         }
 
+        const data = User.get_all_users();
+        const data2 = await data.then(val => {return val;});
+        const data3 = Object.keys(data2).length;
+
 
         set(ref(getDatabase(), `Users/${userID}`), {
             Name: fullName,
@@ -47,7 +51,9 @@ export class User {
             University: 'Purdue',
             Language: 'English',
             Feedback: ['Feedback ID'],
-            Rating: 0
+            Rating: 0,
+            UserID: userID,
+            id: data3
         
         })
         .then(() => "Data Saved Successfully")
@@ -237,6 +243,14 @@ export class User {
         const snapshot = (await (get(userRef))).toJSON();
         return snapshot;
         
+    }
+    
+    static async get_all_users() {
+
+        const db = getDatabase();
+        const userRef = ref(db, `Users`);
+        const snapshot = (await (get(userRef))).toJSON();
+        return snapshot;
     }
     
 } 

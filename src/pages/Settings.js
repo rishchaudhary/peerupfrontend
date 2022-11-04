@@ -13,7 +13,9 @@ import Page from '../components/Page';
 
 import SettingsProfile from '../sections/Settings/SettingsProfile';
 import SettingsAuth from "../sections/Settings/SettingsAuth";
+import TutorApplication from '../sections/Settings/TutorApplication';
 import {DBContext} from "../App";
+
 
 
 
@@ -52,7 +54,7 @@ export default function Settings() {
                 <Typography variant={"h3"} mb={5}>
                   Become a tutor!
                 </Typography>
-                <tutorApplication />
+                <TutorApplication />
               </Stack>
               : null
           }

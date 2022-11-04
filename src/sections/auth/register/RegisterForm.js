@@ -129,14 +129,14 @@ export default function RegisterForm() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
+          <RHFTextField name="firstName" label="First Name" />
+          <RHFTextField name="lastName" label="Last Name" />
         </Stack>
 
         <RHFTextField name={"major"} label={"Major"} />
 
         <FormControl >
-            <InputLabel id={"classStaning"}>Class </InputLabel>
+            <InputLabel id={"classStanding"}>Class </InputLabel>
             <Select name={"standing"} label={"Class"} value={standing} onChange={handleStanding} >
               <MenuItem value={'Freshman'}>Freshman</MenuItem>
               <MenuItem value={'Sophomore'}>Sophomore</MenuItem>
