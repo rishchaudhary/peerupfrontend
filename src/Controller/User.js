@@ -32,7 +32,14 @@ export class User {
 
         const data = User.get_all_users();
         const data2 = await data.then(val => {return val;});
-        const data3 = Object.keys(data2).length;
+        let data3;
+        if (data2 === null) {
+            data3 = 0;
+        }
+
+        else {
+            data3 = Object.keys(data2).length;
+        }
 
 
         set(ref(getDatabase(), `Users/${userID}`), {
@@ -42,7 +49,6 @@ export class User {
             Sessions: ["Session ID"],
             Requests: ["Request ID"],
             Reviews: ["Review ID"],
-            Message: ["Message ID"],
             Major: major,
             Standing: standing,
             PreferredDays: days,
