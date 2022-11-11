@@ -22,6 +22,13 @@ export class Requests {
     static async create_request( startTime, length, date, description, userID, course, location, format, name) {
 
         const dbRef = push(ref(getDatabase(), `Requests/${userID}`));
+
+
+        const userData = User.get_information(userID);
+        const data = await userData.then(val => {return val;});
+        const requestData = data.Requests;
+        const language = data.Language;
+
         await set(dbRef, {
 
             Time: startTime,
@@ -32,20 +39,18 @@ export class Requests {
             Name: name,
             Format: format,
             Location: location,
-            LanguagePreference: 'English',
+            LanguagePreference: language,
             CourseWanted: course,
-            TutorsWhoAccepted: ["N/A"]
+            Offers: ['Offer ID']
         });
 
-        const userData = User.get_information(userID);
-        const data = await userData.then(val => {return val;});
-        const requestData = data.Requests;
         const result = Object.keys(requestData).map((key) => requestData[key]);
         result.push(dbRef.key);
 
         await set(ref(getDatabase(), `Users/${userID}/Requests`), result);
-        await MatchingAlgorithm.match(`${userID}/${dbRef.key}`);
-
+        const tutorList = await MatchingAlgorithm.match(`${userID}/${dbRef.key}`);
+        await set(ref(getDatabase(), `Requests/${userID}/${dbRef.key}/MatchedTutors`), tutorList);
+        return `${userID}/${dbRef.key}`;
 
     }
 
@@ -57,17 +62,29 @@ export class Requests {
 
         /* eslint-disable no-await-in-loop */
         for (let i = 0; i < requestIDs.length; i += 1 ) {
-            const requestIDUser = requestIDs[i].split('/');
 
+            const requestIDUser = requestIDs[i].split('/');
             const requestData = Requests.get_information(requestIDs[i]);
             const data = await requestData.then(val => {return val;});
-            const requestInfo = data.TutorsWhoAccepted;
+            const requestInfo = data.MatchedTutors;
             let result = Object.keys(requestInfo).map((key) => requestInfo[key]);
             console.log(result)
             /* eslint-disable no-await-in-loop */
-            for (let j = 1; j < result.length; j += 1) {
-                console.log(result[i])
-                await this.remove_tutor_from_request(requestIDs[i], result[j]);
+            for (let j = 0; j < result.length; j += 1) {
+
+                const tutorData = Tutor.get_information(result[j]);
+                const tutor = await tutorData.then(val => {return val;});
+                const requests = tutor.Requests;
+                const result1 = Object.keys(requests).map((key) => requests[key]);
+
+                for (let m = 0; m < result.length; m += 1) {
+                    if (requestIDs[i] === result1[m]) {
+                        result1.splice(m, 1);
+                        console.log(result);
+                        await set(ref(getDatabase(), `TutorAccounts/${result[j]}/Requests`), result1);
+                        break;
+                    }
+                }
 
             }
             /* eslint-disable no-await-in-loop */
@@ -79,6 +96,7 @@ export class Requests {
             for (let k = 0; k < result.length; k += 1) {
                 if (requestIDUser[1] === result[k]) {
                     result.splice(k, 1);
+                    console.log(result);
                     await set(ref(getDatabase(), `Users/${data.CreatedBy}/Requests`), result);
                     break;
                 }
@@ -100,12 +118,27 @@ export class Requests {
         const tutorData = Tutor.get_information(tutorID);
         const tutor = await tutorData.then(val => {return val;});
         const requests = tutor.Requests;
-        const result = Object.keys(requests).map((key) => requests[key]);
+        let result = Object.keys(requests).map((key) => requests[key]);
 
         for (let i = 0; i < result.length; i += 1) {
             if (requestID === result[i]) {
                 result.splice(i, 1);
+                console.log(result);
                 await set(ref(getDatabase(), `TutorAccounts/${tutorID}/Requests`), result);
+                break;
+            }
+        }
+
+        const requestData = Requests.get_information(requestID);
+        const request = await requestData.then(val => {return val;});
+        const tutorsMatched = request.MatchedTutors;
+        result = Object.keys(tutorsMatched).map((key) => tutorsMatched[key]);
+
+        for (let j = 0; j < result.length; j += 1) {
+            if (tutorID === result[j]) {
+                result.splice(j, 1);
+                console.log(result);
+                await set(ref(getDatabase(), `Requests/${requestID}/MatchedTutors`), result);
                 break;
             }
         }
@@ -115,70 +148,23 @@ export class Requests {
     // It will add the tutor's ID to the list of tutor's who have accepted this request.
     // As this function is called by the tutor side of the website, you can get the tutorID
     // by calling auth.currentUser.uid
-    static async add_tutor_to_request(requestID, tutorID) {
+    static async add_tutor_to_request(requestID, tutorID, startTime, length, date, location, format) {
 
 
         const requestData = this.get_information(requestID);
         const data1 = await requestData.then(val => {return val;});
-        const data = data1.TutorsWhoAccepted;
-        let result = Object.keys(data).map((key) => data[key]);
-        result.push(tutorID);
-        await set(ref(getDatabase(), `Requests/${requestID}/TutorsWhoAccepted`), result);
+        const data = data1.Offers;
+        const result = (Object.keys(data).length);
 
-        const tutorData = Tutor.get_information(tutorID);
-        const data2 = await tutorData.then(val => {return val;});
-        const data3 = data2.RequestsYouAccepted;
-        result = Object.keys(data3).map((key) => data3[key]);
-        result.push(requestID);
-        await set(ref(getDatabase(), `TutorAccounts/${tutorID}/RequestsYouAccepted`), result);
-
-    }
-
-    // If the tutor has accepted the student's tutoring request and later decides that
-    // they don't want to tutor that student then call this function.
-    // This function will remove the tutor from the list of tutor's who accepted the request
-    // but will not delete that request in the tutor profile.
-    static async remove_tutor_from_request(requestID, tutorID){
-
-        const requestData = this.get_information(requestID);
-        console.log('I am here');
-        const data1 = await requestData.then(val => {return val;});
-        const data = data1.TutorsWhoAccepted;
-        let result = Object.keys(data).map((key) => data[key]);
-
-        for (let i = 0; i < result.length; i += 1) {
-            if (tutorID === result[i]) {
-                result.splice(i, 1);
-                console.log(result);
-                await set(ref(getDatabase(), `Requests/${requestID}/TutorsWhoAccepted`), result);
-                break;
-            }
-        }
-
-        const tutorData = Tutor.get_information(tutorID);
-        const data2 = await tutorData.then(val => {return val;});
-        const data3 = data2.RequestsYouAccepted;
-        const data4 = data2.Requests;
-        result = Object.keys(data3).map((key) => data3[key]);
-        console.log('I am here');
-        for (let i = 0; i < result.length; i += 1) {
-            if (requestID === result[i]) {
-                result.splice(i, 1);
-                await set(ref(getDatabase(), `TutorAccounts/${tutorID}/RequestsYouAccepted`), result);
-                break;
-            }
-        }
-
-        result = Object.keys(data4).map((key) => data4[key]);
-        console.log(result);
-        console.log('I am here');
-        for (let i = 0; i < result.length; i += 1) {
-            if (requestID === result[i]) {
-                result.splice(i, 1);
-                await set(ref(getDatabase(), `TutorAccounts/${tutorID}/Requests`), result);
-                return;
-            }
-        }
+        await set(ref(getDatabase(), `Requests/${requestID}/Offers/Offer ${result}`), {
+            Time: startTime,
+            Length: length,
+            Date: date,
+            Location: location,
+            Format: format,
+            Tutor: tutorID,
+            id: result - 1
+        },);
 
     }
 
