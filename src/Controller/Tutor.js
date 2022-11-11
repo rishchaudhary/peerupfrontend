@@ -55,7 +55,6 @@ export class Tutor {
         
         set(ref(getDatabase(), `TutorAccounts/${userID}`), {
             Sessions: ["Session ID"],
-            Offers: ['request ID'],
             Requests: ["Request ID"],
             ReviewsForTutor: ["Review ID"],
             Feedback: ['Feedback ID'],
