@@ -7,42 +7,70 @@ export class Tutor {
     // This function saves the data of a new tutor account to the database.
     // It sets the value of the HasTutorAccount field of the User class to true. This tells us that the given user is also a tutor.
     // We will use the user ID as our tutor ID.
-    static create_profile(userID, price, courses, preferredDays, preferredTimings) {
+    static async create_profile(userID, price, courses, preferredDays, preferredTimings) {
 
         set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), true);
 
-        const days = [false, false, false, false, false, false, false];
-        for (let i = 0; i < 7; i += 1) {
-            for (let j = 0; j < preferredDays.length; j += 1) {
-                if (i === preferredDays[j]) {
-                    days[i] = true;
-                }
-            }
+        const days = [
+            {key:"Mon", value: false},
+            {key:"Tue", value: false},
+            {key:"Wed", value: false},
+            {key:"Thu", value: false},
+            {key:"Fri", value: false},
+            {key:"Sat", value: false},
+            {key:"Sun", value: false},
+        ];
+        for (let i = 0; i < preferredDays.length; i += 1) {
+            days[preferredDays[i]].value = true;
         }
 
-        const times = [false, false, false];
-        for (let i = 0; i < 7; i += 1) {
-            for (let j = 0; j < preferredTimings.length; j += 1) {
-                if (i === preferredTimings[j]) {
-                    times[i] = true;
-                }
-            }
+        const times = [
+            {key:"Morning", value: false},
+            {key:"Afternoon", value: false},
+            {key:"Evening", value: false},
+        ];
+        for (let i = 0; i < preferredTimings.length; i += 1) {
+            times[preferredTimings[i]].value = true;
+        }
+
+        const badges = [
+            {badge:"Beginner Badge", description: 'Well done!!! You have hosted your first session', value: false},
+            {badge:"Bronze Badge", description: 'Well done!!! You have hosted 10 sessions', value: false},
+            {badge:"Silver Badge", description: 'Well done!!! You have hosted 25 sessions', value: false},
+            {badge:"Gold Badge", description: 'Well done!!! You have hosted 50 sessions', value: false},
+            {badge:"Pro Badge", description: 'Well done!!! You have hosted 75 sessions', value: false},
+            {badge:"Boss Badge", description: 'Well done!!! You have hosted 100 sessions', value: false},
+        ];
+
+        const data = Tutor.get_all_tutor_accounts();
+        const data2 = await data.then(val => {return val;});
+        let data3;
+        if (data2 === null) {
+            data3 = 0;
+        }
+
+        else {
+            data3 = Object.keys(data2).length;
         }
         
         set(ref(getDatabase(), `TutorAccounts/${userID}`), {
             Sessions: ["Session ID"],
-            Messages: ["Message ID"],
-            Requests: ["Request ID"],
-            Price: price,
             RequestsYouAccepted: ['request ID'],
-            Rating: 0,
-            PreferredDays: days,
-            PreferredTimings: times,
+            Requests: ["Request ID"],
             ReviewsForTutor: ["Review ID"],
+            Feedback: ['Feedback ID'],
             VerifiedCourses: ["Course Name"],
             NotVerifiedCourses: courses,
+            PreferredDays: days,
+            PreferredTimings: times,
+            Badges: badges,
+            Price: price,
+            Rating: 0,
+            SessionsCompleted: 0,
             Language: 'English',
-            Feedback: ['Feedback ID']
+            University: 'Purdue',
+            TutorID: userID,
+            ID: data3
             },
         
         ).then(() => {
@@ -147,31 +175,36 @@ export class Tutor {
     
     static update_preferred_days(userID, updatedValues) {
 
-        const days = [false, false, false, false, false, false, false];
-        for (let i = 0; i < 7; i += 1) {
-            for (let j = 0; j < updatedValues.length; j += 1) {
-                if (i === updatedValues[j]) {
-                    days[i] = true;
-                }
-            }
+        const days = [
+            {key:"Mon", value: false},
+            {key:"Tue", value: false},
+            {key:"Wed", value: false},
+            {key:"Thu", value: false},
+            {key:"Fri", value: false},
+            {key:"Sat", value: false},
+            {key:"Sun", value: false},
+        ];
+        for (let i = 0; i < updatedValues.length; i += 1) {
+            days[updatedValues[i]].value = true;
         }
-        set(ref(getDatabase(), `Users/${userID}/PreferredDays`), days);
-        
+        set(ref(getDatabase(), `TutorAccounts/${userID}/PreferredDays`), days);
+
+
     }
 
     static update_preferred_times(userID, updatedValues) {
 
-        const times = [false, false, false];
-        for (let i = 0; i < 7; i += 1) {
-            for (let j = 0; j < updatedValues.length; j += 1) {
-                if (i === updatedValues[j]) {
-                    times[i] = true;
-                }
-            }
+        const times = [
+            {key:"Morning", value: false},
+            {key:"Afternoon", value: false},
+            {key:"Evening", value: false},
+        ];
+        for (let i = 0; i < updatedValues.length; i += 1) {
+            times[updatedValues[i]].value = true;
         }
 
-        set(ref(getDatabase(), `Users/${userID}/PreferredTimings`), times);
-        
+        set(ref(getDatabase(), `TutorAccounts/${userID}/PreferredTimings`), times);
+
     }
 
     static update_language(userID, language) {
@@ -224,6 +257,42 @@ export class Tutor {
         }
     }
 
+    static async update_badge_for_tutor(userID) {
+
+        const tutorData = this.get_information(userID);
+        const data = await tutorData.then(val => {return val;});
+        const sessionsHosted = data.SessionsCompleted;
+
+        if (sessionsHosted >= 100) {
+            await set(ref(getDatabase(), `TutorAccounts/${userID}/Badges/5/value`), true);
+        }
+
+        else if (sessionsHosted >= 75) {
+            await set(ref(getDatabase(), `TutorAccounts/${userID}/Badges/4/value`), true);
+        }
+
+        else if (sessionsHosted >= 50) {
+            await set(ref(getDatabase(), `TutorAccounts/${userID}/Badges/3/value`), true);
+        }
+
+        else if (sessionsHosted >= 25) {
+            await set(ref(getDatabase(), `TutorAccounts/${userID}/Badges/2/value`), true);
+        }
+
+        else if (sessionsHosted >= 10) {
+            await set(ref(getDatabase(), `TutorAccounts/${userID}/Badges/1/value`), true);
+        }
+
+        else if (sessionsHosted >= 1) {
+            await set(ref(getDatabase(), `TutorAccounts/${userID}/Badges/0/value`), true);
+        }
+
+        else {
+            console.log('No badges earned yet!!!');
+        }
+
+    }
+
 
     // This gets the promise that contains the information about a particular tutor account.
     static async get_information(userID) {
@@ -233,6 +302,14 @@ export class Tutor {
         const snapshot = (await (get(tutorRef))).toJSON();
         return snapshot;
         
+    }
+
+    static async get_all_tutor_accounts() {
+
+        const db = getDatabase();
+        const tutorRef = ref(db, `TutorAccounts`);
+        const snapshot = (await (get(tutorRef))).toJSON();
+        return snapshot;
     }
     
 }
