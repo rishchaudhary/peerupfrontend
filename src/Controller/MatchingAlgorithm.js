@@ -15,6 +15,7 @@ export class MatchingAlgorithm{
         const tutorListData = this.get_all_tutors();
         const data2 = await tutorListData.then(val => {return val;});
         const tutorIDs = Object.keys(data2);
+        const tutorList = [];
 
         /* eslint-disable no-await-in-loop */
         for (let i = 0; i < tutorIDs.length; i += 1) {
@@ -31,6 +32,7 @@ export class MatchingAlgorithm{
 
                 if ((verifiedCoursesArray[j] === course) && (language === languageTutor)) {
 
+                    tutorList.push(tutorIDs[i]);
                     requestsArray.push(requestID);
                     set(ref(getDatabase(), `TutorAccounts/${tutorIDs[i]}/Requests`), requestsArray);
                 }
@@ -39,7 +41,7 @@ export class MatchingAlgorithm{
         }
         /* eslint-disable no-await-in-loop */
 
-
+        return tutorList;
     }
 
 
