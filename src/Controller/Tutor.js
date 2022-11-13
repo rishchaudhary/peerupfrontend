@@ -51,6 +51,37 @@ export class Tutor {
 
         else {
             data3 = Object.keys(data2).length;
+        } 
+     
+        const coursesForUniv = this.get_all_courses_for_university('Purdue');
+        const data4 = await coursesForUniv.then(val => {return val;});
+        let data5;
+        if (data4 === null) {
+            await set(ref(getDatabase(), `University/Purdue`), courses);
+        }
+
+        else {
+            data5 = Object.keys(data4).map((key) => data4[key]);
+            let found  = -1;
+
+            for (let i = 0; i < courses.length; i += 1) {
+                for (let j = 0; j < data5.length; j += 1) {
+
+                    if (courses[i] === data5[j]) {
+                        found = 1;
+                        break;
+                    }
+                }
+
+                if (found === -1) {
+                    data5.push(courses[i]);
+                }
+                else {
+                    found = -1;
+                }
+            }
+
+            await set(ref(getDatabase(), `University/Purdue`), data5);
         }
         
         set(ref(getDatabase(), `TutorAccounts/${userID}`), {
@@ -79,6 +110,15 @@ export class Tutor {
             return error
         });
 
+    }
+ 
+ 
+    static async get_all_courses_for_university(university) {
+
+        const db = getDatabase();
+        const univRef = ref(db, `University/${university}`);
+        const snapshot = (await (get(univRef))).toJSON();
+        return snapshot;
     }
 
     // This function deletes a particular tutor's data from the database.
