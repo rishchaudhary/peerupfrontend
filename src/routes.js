@@ -15,6 +15,7 @@ import Message from './pages/Message';
 import Settings from './pages/Settings';
 import TutorProfile from './pages/TutorProfile';
 import AdminPanel from './pages/TestAdmin';
+import ForgotPassword from './pages/ForgotPassword';
 
 
 // ----------------------------------------------------------------------
@@ -43,9 +44,12 @@ export default function Router() {
     },
     {
       path: 'login',
-      element: loggedIn() ? <Navigate to="/dashboard/app" /> : <Login />,
+      element: loggedIn() ? <Navigate to="/dashboard/app" /> : <Login />
     },
-    
+    {
+      path: 'forgotpassword',
+      element: loggedIn() ? <Navigate to="/dashboard/app" /> : <ForgotPassword />
+    },
     {
       path: '/register',
       element: <Register />,
