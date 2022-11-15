@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 
 // firebase storage methods
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 
 import { ReadMoreTwoTone } from '@mui/icons-material';
@@ -64,6 +64,9 @@ async function createSession(courseName,
     }
     const length = sessionLength.toString();
     const format = meetingFormat.toString();
+
+    const uploadInput = document.getElementById('usr_doc');
+
     REQUESTS.create_request(time,
         length,
         date,
@@ -72,7 +75,8 @@ async function createSession(courseName,
         course,
         requestLocation,
         sessionFormat,
-        displayName[0]
+        displayName[0],
+        uploadInput
     );
 }
 
@@ -113,7 +117,10 @@ export default function RequestForm() {
             console.log('error occured uploading file');
           });
         }
-      };
+    };
+
+
+    
 
     return (
 
@@ -228,7 +235,7 @@ export default function RequestForm() {
                 <div>
                 <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill"/>}>
             Upload Attachment 
-            <input hidden multiple type="file" id="usr_doc" name='usr_doc' onChange={uploadDoc} />
+            <input hidden multiple type="file" id="usr_doc" name='usr_doc' />
           </Button>
                 </div>
             </Stack>
