@@ -71,32 +71,82 @@ export class User {
     }
 
 
-    // needs to be edited
     static async delete_account(userID){ 
 
         const userData = User.get_information(userID);
         const data = await userData.then(val => {return val;});
         const userDataRequests = data.Requests;
         let result = Object.keys(userDataRequests).map((key) => userDataRequests[key]);
-        /* eslint-disable no-await-in-loop */
-        for (let i = 1; i < result.length; i += 1) {
-            await Requests.delete_request(result[i]);
+        const result7 = [];
+        for (let l = 1; l < result.length; l += 1) {
+            result7[l - 1] = `${userID}/${result[l]}`;
         }
-        /* eslint-disable no-await-in-loop */
+
+        console.log(result7);
+        await Requests.delete_request(result7);
+
         const userDataReviews = data.Reviews;
         result = Object.keys(userDataReviews).map((key) => userDataReviews[key]);
         /* eslint-disable no-await-in-loop */
         for (let i = 1; i < result.length; i += 1) {
-            await Review.delete_review(result[i]);
+            await Review.delete_review(`${userID}/${result[i]}`);
+        }
+
+        const feedbackData = data.Feedback;
+        const result2 = Object.keys(feedbackData).map((key) => feedbackData[key]);
+
+        /* eslint-disable no-await-in-loop */
+        for (let i = 1; i < result2.length; i += 1) {
+            const feedbackID = result2[i].split('/');
+            await remove(ref(getDatabase(), `Feedback/${result2[i]}`));
+            const tutorData = Tutor.get_information(feedbackID[0]);
+            const data3 = await tutorData.then(val => {return val;});
+            const data4 = data3.Feedback;
+            const result3 = Object.keys(data4).map((key) => data4[key]);
+
+            for (let k = 0; k < result3.length; k += 1) {
+
+                if (result3[k] === feedbackID[1]) {
+                    result3.splice(k,1);
+                    await set(ref(getDatabase(), `TutorAccounts/${feedbackID[0]}/Feedback`), result3);
+                }
+            }
         }
         /* eslint-disable no-await-in-loop */
+
+
+        const sessionData = data.Sessions;
+        const result4 = Object.keys(sessionData).map((key) => sessionData[key]);
+
+        for (let i = 1; i < result4.length; i += 1) {
+
+            const data = Sessions.get_info(`${userID}/${result4[i]}`);
+            const data2 = await data.then(val => {return val;});
+            const tutorID = data2.TutorID;
+
+            const data3 = Tutor.get_information(tutorID);
+            const data4 = await data3.then(val => {return val;});
+            const sessions = data4.Sessions;
+            const result3 = Object.keys(sessions).map((key) => sessions[key]);
+            console.log(result3);
+            for (let j = 0; j < result3.length; j += 1) {
+
+                if (result3[j] === `${userID}/${result4[i]}`) {
+                    result3.splice(j, 1);
+                    await set(ref(getDatabase(), `TutorAccounts/${tutorID}/Sessions`), result3);
+                    break;
+                }
+            }
+            await set(ref(getDatabase(), `Sessions/${userID}/${result4[i]}`), null);
+        }
+
         const hasTutorAccount = data.HasTutorAccount;
 
         if (hasTutorAccount) {
             await Tutor.delete_profile(userID);
         }
 
-        
+
         remove(ref(getDatabase(), `Users/${userID}`))
 
         .then(() => {
