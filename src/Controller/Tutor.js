@@ -1,5 +1,8 @@
 import { getDatabase,set, remove, ref, get } from "firebase/database";
 import { Review } from "./Review";
+import {User} from './User'
+import {Feedback} from './Feedback'
+import {Requests} from './Requests'
  
 export class Tutor {
     
@@ -57,11 +60,16 @@ export class Tutor {
         const data4 = await coursesForUniv.then(val => {return val;});
         let data5;
         if (data4 === null) {
-            await set(ref(getDatabase(), `University/Purdue`), courses);
+            /* eslint-disable no-await-in-loop */
+            for (let j = 0; j < courses.length; j += 1) {
+                await set(ref(getDatabase(), `University/Purdue/${courses[j]}`), 1);
+            }
+            /* eslint-disable no-await-in-loop */
         }
 
         else {
-            data5 = Object.keys(data4).map((key) => data4[key]);
+            data5 = Object.keys(data4);
+            const data6 = Object.keys(data4).map((key) => data4[key]);
             let found  = -1;
 
             for (let i = 0; i < courses.length; i += 1) {
@@ -69,19 +77,19 @@ export class Tutor {
 
                     if (courses[i] === data5[j]) {
                         found = 1;
+                        await set(ref(getDatabase(), `University/Purdue/${courses[i]}`), data6[j] + 1);
                         break;
                     }
                 }
 
                 if (found === -1) {
-                    data5.push(courses[i]);
+                    await set(ref(getDatabase(), `University/Purdue/${courses[i]}`), 1);
                 }
                 else {
                     found = -1;
                 }
             }
 
-            await set(ref(getDatabase(), `University/Purdue`), data5);
         }
         
         set(ref(getDatabase(), `TutorAccounts/${userID}`), {
@@ -125,6 +133,141 @@ export class Tutor {
     // It sets the HasTutorAccount to false. Meaning that the given user does not have a tutor account
     static async delete_profile(userID) {
         
+        const data = Tutor.get_information(userID);
+        const data1 = await data.then(val => {return val;});
+        const data2 = data1.Sessions;
+        const result = Object.keys(data2).map((key) => data2[key]);
+        /* eslint-disable no-await-in-loop */
+        for (let i = 1; i < result.length; i += 1) {
+            const sessionID = result[i].split('/');
+            await remove(ref(getDatabase(), `Sessions/${result[i]}`));
+            const userData = User.get_information(sessionID[0]);
+            const data3 = await userData.then(val => {return val;});
+            const data4 = data3.Sessions;
+            const result1 = Object.keys(data4).map((key) => data4[key]);
+
+            for (let k = 0; k < result1.length; k += 1) {
+
+                if (result1[k] === sessionID[1]) {
+                    result1.splice(k,1);
+                    await set(ref(getDatabase(), `Users/${sessionID[0]}/Sessions`), result1);
+                }
+            }
+        }
+
+        const data5 = data1.ReviewsForTutor;
+        const result2 = Object.keys(data5).map((key) => data5[key]);
+        /* eslint-disable no-await-in-loop */
+        for (let i = 1; i < result2.length; i += 1) {
+            const reviewID = result2[i].split('/');
+            await remove(ref(getDatabase(), `Reviews/${result[i]}`));
+            const userData = User.get_information(reviewID[0]);
+            const data3 = await userData.then(val => {return val;});
+            const data4 = data3.Reviews;
+            const result1 = Object.keys(data4).map((key) => data4[key]);
+
+            for (let k = 1; k < result1.length; k += 1) {
+
+                if (result1[k] === reviewID[1]) {
+                    result1.splice(k,1);
+                    await set(ref(getDatabase(), `Users/${reviewID[0]}/Reviews`), result1);
+                }
+            }
+        }
+
+        const data6 = data1.Feedback;
+        const result3 = Object.keys(data6).map((key) => data6[key]);
+        /* eslint-disable no-await-in-loop */
+        for (let i = 1; i < result3.length; i += 1) {
+            await Feedback.delete_feedback(`${userID}/${result3[i]}`);
+        }
+
+        const data7 = data1.NotVerifiedCourses;
+        const result4 = Object.keys(data7).map((key) => data7[key]);
+        const data8 = data1.VerifiedCourses;
+        const result5 = Object.keys(data8).map((key) => data8[key]);
+        const coursesForUniv = this.get_all_courses_for_university('Purdue');
+        const data9 = await coursesForUniv.then(val => {return val;});
+        const data10 = Object.keys(data9);
+        const data11 = Object.keys(data9).map((key) => data9[key]);
+
+        for (let i = 0; i < result4.length; i += 1) {
+            for (let j = 0; j < data10.length; j += 1) {
+
+                if ((result4[i] === data10[j]) && (data11[j] - 1 !== 0)) {
+
+                    await set(ref(getDatabase(), `University/Purdue/${result4[i]}`), data11[j] - 1);
+                    break;
+                }
+
+                else if ((result4[i] === data10[j]) && (data11[j] - 1 === 0)) {
+
+                    await set(ref(getDatabase(), `University/Purdue/${result4[i]}`), null);
+                    break;
+                }
+
+                else {
+                    console.log('next');
+                }
+            }
+
+        }
+
+        for (let i = 0; i < result5.length; i += 1) {
+            for (let j = 0; j < data10.length; j += 1) {
+
+                if ((result5[i] === data10[j]) && (data11[j] - 1 !== 0)) {
+
+                    await set(ref(getDatabase(), `University/Purdue/${result5[i]}`), data11[j] - 1);
+                    break;
+                }
+
+                else if ((result5[i] === data10[j]) && (data11[j] - 1 === 0)) {
+
+                    await set(ref(getDatabase(), `University/Purdue/${result5[i]}`), null);
+                    break;
+                }
+
+                else {
+                    console.log('next');
+                }
+            }
+
+        }
+
+        const data12 = data1.Requests;
+        const result6 = Object.keys(data12).map((key) => data12[key]);
+
+        for (let m = 1; m < result6.length; m += 1) {
+            const request = Requests.get_information(result6[m]);
+            const data = await request.then(val => {return val;});
+            const matchedTutors = data.MatchedTutors;
+            let result = Object.keys(matchedTutors).map((key) => matchedTutors[key]);
+
+            for (let r = 0; r < result.length; r += 1) {
+                if (result[r] === userID) {
+                    result.splice(r,1);
+                    await set(ref(getDatabase(), `Requests/${result6[m]}/MatchedTutors`), result);
+                    break;
+                }
+            }
+
+            const offers = data.Offers;
+            result = Object.keys(offers).map((key) => offers[key]);
+
+            for (let r = 1; r < result.length; r += 1) {
+                const offerData = Requests.get_offer_info(result6[m], result[r]);
+                const data = await offerData.then(val => {return val;});
+                const createdBy = data.Tutor;
+
+                if (createdBy === userID) {
+                    await set(ref(getDatabase(), `Requests/${result6[m]}/Offers/${result[r]}`), null);
+                }
+            }
+        }
+
+
+        /* eslint-disable no-await-in-loop */
         await remove(ref(getDatabase(), `TutorAccounts/${userID}`))
         await set(ref(getDatabase(), `Users/${userID}/HasTutorAccount`), false);
 
