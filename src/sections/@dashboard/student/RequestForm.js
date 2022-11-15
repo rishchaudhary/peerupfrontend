@@ -101,6 +101,21 @@ export default function RequestForm() {
 
     const {userLang} = useContext(DBContext);
 
+    const [showOtherCourse, setShowOtherCourse] = React.useState(0);
+
+    const [otherCourse, setOtherCourse] = React.useState('Other Course');
+
+
+    const handleCourse = (e) => {
+        setCourse(e.target.value);
+        if(e.target.value === "Other"){
+            setShowOtherCourse(1);
+        } else{
+            setShowOtherCourse(0);
+        }
+      }
+    
+
     const uploadDoc = () => {
         if (!auth.currentUser) {
           console.log('No document uploaded, no user logged in.');
@@ -144,7 +159,7 @@ export default function RequestForm() {
                   
                 </Box>
             </Stack>
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" sx={{ py: 2 }} spacing={2}>
                 <div>
                     <InputLabel id="demo-simple-select-label">Course</InputLabel>
                     <Select
@@ -152,14 +167,25 @@ export default function RequestForm() {
                         id="demo-simple-select"
                         value={courseValue}
                         label="Course"
-                        onChange={(e) => setCourse(e.target.value)}
+                        onChange={(e) => handleCourse(e.target.value)}
                     >
                         <MenuItem value="CS 180">CS 180</MenuItem>
                         <MenuItem value="CS 182">CS 182</MenuItem>
                         <MenuItem value="CS 240">CS 240</MenuItem>
+                        <MenuItem value="Other">Other</MenuItem>
                     </Select>
                 </div>
 
+                {showOtherCourse? <div><TextField id="outlined-basic" label="Other Course" value={otherCourse} variant="outlined" onChange={(e) => {
+                    setOtherCourse(e.target.value);
+                    }} /></div>
+                    : null
+                }
+
+
+            </Stack>
+
+            <Stack direction="row" sx={{ py: 2 }} spacing={2}>
                 <div>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
@@ -204,6 +230,29 @@ export default function RequestForm() {
 
             </Stack>
 
+            <Stack direction="row" sx={{ py: 1 }} spacing={2}>
+                <div>
+                    <Select
+                        value={meetingFormat}
+                        onChange={(e) => setFormat(e.target.value)}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                    >
+
+                        <MenuItem value={0}>Online</MenuItem>
+                        <MenuItem value={1}>In-person</MenuItem>
+                    </Select>
+                </div>
+
+                {meetingFormat? <div><TextField id="outlined-basic" label="Location" value={requestLocation} variant="outlined" onChange={(event) => {
+                        setLocation(event.target.value);
+                    }} /></div>
+                    : null
+                }
+
+              
+            </Stack>
+
 
             <Stack direction="row" sx={{ py: 2 }} spacing={2}>
                 <div>
@@ -233,29 +282,7 @@ export default function RequestForm() {
                 </div>
             </Stack>
 
-            <Stack direction="row" sx={{ py: 1 }} spacing={2}>
-                <div>
-                    <Select
-                        value={meetingFormat}
-                        onChange={(e) => setFormat(e.target.value)}
-                        displayEmpty
-                        inputProps={{ 'aria-label': 'Without label' }}
-                    >
-
-                        <MenuItem value={0}>Online</MenuItem>
-                        <MenuItem value={1}>In-person</MenuItem>
-                    </Select>
-                </div>
-
-                {meetingFormat
-                    ? <div><TextField id="outlined-basic" label="Location" value={requestLocation} variant="outlined" onChange={(event) => {
-                        setLocation(event.target.value);
-                    }} /></div>
-                    : null
-                }
-
-              
-            </Stack>
+           
 
             <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
                 console.log("Creating session");
