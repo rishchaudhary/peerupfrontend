@@ -41,6 +41,7 @@ import { DBContext } from '../../../App';
 const auth = getAuth();
 
 async function createSession(courseName,
+                             otherCourse,
                              dateValue,
                              timeValue,
                              requestDescription,
@@ -50,7 +51,7 @@ async function createSession(courseName,
                              displayName) {
 
     const userID = (auth.currentUser.uid).toString();
-    const course = courseName;
+    let course = courseName;
     const date = dateValue.toString();
     const time = `${timeValue.toString()} hrs`;
     const descriptionText = requestDescription.toString();
@@ -61,6 +62,12 @@ async function createSession(courseName,
         sessionFormat = "Online";
     } else {
         sessionFormat = "In-Person"
+    }
+
+    if ( course === "Other"){
+        console.log("Other course:" , otherCourse);
+        course = otherCourse;
+        
     }
     const length = sessionLength.toString();
     const format = meetingFormat.toString();
@@ -174,7 +181,7 @@ export default function RequestForm() {
                         id="demo-simple-select"
                         value={courseValue}
                         label="Course"
-                        onChange={(e) => handleCourse(e.target.value)}
+                        onChange={(e) => handleCourse(e)}
                     >
                         <MenuItem value="CS 180">CS 180</MenuItem>
                         <MenuItem value="CS 182">CS 182</MenuItem>
@@ -295,6 +302,7 @@ export default function RequestForm() {
                 console.log("Creating session");
                 setOpen(true);
                 createSession(courseValue,
+                    otherCourse,
                     dateValue,
                     timeValue,
                     requestDescription,
