@@ -24,11 +24,11 @@ import {
 
 import { ReadMoreTwoTone } from '@mui/icons-material';
 import { getAuth } from 'firebase/auth';
-import AlertModal from "./AlertModal";
+import AlertModal from "../../../components/AlertModal";
 
 // User data 
-import { Requests as REQUESTS } from '../Controller/Requests';
-import { DBContext } from '../App';
+import { Requests as REQUESTS } from '../../../Controller/Requests';
+import { DBContext } from '../../../App';
 
 
 const auth = getAuth();

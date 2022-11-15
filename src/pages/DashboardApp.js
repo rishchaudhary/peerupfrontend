@@ -31,12 +31,12 @@ import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 
 // components
-import RequestForm from '../components/RequestForm';
-import RequestTable from '../components/RequestTable';
-import MatchedView from '../components/StudentMatched';
-import CompletedView from '../components/StudentCompleted';
-import ScheduledView from '../components/StudentScheduled';
-import StudentReview from '../components/StudentReview';
+import RequestForm from '../sections/@dashboard/student/RequestForm';
+import RequestTable from '../sections/@dashboard/student/RequestTable';
+import MatchedView from '../sections/@dashboard/student/StudentMatched';
+import CompletedView from '../sections/@dashboard/student/StudentCompleted';
+import ScheduledView from '../sections/@dashboard/student/StudentScheduled';
+import StudentReview from '../sections/@dashboard/student/StudentReview';
 import Page from '../components/Page';
 
 

@@ -10,7 +10,6 @@ import { onValue, ref, getDatabase } from 'firebase/database';
 import { DBContext } from '../../App';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
-import USER from "../../Controller/User";
 
 const database = getDatabase();
 

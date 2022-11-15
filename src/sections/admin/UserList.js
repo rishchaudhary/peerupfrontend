@@ -36,7 +36,7 @@ import {
 // User data 
 import { getAuth } from 'firebase/auth';
 import {getDatabase, ref, onValue} from "firebase/database";
-import {Review as REVIEW} from '../Controller/Review';
+import {Review as REVIEW} from '../../Controller/Review';
 
 
 const auth = getAuth();

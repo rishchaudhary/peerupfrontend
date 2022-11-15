@@ -29,10 +29,10 @@ import {useContext, useState} from 'react';
 import { DBContext } from '../App';
 // components
 import Page from '../components/Page';
-import UserTable from '../components/UserAdminTable';
-import TranscriptTable from '../components/TranscriptVerificationTable';
-import DisputedReviewTable from '../components/DisputedReviewTable';
-import UserList from '../components/UserList';
+import UserTable from '../sections/admin/UserAdminTable';
+import TranscriptTable from '../sections/admin/TranscriptVerificationTable';
+import DisputedReviewTable from '../sections/admin/DisputedReviewTable';
+import UserList from '../sections/admin/UserList';
 // mock
 import account from '../_mock/account';
 // data 

@@ -39,12 +39,12 @@ import {getDatabase, onValue, ref} from "firebase/database";
 import {getAuth} from "firebase/auth";
 
 // components
-import Scrollbar from './Scrollbar';
-import SearchNotFound from './SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+import Scrollbar from '../../../components/Scrollbar';
+import SearchNotFound from '../../../components/SearchNotFound';
+import { UserListHead, UserListToolbar, UserMoreMenu } from '../user';
 
 // mock
-import {Sessions as SESSION} from "../Controller/Sessions";
+import {Sessions as SESSION} from "../../../Controller/Sessions";
 
 
 

@@ -39,13 +39,13 @@ import {getDatabase, onValue, ref} from "firebase/database";
 import {getAuth} from "firebase/auth";
 
 // components
-import Scrollbar from './Scrollbar';
-import SearchNotFound from './SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+import Scrollbar from '../../../components/Scrollbar';
+import SearchNotFound from '../../../components/SearchNotFound';
+import { UserListHead, UserListToolbar, UserMoreMenu } from '../user';
 
 // mock
-import USERLIST from '../_mock/user';
-import {Requests as REQ} from "../Controller/Requests";
+import USERLIST from '../../../_mock/user';
+import {Requests as REQ} from "../../../Controller/Requests";
 
 
 

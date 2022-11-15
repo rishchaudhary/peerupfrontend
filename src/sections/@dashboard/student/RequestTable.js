@@ -23,7 +23,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import {getDatabase, ref, onValue} from "firebase/database";
 import {getAuth} from "firebase/auth";
-import {Requests as REQ} from "../Controller/Requests";
+import {Requests as REQ} from "../../../Controller/Requests";
 
 function createData(CourseWanted, Time, Length, Location, IsOnline, reqID) {
   return {
