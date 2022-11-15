@@ -76,20 +76,30 @@ let reviewIDs = [];
 const userReviewIdsRef = ref(database, `Reviews/${userID}`);
 onValue(userReviewIdsRef, (snapshot) => {
   userReviewIDs = snapshot.val();
-  reviewIDs = Object.keys(userReviewIDs);
-  console.log("keys:",Object.keys(userReviewIDs));
+  if (userReviewIDs != null) {
+    reviewIDs = Object.keys(userReviewIDs);
+    console.log("keys:",Object.keys(userReviewIDs));
+  } else {
+    reviewIDs = null;
+    console.log("no reviews for current user");
+  }
+  
 });
-
-console.log("User review ids:",reviewIDs.length);
-
+if (reviewIDs != null) {
+  console.log("User review ids:",reviewIDs.length);
+}
 const userReviewObject = [];
-for(let i = 1; userReviewIDs.length; i+=1){
+if(reviewIDs != null) {
+  for(let i = 1; userReviewIDs.length; i+=1){
     const reviewID = userReviewIDs[i];
     const reviewRef = ref(database, `Reviews/${userID}/${reviewID}`);
     onValue(reviewRef, (snapshot) =>{
             userReviewObject.push(snapshot.val());
     });
+  }
 }
+
+
 
 
 console.log("User review object:", userReviewObject);

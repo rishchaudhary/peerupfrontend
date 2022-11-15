@@ -27,6 +27,7 @@ const DBContextProvider = props => {
   const [userLang, setLanguage] = useState("language");
   const [userTutorBio, setUserTutorBio] = useState("tutor bio");
   const [hasTutorAcc, setTutorAccount] = useState(false);
+  const [tutorPFPURL, setTutorPFPURL] = useState(false);
 
   return (
     <DBContext.Provider
@@ -37,7 +38,8 @@ const DBContextProvider = props => {
         userBio: [userBio, setUserBio],
         userLang: [userLang, setLanguage],
         userTutorBio: [userTutorBio, setUserTutorBio],
-        hasTutorAcc: [hasTutorAcc, setTutorAccount]
+        hasTutorAcc: [hasTutorAcc, setTutorAccount],
+        tutorPFPURL: [tutorPFPURL, setTutorPFPURL]
       }}
     >
       {props.children}
