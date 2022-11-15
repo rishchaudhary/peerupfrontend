@@ -22,13 +22,20 @@ import {
     Stack,
 } from '@mui/material';
 
-import { ReadMoreTwoTone } from '@mui/icons-material';
+// firebase storage methods
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
+
+import { ReadMoreTwoTone } from '@mui/icons-material';
+import { storage, } from '../../../firebaseConfig/storage';
 import AlertModal from "../../../components/AlertModal";
+
+import Iconify from '../../../components/Iconify';
 
 // User data 
 import { Requests as REQUESTS } from '../../../Controller/Requests';
 import { DBContext } from '../../../App';
+
 
 
 const auth = getAuth();
@@ -94,9 +101,19 @@ export default function RequestForm() {
 
     const {userLang} = useContext(DBContext);
 
-    
-
-
+    const uploadDoc = () => {
+        if (!auth.currentUser) {
+          console.log('No document uploaded, no user logged in.');
+        } else {
+          const selectedFile = document.getElementById('usr_doc').files[0];
+          const storageRef = ref(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
+          uploadBytes(storageRef, selectedFile).then((snapshot) => {
+            console.log('Uploaded file');
+          }).catch(() => {
+            console.log('error occured uploading file');
+          });
+        }
+      };
 
     return (
 
@@ -207,6 +224,12 @@ export default function RequestForm() {
                         id="outlined-disabled"
                         label={userLang}
                     />
+                </div>
+                <div>
+                <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill"/>}>
+            Upload Attachment 
+            <input hidden multiple type="file" id="usr_doc" name='usr_doc' onChange={uploadDoc} />
+          </Button>
                 </div>
             </Stack>
 
