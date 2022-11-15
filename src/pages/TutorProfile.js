@@ -13,12 +13,14 @@ import {
     Typography,
     Stack,
     TextField,
+    IconButton
   } from '@mui/material';
   import VerifiedIcon from '@mui/icons-material/Verified';
+  import { PhotoCamera } from '@mui/icons-material';
   import { useContext } from 'react';
   import { getAuth } from 'firebase/auth';
   import { ref, onValue, set, getDatabase } from 'firebase/database';
-  import { getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
+  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
   
   
   import { DBContext } from '../App';
@@ -33,16 +35,17 @@ import {
 
   const auth = getAuth();
   const database = getDatabase();
+  const storage = getStorage();
 
   const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
   export default function TutorProfile() {
-    const {displayName, major, userClass, userBio, userTutorBio} = useContext(DBContext);
+    const {displayName, major, userClass, userBio, userLang, userTutorBio, hasTutorAcct, tutorPFPURL} = useContext(DBContext);
     const [stateDisplayName, setStateDisplayName] = displayName;
     const [stateMajor, setStateMajor] = major;
     const [stateUserClass, setStateUserClass] = userClass;
     const [stateUserTutorBio, setStateUserTutorBio] = userTutorBio;
-    const usrProfilePicURL = auth.currentUser.photoURL;
+    const [usrProfilePicURL, setTutorPFP] = tutorPFPURL;
 
     const handleUpdateTutorBio = () => {
       set(ref(database, `Users/${auth.currentUser.uid}/TutorBio`), document.getElementById('usrTutorBio').value);
@@ -59,6 +62,23 @@ import {
         console.log('Error uploading transcript');
       });
     }
+
+    const updatePFP = () => {
+      const newPFPFile = document.getElementById("newpfp").files[0];
+      const newPFPRef = storageRef(storage, `User_data/${auth.currentUser.uid}/${newPFPFile.name}`);
+      uploadBytes(newPFPRef, newPFPFile).then((snapshot) => {
+          console.log('Uploaded file', snapshot);
+          getDownloadURL(newPFPRef)
+          .then((url) => {
+              console.log(url);
+              set(ref(database,`Users/${auth.currentUser.uid}/TutorPFPURL`),url);
+          }).catch((error) => {
+              console.log('error getting download url ', error);
+          })
+      }).catch((error) => {
+          console.log('error uploading new pfp ', error);
+      })
+  }
 
     return (
       <Page title="Profile">
@@ -104,6 +124,13 @@ import {
           {/* Stack for bottom section of profile page */}
           <Stack spacing={0.5} mt={3} mx={3}>
             
+            <Stack direction={"row"} spacing={2} alignItems="left">
+              <IconButton color="primary" aria-label="upload profile picture" component="label">
+                <input hidden accept="image/*" type="file" id="newpfp" onChange={updatePFP} />
+                <PhotoCamera />
+              </IconButton>
+            </Stack>
+
             {/* Stack 1: major */}
             <Stack spacing = {0.5} direction="row">
               <Typography variant="body" gutterBottom sx={{fontWeight: 'medium'}}>

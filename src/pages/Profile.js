@@ -11,6 +11,7 @@ import {
   Typography,
   Stack,
   TextField,
+  IconButton,
 } from '@mui/material';
 
 // Firebase
@@ -31,6 +32,7 @@ import account from '../_mock/account';
 
 import { storage } from '../firebaseConfig/storage';
 import { User as USER } from '../Controller/User';
+// import { PhotoCamera } from '@mui/icons-material';
 
 
 const auth = getAuth();
@@ -183,7 +185,6 @@ export default function Profile() {
               {stateUserClass}
             </Typography>
           </Stack>
-
           <Paper elevation={2} sx={{ height: 200}}>
             <Stack 
             spacing = {0.5} 

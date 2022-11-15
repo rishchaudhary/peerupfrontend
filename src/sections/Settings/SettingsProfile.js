@@ -18,15 +18,16 @@ import {
     Paper,
     Divider,
     Collapse,
-    IconButton, Box, Button,
+    IconButton, Box, Button, Avatar,
 } from '@mui/material';
+import { PhotoCamera } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { LoadingButton } from '@mui/lab';
 import {Alert} from "@mui/joy";
 
 import {onValue, ref, getDatabase} from "firebase/database";
-import { getAuth } from 'firebase/auth';
-import { storage } from '../../firebaseConfig/storage';
+import { getAuth, updateProfile } from 'firebase/auth';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 // components
 import { FormProvider } from '../../components/hook-form';
 
@@ -35,6 +36,8 @@ import {DBContext} from "../../App";
 
 
 // ----------------------------------------------------------------------
+
+const storage = getStorage();
 
 function mapToggles(value, index) {
     // console.log(value);
@@ -165,11 +168,45 @@ export default function SettingsProfile() {
         data.Language = updatedLang;
 
         navigate('/profile', {replace: true});
+        
     };
+
+    const [displayPhotoURL, updateDisplayPhotoURL] = useState(auth.currentUser.photoURL);
+    const [newPFP, setNewPFP] = useState(false);
+
+    const updatePFP = () => {
+        const newPFPFile = document.getElementById("newpfp").files[0];
+        const newPFPRef = storageRef(storage, `User_data/${auth.currentUser.uid}/${newPFPFile.name}`);
+        uploadBytes(newPFPRef, newPFPFile).then((snapshot) => {
+            console.log('Uploaded file', snapshot);
+            getDownloadURL(newPFPRef)
+            .then((url) => {
+                console.log(url);
+                updateProfile(auth.currentUser, {
+                    photoURL: url
+                }).then(() => {
+                    console.log('PFP url updated to', auth.currentUser.photoURL);
+                }).catch((error) => {
+                    console.log('error updating profile ', error);
+                })
+            }).catch((error) => {
+                console.log('error getting download url ', error);
+            })
+        }).catch((error) => {
+            console.log('error uploading new pfp ', error);
+        })
+    }
 
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={3} sx={{pl: 5}} mb={5}>
+                <Stack direction={"row"} spacing={2} alignItems="left">
+                    <Avatar
+                    src={displayPhotoURL}
+                    style= {{border: '1px solid lightgray'}}
+                    sx={{ width: 150, height: 150,}}
+                    />
+                </Stack>
                 <Stack direction={"row"} spacing={2} alignItems="center">
                     <Typography variant={"h6"} fontWeight={'medium'}>
                         {"Edit Name:"}
@@ -193,11 +230,11 @@ export default function SettingsProfile() {
                         <Select
                             name={"standing"}
                             label={"Class"}
-                            value={userClass}
+                            value={userClass[0]}
                             onChange={handleStanding}
                             renderValue={(selected) => {
                                 if (!selected) {
-                                    return <em>{userClass}</em>;
+                                    return <em>{userClass[0]}</em>;
                                 }
                                 return selected;
                             }}
@@ -211,6 +248,12 @@ export default function SettingsProfile() {
                             <MenuItem value={'Senior'}>Senior</MenuItem>
                         </Select>
                     </FormControl>
+                </Stack>
+                <Stack direction={"row"} spacing={2} alignItems="left">
+                    <IconButton color="primary" aria-label="upload profile picture" component="label">
+                        <input hidden accept="image/*" type="file" id="newpfp" onChange={updatePFP} />
+                        <PhotoCamera />
+                    </IconButton>
                 </Stack>
                 <Paper elevation={2} sx={{ height: 200}}>
                     <Stack
@@ -227,6 +270,7 @@ export default function SettingsProfile() {
                             label={"Enter new Bio"}
                             minRows={5}
                             maxRows={5}
+                            defaultValue={userBio[0]}
                             margin="dense"
                             variant="outlined"
                             onBlur={handleUpdateBio}
