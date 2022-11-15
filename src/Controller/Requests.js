@@ -229,5 +229,13 @@ export class Requests {
         const info = await snapshot.then(val => {return val;});
         return info;
     }
+    
+    static async get_offer_info(requestID, offerID) {
+
+        const db = getDatabase();
+        const offerRef = ref(db, `Requests/${requestID}/Offers/${offerID}`);
+        const snapshot = (await (get(offerRef))).toJSON();
+        return snapshot;
+    }
 
 }
