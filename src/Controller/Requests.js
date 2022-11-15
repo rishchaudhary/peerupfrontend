@@ -1,4 +1,5 @@
 import { getDatabase, get, set, ref, push } from "firebase/database";
+import { getStorage, ref as storageRef, getDownloadURL, uploadBytes } from "firebase/storage";
 import { User } from "./User";
 import {Tutor} from "./Tutor";
 import {MatchingAlgorithm} from "./MatchingAlgorithm";
@@ -19,10 +20,27 @@ export class Requests {
     // format (string) -- Online or In-Person
     // location (string) -- where the session is being hosted. If the Format is Online give
     // N/A for the location.
-    static async create_request( startTime, length, date, description, userID, course, location, format, name) {
+    static async create_request( startTime, length, date, description, userID, course, location, format, name, fileAttachments) {
 
         const dbRef = push(ref(getDatabase(), `Requests/${userID}`));
-
+        const uploadInput = fileAttachments.files;
+        const fileURLs = [];
+        /* eslint-disable no-await-in-loop */
+        /* eslint-disable no-restricted-syntax */
+        for (const file of uploadInput) {
+            const fileRef = storageRef(getStorage(), `Request_docs/${dbRef.key}/${file.name}`);
+            await uploadBytes(fileRef, file).catch((error) => {
+                console.log(error);
+            });
+            await getDownloadURL(fileRef).then((url) => {
+                console.log('File uploaded. URL: ', url);
+                fileURLs.push(url);
+            })
+            
+        }
+        /* eslint-enable no-await-in-loop */
+        /* eslint-enable no-restricted-syntax */
+        console.log('file URLs: ', fileURLs);
 
         const userData = User.get_information(userID);
         const data = await userData.then(val => {return val;});
@@ -41,7 +59,8 @@ export class Requests {
             Location: location,
             LanguagePreference: language,
             CourseWanted: course,
-            Offers: ['Offer ID']
+            Offers: ['Offer ID'],
+            attachmentURLS: fileURLs
         });
 
         const result = Object.keys(requestData).map((key) => requestData[key]);
