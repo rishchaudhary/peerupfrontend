@@ -1,4 +1,4 @@
-import {getDatabase, ref, set, remove, get} from "firebase/database";
+import {getDatabase, ref, set, remove, get, onValue} from "firebase/database";
 import { Requests } from "./Requests";
 import {Review} from "./Review"
 import { Tutor } from "./Tutor";
@@ -272,7 +272,7 @@ export class User {
         set(ref(getDatabase(), `Users/${userID}/University`), university);
     }
 
-        static async get_user_requests(userID) {
+    static async get_user_requests(userID) {
         const db = getDatabase();
         const userRef = ref(db, `Users/${userID}/Requests`);
         const snapshot = (await get(userRef)).toJSON();
@@ -290,6 +290,21 @@ export class User {
 
         return reqObjects;
 
+    }
+
+    static async get_days(userID) {
+        const db = getDatabase();
+        const daysRef = ref(db, `Users/${userID}/PreferredDays`);
+        const snapshot = (await (get(daysRef))).toJSON();
+        return Object.values(snapshot);
+    }
+
+    static async get_times(userID) {
+        const db = getDatabase();
+        const timesRef = ref(db, `Users/${userID}/PreferredTimings`);
+        const snapshot = (await (get(timesRef))).toJSON();
+        console.log(snapshot)
+        return Object.values(snapshot);
     }
 
 

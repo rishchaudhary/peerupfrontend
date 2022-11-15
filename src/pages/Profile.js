@@ -21,7 +21,7 @@ import { getAuth, updateProfile } from 'firebase/auth';
 
 import { ref as refStorage, getDownloadURL, uploadBytes } from 'firebase/storage';
 
-import {useContext} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import { DBContext } from '../App';
 // components
 import Page from '../components/Page';
@@ -70,51 +70,29 @@ export default function Profile() {
   const [stateMajor] = major;
   const [stateUserClass] = userClass;
   const [stateUserBio] = userBio;
+  const [userData, setUserData] = useState({});
+  const [days, setDays] = useState([]);
+  const [times, setTimes] = useState([]);
 
+  useEffect(() => {
+    USER.get_days(auth.currentUser.uid)
+        .then(fetchDays => {
+          console.log(fetchDays)
+          setDays(fetchDays)
+        })
+    USER.get_times(auth.currentUser.uid)
+        .then(fetchTimes => {
+          console.log(fetchTimes)
+          setTimes(fetchTimes)
+        })
+  }, [])
 
-
-  let days = [];
-  const usrDaysRef = ref(database, `Users/${auth.currentUser.uid}/PreferredDays`);
-  onValue(usrDaysRef, (snapshot) => {
-    days = snapshot.val();
-  })
-
-  let times = [];
-  const usrTimesRef = ref(database, `Users/${auth.currentUser.uid}/PreferredTimings`);
-  onValue(usrTimesRef, (snapshot) => {
-    times = snapshot.val();
-  })
-
-
- 
-  const navigate = useNavigate();
-  const uploadPfp = () => {
-    if (auth.currentUser != null) {
-      const selectedFile = document.getElementById('pfp').files[0];
-      const storageRef = refStorage(storage, `User_data/${auth.currentUser.uid}/${selectedFile.name}`);
-      uploadBytes(storageRef, selectedFile).then((snapshot) => {
-        console.log('Uploaded file', snapshot);
-        getDownloadURL(storageRef)
-        .then((url) => {
-          console.log(`url: ${url}`);
-          updateProfile(auth.currentUser, {
-            photoURL: url
-          }).then(() => {
-            console.log(`profile picture updated to ${auth.currentUser.photoURL}`);
-            navigate('/dashboard/profile', { replace: true });
-          }).catch((error) => {
-            console.log('error occurred updating profile picture', error);
-          });
-        }).catch((error) => {
-          console.log('error getting download url', error);
-        });
-      }).catch((error) => {
-        console.log('error occurred uploading file', error);
-      });
-    }
-  }
   
   const usrProfilePicURL = auth.currentUser.photoURL;
+
+  if (days.length === 0 || times.length === 0) {
+    return <h1>Fetching data.....</h1>;
+  }
 
 
   return (
@@ -152,20 +130,10 @@ export default function Profile() {
             </Stack>
           </Grid>
           {/* end of top section */}
-        </Grid> 
+        </Grid>
         
         {/* Stack for bottom section of profile page */}
         <Stack spacing={0.5} mt={3} mx={3}>
-          
-          {/* Stack for upload profile pic button
-          <Stack spacing = {0.5} direction="row">
-            <Button variant="contained" component="label">
-              Upload profile picture
-              <input hidden type="file" id="pfp" name='pfp' accept="image/*" onChange={uploadPfp} />
-            </Button>
-          </Stack>
-          */}
-
           {/* Stack 1: major */}
           <Stack spacing = {0.5} direction="row">
             <Typography variant="body" gutterBottom sx={{fontWeight: 'medium'}}>
