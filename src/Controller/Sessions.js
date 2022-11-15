@@ -56,4 +56,12 @@ export class Sessions{
         await set(ref(getDatabase(), `TutorAccounts/${tutorID}/Sessions`), result);
 
     }
+    
+    static async get_info(sessionID) {
+
+        const db = getDatabase();
+        const sessionRef = ref(db, `Sessions/${sessionID}`);
+        const snapshot = (await (get(sessionRef))).toJSON();
+        return snapshot;
+    }
 }
