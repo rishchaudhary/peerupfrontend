@@ -33,13 +33,6 @@ import {
 import { getAuth } from 'firebase/auth';
 import {getDatabase, ref, onValue} from "firebase/database";
 
-// components
-import Scrollbar from './Scrollbar';
-import SearchNotFound from './SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
-
-// mock
-import USERLIST from '../_mock/user';
 
 
 

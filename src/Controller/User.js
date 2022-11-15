@@ -3,6 +3,7 @@ import { Requests } from "./Requests";
 import {Review} from "./Review"
 import { Tutor } from "./Tutor";
 import {Feedback} from './Feedback'
+import {Sessions} from "./Sessions";
 
  
 export class User {

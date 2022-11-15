@@ -18,12 +18,7 @@ import {
 } from '@mui/material';
 // components
 import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import Iconify from '../components/Iconify';
-import SearchNotFound from '../components/SearchNotFound';
-import { UserListHead, UserMoreMenu } from '../sections/@dashboard/user';
-// mock
-import USERLIST from '../_mock/user';
+
 
 
 export default function Message() {
