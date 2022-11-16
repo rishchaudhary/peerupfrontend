@@ -10,11 +10,14 @@ import {
 
 import { getAuth } from 'firebase/auth';
 // components
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Page from '../components/Page';
 import SettingsProfile from '../sections/Settings/SettingsProfile';
 import SettingsAuth from "../sections/Settings/SettingsAuth";
 import TutorApplication from '../sections/Settings/TutorApplication';
 import {DBContext} from "../App";
+
 
 // Controller
 import {User as USER} from "../Controller/User";
@@ -58,6 +61,16 @@ export default function Settings() {
 
             <SettingsAuth />
           </Stack>
+
+          {hasTutorAcc[0] ?
+              <Stack alignItems={"center"} mb={5}>
+                <Typography variant={"h3"} mb={5}>
+                  Change Modes
+                </Typography>
+                <FormControlLabel control={<Switch defaultChecked />} label="Student" />
+              </Stack>
+              : null
+          }
 
           {!hasTutorAcc[0] ?
               <Stack alignItems={"center"} mb={5}>
