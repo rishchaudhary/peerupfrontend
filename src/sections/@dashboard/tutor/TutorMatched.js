@@ -42,6 +42,7 @@ import {getAuth} from "firebase/auth";
 import Scrollbar from '../../../components/Scrollbar';
 import SearchNotFound from '../../../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../user';
+import TutorOfferForm from "./TutorOfferForm";
 
 // mock
 import USERLIST from '../../../_mock/user';
@@ -94,11 +95,21 @@ function getComparator(order, orderBy) {
 
 
 function EnhancedTableToolbar(props) {
-    const { numSelected, checked } = props;
+    const { numSelected, checked, items } = props;
     const userID = getAuth().currentUser.uid
     const [deleteItem, setDelete] = React.useState(false);
     const [acceptItem, setAccepted] = React.useState(false);
     const tutorID = getAuth().currentUser.uid;
+    const [counter, setCounter] = React.useState(false);
+
+    const handleOfferOpen = (event) => {
+        console.log("Waiting for Offer")
+        setCounter(true)
+    }
+
+    const handleOfferClose = (event) => {
+        setCounter(false)
+    }
 
 
     const handleAccept = (event) => {
@@ -159,6 +170,19 @@ function EnhancedTableToolbar(props) {
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
+                    {numSelected === 1 ? (
+                        <div>
+                            <Button variant={"outlined"} size={"small"} onClick={handleOfferOpen}>
+                                Counter Offer
+                            </Button>
+                            <TutorOfferForm
+                                open={counter}
+                                checked={checked}
+                                onClose={handleOfferClose}
+                                items={items}
+                            />
+                        </div>
+                    ) : null}
                 </Stack>
             ) : (
                 <Tooltip title="Filter list">
@@ -173,7 +197,8 @@ function EnhancedTableToolbar(props) {
 
 EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
-    checked: PropTypes.array.isRequired
+    checked: PropTypes.array.isRequired,
+    items: PropTypes.array.isRequired,
 };
 
 
@@ -184,7 +209,9 @@ export default function TutorMatched() {
 
     const [order, setOrder] = useState('asc');
 
-    const [selected, setSelected] = useState([]);
+    const [selectedIds, setSelectedIds] = useState([]);
+
+    const [selectedItems, setSelectedItems] = useState([]);
 
     const [orderBy, setOrderBy] = useState('name');
 
@@ -247,25 +274,33 @@ export default function TutorMatched() {
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
             const newSelecteds = matchRows.map((n) => n.matchID);
-            setSelected(newSelecteds);
+            setSelectedIds(newSelecteds);
             return;
         }
-        setSelected([]);
+        setSelectedIds([]);
+        setSelectedItems([]);
     };
 
-    const handleClick = (event, matchID) => {
-        const selectedIndex = selected.indexOf(matchID);
+    const handleClick = (event, matchID, MeetingDate, MeetingTime, Location) => {
+        const newItem = {date: MeetingDate, time: MeetingTime, location: Location};
+        const selectedIndex = selectedIds.indexOf(matchID);
         let newSelected = [];
+        let newSelectedItems = [];
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, matchID);
+            newSelected = newSelected.concat(selectedIds, matchID);
+            newSelectedItems = newSelectedItems.concat(selectedItems, newItem);
         } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
+            newSelected = newSelected.concat(selectedIds.slice(1));
+            newSelectedItems = newSelectedItems.concat(selectedItems.slice(1));
+        } else if (selectedIndex === selectedIds.length - 1) {
+            newSelected = newSelected.concat(selectedIds.slice(0, -1));
+            newSelectedItems = newSelectedItems.concat(selectedItems.slice(0, -1));
         } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+            newSelected = newSelected.concat(selectedIds.slice(0, selectedIndex), selectedIds.slice(selectedIndex + 1));
+            newSelectedItems = newSelectedItems.concat(selectedItems.slice(0, selectedIndex), selectedItems.slice(selectedIndex + 1));
         }
-        setSelected(newSelected);
+        setSelectedIds(newSelected);
+        setSelectedItems(newSelectedItems);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -292,8 +327,11 @@ export default function TutorMatched() {
     return (
 
         <Card>
-            <EnhancedTableToolbar checked={selected} numSelected={selected.length} />
-
+            <EnhancedTableToolbar
+                checked={selectedIds}
+                numSelected={selectedIds.length}
+                items={selectedItems}
+            />
             <Scrollbar>
                 <TableContainer sx={{minWidth: 800}}>
                     <Table>
@@ -302,7 +340,7 @@ export default function TutorMatched() {
                             orderBy={orderBy}
                             headLabel={TABLE_HEAD}
                             rowCount={matchRows.length}
-                            numSelected={selected.length}
+                            numSelected={selectedIds.length}
                             onRequestSort={handleRequestSort}
                             onSelectAllClick={handleSelectAllClick}
                         />
@@ -317,7 +355,7 @@ export default function TutorMatched() {
                                     Location,
                                     Description,
                                 } = row;
-                                const selectedMatch = selected.indexOf(matchID) !== -1;
+                                const selectedMatch = selectedIds.indexOf(matchID) !== -1;
 
                                 return (
                                     <TableRow
@@ -326,7 +364,12 @@ export default function TutorMatched() {
                                         tabIndex={-1}
                                     >
                                         <TableCell padding="checkbox">
-                                            <Checkbox checked={selectedMatch} onChange={(event) => handleClick(event, matchID)} />
+                                            <Checkbox
+                                                checked={selectedMatch}
+                                                onChange={(event) => {
+                                                    handleClick(event, matchID, MeetingDate, MeetingTime, Location)
+                                                }}
+                                            />
                                         </TableCell>
                                         <TableCell component="th" scope="row" padding="none">
                                             <Stack direction="row" alignItems="center" spacing={2}>

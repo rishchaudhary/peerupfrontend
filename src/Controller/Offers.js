@@ -4,11 +4,11 @@ import { Tutor } from "./Tutor";
 
 export class Offers{
 
-    static async create_offer(offerID, startTime,endTime, location, tutorID) {
+    static async create_offer(offerID, startTime, endTime, location, tutorID) {
 
         set(ref(getDatabase(), `Offers/${offerID}`), {
-            StartTime: startTime,
-            EndTime: endTime,
+            Date: startTime,
+            Time: endTime,
             Location: location,
             Tutor: tutorID
         },);
