@@ -76,17 +76,17 @@ export default function TutorProfile() {
     useEffect(() => {
         TUTOR.get_days(auth.currentUser.uid)
             .then(fetchDays => {
-                console.log(fetchDays)
+                console.log("Preferred Days:", fetchDays)
                 setDays(fetchDays)
             })
         TUTOR.get_times(auth.currentUser.uid)
             .then(fetchTimes => {
-                console.log(fetchTimes)
+                console.log("Preferred Times:",fetchTimes)
                 setTimes(fetchTimes)
             })
         TUTOR.get_courses(auth.currentUser.uid)
             .then(fetchCourses => {
-                console.log(fetchCourses)
+                console.log("Offered Courses", fetchCourses)
                 setCourses(fetchCourses)
             })
     }, [])
@@ -236,6 +236,15 @@ export default function TutorProfile() {
               </Typography>
                 {times.map(mapToggle)}
             </Stack>
+          <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
+              <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
+                  Preferred Language:
+              </Typography>
+              <Chip
+                  label={tutorLang}
+                  sx={{bgcolor: 'primary.main', fontWeight: 'bold'}}
+              />
+          </Stack>
 
             <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
             <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>

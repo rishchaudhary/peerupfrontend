@@ -1,7 +1,7 @@
 import * as React from 'react';
 // tabs
 import { filter } from 'lodash';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -121,7 +121,6 @@ export default function DashboardApp() {
   // tabs
   const [value, setValue] = React.useState(1);
 
-  const userRequests = USER.get_user_requests(auth.currentUser.uid);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

@@ -525,12 +525,12 @@ export class Tutor {
             const newCourse = {key: value, value: false}
             courses.push(newCourse)
         })
-        verified.forEach(value => {
+        verified.slice(1).forEach(value => {
             const newCourse = {key: value, value: true}
             courses.push(newCourse)
         })
 
-        console.log(courses)
+        console.log("THIS PRINT STATEMENT Courses:", courses)
         return courses;
     }
     

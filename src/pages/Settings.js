@@ -1,5 +1,5 @@
 // React
-import {useContext} from "react";
+import {useContext, useState} from "react";
 // material
 import {
   Stack,
@@ -7,14 +7,19 @@ import {
   Typography,
   Divider,
 } from '@mui/material';
+
+import { getAuth } from 'firebase/auth';
 // components
-
 import Page from '../components/Page';
-
 import SettingsProfile from '../sections/Settings/SettingsProfile';
 import SettingsAuth from "../sections/Settings/SettingsAuth";
 import TutorApplication from '../sections/Settings/TutorApplication';
 import {DBContext} from "../App";
+
+// Controller
+import {User as USER} from "../Controller/User";
+
+const auth = getAuth();
 
 
 
@@ -22,6 +27,11 @@ import {DBContext} from "../App";
 export default function Settings() {
 
   const {hasTutorAcc} = useContext(DBContext);
+  // const [deleted, setDeleted] = useState("deleted");
+  const handleDeleteAccount = () => {
+    console.log("Deleting user:", auth.currentUser.uid)
+    USER.delete_account(auth.currentUser.uid)
+  }
 
   return (
     <Page title="Settings">
@@ -58,6 +68,10 @@ export default function Settings() {
               </Stack>
               : null
           }
+
+          <button variant={"outlined"} color={"error"} size={"large"} onClick={handleDeleteAccount}>
+            DeleteAccount
+          </button>
 
         </Stack>
       </Container>
