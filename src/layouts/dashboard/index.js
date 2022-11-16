@@ -52,6 +52,7 @@ export default function DashboardLayout() {
     userClass,
     userBio,
     userLang,
+    tutorLang,
     userTutorBio,
     hasTutorAcc,
     tutorPFPURL
@@ -62,6 +63,7 @@ export default function DashboardLayout() {
   const [, setStateUserBio] = userBio;
   const [, setStateUserTutorBio] = userTutorBio;
   const [, setStateLanguage] = userLang;
+  const [, setStateTutorLang] = tutorLang;
   const [, setStateTutorAcc] = hasTutorAcc;
   const [, setTutorPFPURL] = tutorPFPURL;
 
@@ -175,9 +177,27 @@ export default function DashboardLayout() {
     langObs.publish('Language Loaded');
   });
 
+  const [tutorLangLoaded, setTutorLangLoad] = useState(false);
+  const tutorLangObs = ReactObserver();
+  const tutorLangRef = ref(database, `TutorAccounts/${auth.currentUser.uid}/Language`);
+  useEffect(() => {
+    tutorLangObs.subscribe('Tutor Language Loaded', () => {
+      setTutorLangLoad(true);
+      if (displayNameLoaded && classLoaded && bioLoaded && majorLoaded && tutorBioLoaded && tutorAccLoad && tutorPFPLoaded) {
+        setEverythingLoaded(true);
+        console.log('everything loaded (tutorLang)');
+      }
+    });
+    return () => {tutorLangObs.unsubscribe('Tutor Language Loaded');}
+  }, []);
+  onValue(tutorLangRef, (snapshot) => {
+    setStateTutorLang(snapshot.val());
+    langObs.publish('Tutor Language Loaded');
+  });
+
   const [tutorBioLoaded, setTutorBioLoaded] = useState(false);
   const tutorBioObserver = ReactObserver();
-  const usrTutorBioRef = ref(database, `Users/${auth.currentUser.uid}/TutorBio`);
+  const usrTutorBioRef = ref(database, `TutorAccounts/${auth.currentUser.uid}/TutorBio`);
   useEffect(() => {
     tutorBioObserver.subscribe('tutor bio loaded', () => {
       setTutorBioLoaded(true);

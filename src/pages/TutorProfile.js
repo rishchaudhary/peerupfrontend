@@ -17,40 +17,79 @@ import {
   } from '@mui/material';
   import VerifiedIcon from '@mui/icons-material/Verified';
   import { PhotoCamera } from '@mui/icons-material';
-  import { useContext } from 'react';
+  import {useContext, useEffect, useState} from 'react';
   import { getAuth } from 'firebase/auth';
   import { ref, onValue, set, getDatabase } from 'firebase/database';
   import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
   
   
   import { DBContext } from '../App';
-  // components
-  import Page from '../components/Page';
+// components
+import Page from '../components/Page';
   import Iconify from '../components/Iconify';
   import ReviewCard from '../components/ReviewCard';
   
-  // mock
-  import account from '../_mock/account'; 
-  // ----------------------------------------------------------------------
+// mock
+import account from '../_mock/account';
+import { Tutor as TUTOR } from "../Controller/Tutor";
+// ----------------------------------------------------------------------
 
-  const auth = getAuth();
-  const database = getDatabase();
-  const storage = getStorage();
+const auth = getAuth();
+const database = getDatabase();
+const storage = getStorage();
 
-  const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
-
-  export default function TutorProfile() {
-    const {displayName, major, userClass, userBio, userLang, userTutorBio, hasTutorAcct, tutorPFPURL} = useContext(DBContext);
-    const [stateDisplayName, setStateDisplayName] = displayName;
-    const [stateMajor, setStateMajor] = major;
-    const [stateUserClass, setStateUserClass] = userClass;
-    const [stateUserTutorBio, setStateUserTutorBio] = userTutorBio;
-    const [usrProfilePicURL, setTutorPFP] = tutorPFPURL;
-
-    const handleUpdateTutorBio = () => {
-      set(ref(database, `Users/${auth.currentUser.uid}/TutorBio`), document.getElementById('usrTutorBio').value);
-      // console.log(`user bio: ${document.getElementById('userBio').value}`);
+function mapToggle(value, index) {
+    // console.log(value);
+    if (value.value) {
+        return (
+            <div key={index}>
+                <Chip
+                    label={value.key}
+                    sx={{bgcolor: 'primary.main', fontWeight: 'bold'}}
+                />
+            </div>
+        );
     }
+    return (
+        <div key={index}>
+            <Chip
+                label={value.key}
+                sx={{bgcolor: 'primary.light', fontWeight: 'bold'}}
+            />
+        </div>
+    );
+}
+
+const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
+
+export default function TutorProfile() {
+    const {displayName, major, userClass, tutorLang, userTutorBio, tutorPFPURL} = useContext(DBContext);
+    const [stateDisplayName] = displayName;
+    const [stateMajor] = major;
+    const [stateUserClass] = userClass;
+    const [stateUserTutorBio] = userTutorBio;
+    const [usrProfilePicURL] = tutorPFPURL;
+    const [courses, setCourses] = useState([]);
+    const [days, setDays] = useState([]);
+    const [times, setTimes] = useState([]);
+
+    useEffect(() => {
+        TUTOR.get_days(auth.currentUser.uid)
+            .then(fetchDays => {
+                console.log(fetchDays)
+                setDays(fetchDays)
+            })
+        TUTOR.get_times(auth.currentUser.uid)
+            .then(fetchTimes => {
+                console.log(fetchTimes)
+                setTimes(fetchTimes)
+            })
+        TUTOR.get_courses(auth.currentUser.uid)
+            .then(fetchCourses => {
+                console.log(fetchCourses)
+                setCourses(fetchCourses)
+            })
+    }, [])
 
     const uploadTranscript = () => {
       const storage = getStorage();
@@ -80,6 +119,10 @@ import {
       })
   }
 
+    if (days.length === 0 || times.length === 0 || courses.length === 0) {
+        return <h1>Fetching data.....</h1>;
+    }
+
     return (
       <Page title="Profile">
   
@@ -105,7 +148,6 @@ import {
                 <Stack direction="row" spacing={2}>
                     <Typography variant="h1" gutterBottom>
                         {stateDisplayName}
-                        {}
                     </Typography>
                     <VerifiedIcon/>
                 </Stack>
@@ -158,17 +200,17 @@ import {
               divider={<Divider orientation="horizontal" flexItem />}
               >
                 <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
-                    Bio: 
+                    Bio:
                 </Typography>
                 <TextField
                   id="usrTutorBio"
                   multiline
+                  defaultValue={stateUserTutorBio}
                   minRows={5}
                   maxRows={5}
-                  defaultValue={stateUserTutorBio}
                   margin="dense"
                   variant="outlined"
-                  onBlur={handleUpdateTutorBio}
+                  InputProps={{readOnly: true}}
                 />
               </Stack>
             </Paper>
@@ -178,48 +220,21 @@ import {
               <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
                 Offering tutoring:
               </Typography>
-  
-              {account.enrolled.map(item => (
-                <div key={item.id}>
-                    <Chip 
-                    label={item.class} 
-                    color="primary"
-                    sx={{fontWeight: 'bold'}}
-                    />
-                </div>
-              ))}
+                {courses.map(mapToggle)}
             </Stack>
   
             <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center'}}>
               <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
                 Preffered Day:
               </Typography>
-  
-              {account.dayPref.map(item => (
-                <div key={item.id}>
-                  <Chip 
-                  label={item.class} 
-                  color="primary"
-                  sx={{fontWeight: 'bold'}}
-                  />
-                </div>
-              ))}
+                {days.map(mapToggle)}
             </Stack>
   
             <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>
               <Typography variant="body" gutterBottom sx={{pl: 2, pt: 1, fontWeight: 'medium'}}>
                 Preffered Time:
               </Typography>
-  
-              {account.timePref.map(item => (
-                <div key={item.id}>
-                  <Chip 
-                  label={item.class} 
-                  color="primary"
-                  sx={{fontWeight: 'bold'}}
-                  />
-                </div>
-              ))}
+                {times.map(mapToggle)}
             </Stack>
 
             <Stack spacing={1} direction="row" pt={3} sx={{ alignItems: 'center' }}>

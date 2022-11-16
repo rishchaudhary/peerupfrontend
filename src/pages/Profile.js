@@ -70,7 +70,6 @@ export default function Profile() {
   const [stateMajor] = major;
   const [stateUserClass] = userClass;
   const [stateUserBio] = userBio;
-  const [userData, setUserData] = useState({});
   const [days, setDays] = useState([]);
   const [times, setTimes] = useState([]);
 

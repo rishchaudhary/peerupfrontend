@@ -101,6 +101,7 @@ export class Tutor {
             NotVerifiedCourses: courses,
             PreferredDays: days,
             PreferredTimings: times,
+            TutorBio: 'Go to settings to update your bio!',
             Badges: badges,
             Price: price,
             Rating: 0,
@@ -492,6 +493,45 @@ export class Tutor {
         const tutorRef = ref(db, `TutorAccounts`);
         const snapshot = (await (get(tutorRef))).toJSON();
         return snapshot;
+    }
+
+    static async get_days(userID) {
+        const db = getDatabase();
+        const daysRef = ref(db, `TutorAccounts/${userID}/PreferredDays`);
+        const snapshot = (await (get(daysRef))).toJSON();
+        return Object.values(snapshot);
+    }
+
+    static async get_times(userID) {
+        const db = getDatabase();
+        const timesRef = ref(db, `TutorAccounts/${userID}/PreferredTimings`);
+        const snapshot = (await (get(timesRef))).toJSON();
+        console.log(snapshot)
+        return Object.values(snapshot);
+    }
+
+    static async get_courses(userID) {
+        const db = getDatabase();
+        const nonVerifiedRef = ref(db, `TutorAccounts/${userID}/NotVerifiedCourses`);
+        const nonVerSnap = (await (get(nonVerifiedRef))).toJSON();
+        const nonVerified = Object.values(nonVerSnap);
+
+        const verifiedRef = ref(db, `TutorAccounts/${userID}/VerifiedCourses`);
+        const verifiedSnap = (await (get(verifiedRef))).toJSON();
+        const verified = Object.values(verifiedSnap);
+
+        const courses = []
+        nonVerified.forEach(value => {
+            const newCourse = {key: value, value: false}
+            courses.push(newCourse)
+        })
+        verified.forEach(value => {
+            const newCourse = {key: value, value: true}
+            courses.push(newCourse)
+        })
+
+        console.log(courses)
+        return courses;
     }
     
 }
