@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 
 import { getAuth } from 'firebase/auth';
+import * as React from 'react';
 // components
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -35,6 +36,13 @@ export default function Settings() {
     console.log("Deleting user:", auth.currentUser.uid)
     USER.delete_account(auth.currentUser.uid)
   }
+
+  const [checked, setChecked] = React.useState(true);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+    console.log("switch:", event.target.checked);
+  };
 
   return (
     <Page title="Settings">
@@ -63,13 +71,21 @@ export default function Settings() {
           </Stack>
 
           {hasTutorAcc[0] ?
-              <Stack alignItems={"center"} mb={5}>
-                <Typography variant={"h3"} mb={5}>
-                  Change Modes
-                </Typography>
-                <FormControlLabel control={<Switch defaultChecked />} label="Student" />
-              </Stack>
-              : null
+            <Stack alignItems={"center"} mb={5}>
+              <Typography variant={"h3"} mb={5}>
+                Current Mode:  
+          {checked ?
+             " Student"
+              : " Tutor"
+          }
+              </Typography>
+              <FormControlLabel control={<Switch
+                checked={checked}
+                onChange={handleChange}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />} label="Student" />
+            </Stack>
+            : null
           }
 
           {!hasTutorAcc[0] ?
