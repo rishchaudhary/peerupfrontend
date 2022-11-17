@@ -1,6 +1,7 @@
 import { getDatabase, get, set, ref } from "firebase/database";
 import {Requests} from './Requests';
 import {Tutor} from './Tutor'
+import { sendEmailNotification } from "./SendEmail";
 
 export class MatchingAlgorithm{
 
@@ -35,6 +36,15 @@ export class MatchingAlgorithm{
                     tutorList.push(tutorIDs[i]);
                     requestsArray.push(requestID);
                     set(ref(getDatabase(), `TutorAccounts/${tutorIDs[i]}/Requests`), requestsArray);
+                    // send email to tutor that they have matched with someone
+                    const tutorEmail = await (await get(ref(getDatabase(), `Users/${tutorIDs[i]}/Email`))).val();
+                    console.log("email: ", tutorEmail);
+                    
+                    sendEmailNotification(tutorEmail).then(() => {
+                        console.log("Tutor", tutorEmail[i], "sent email notification")
+                    }).catch((error) => {
+                        console.log("Error sending email notification: ", error);
+                    });
                 }
 
             }
