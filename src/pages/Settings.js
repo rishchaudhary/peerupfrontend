@@ -30,7 +30,7 @@ const auth = getAuth();
 
 export default function Settings() {
 
-  const {hasTutorAcc} = useContext(DBContext);
+  const {hasTutorAcc, userMode, toggleUserMode} = useContext(DBContext);
   // const [deleted, setDeleted] = useState("deleted");
   const handleDeleteAccount = () => {
     console.log("Deleting user:", auth.currentUser.uid)
@@ -81,7 +81,7 @@ export default function Settings() {
               </Typography>
               <FormControlLabel control={<Switch
                 checked={checked}
-                onChange={handleChange}
+                onChange={setChecked}
                 inputProps={{ 'aria-label': 'controlled' }}
               />} label="Student" />
             </Stack>

@@ -29,6 +29,8 @@ const DBContextProvider = props => {
   const [userTutorBio, setUserTutorBio] = useState("tutor bio");
   const [hasTutorAcc, setTutorAccount] = useState(false);
   const [tutorPFPURL, setTutorPFPURL] = useState(false);
+  const [userMode, toggleUserMode] = useState(true);
+
 
   return (
     <DBContext.Provider
@@ -41,7 +43,8 @@ const DBContextProvider = props => {
         tutorLang: [tutorLang, setTutorLang],
         userTutorBio: [userTutorBio, setUserTutorBio],
         hasTutorAcc: [hasTutorAcc, setTutorAccount],
-        tutorPFPURL: [tutorPFPURL, setTutorPFPURL]
+        tutorPFPURL: [tutorPFPURL, setTutorPFPURL],
+        userMode: [userMode, toggleUserMode]
       }}
     >
       {props.children}
@@ -52,6 +55,7 @@ const DBContextProvider = props => {
 export default function App() {
   const [ authenticated, setAuthenticated ] = useState(loggedIn());
   const [ isLoading, setIsLoading ] = useState(true);
+
   useEffect(() => {
     firebaseObserver.subscribe('authStateChanged', data => {
       setAuthenticated(data);
