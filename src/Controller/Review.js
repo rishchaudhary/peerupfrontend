@@ -42,45 +42,54 @@ export class Review {
         set(ref(getDatabase(), `Reviews/${reviewID}/WhyDisputed`),comment);
     }
 
-    static async delete_review(reviewID) {
+    static async delete_review(reviewIDs) {
 
-        const reviewUserID = reviewID.split('/');
-        const reviewData = this.getReviewInformation(reviewID);
-        const data = await reviewData.then(val => {return val;});
-        const user = data.CreatedBy;
-        const tutor = data.CreatedFor;
-        
-        const userData = User.get_information(user);
-        const data2 = await userData.then(val => {return val;});
-        const reviews = data2.Reviews;
-        let result = Object.keys(reviews).map((key) => reviews[key]);
-        
-        for (let i = 0; i < result.length; i += 1) {
-            if (reviewUserID[1] === result[i]) {
-                result.splice(i, 1);
-                set(ref(getDatabase(), `Users/${user}/Reviews`), result);
-                break;
+        /* eslint-disable no-await-in-loop */
+        for (let j = 0; j < reviewIDs.length; j += 1) {
+            const reviewUserID = reviewIDs[j].split('/');
+            const reviewData = this.getReviewInformation(reviewIDs[j]);
+            const data = await reviewData.then(val => {
+                return val;
+            });
+            const user = data.CreatedBy;
+            const tutor = data.CreatedFor;
+
+            const userData = User.get_information(user);
+            const data2 = await userData.then(val => {
+                return val;
+            });
+            const reviews = data2.Reviews;
+            let result = Object.keys(reviews).map((key) => reviews[key]);
+
+            for (let i = 0; i < result.length; i += 1) {
+                if (reviewUserID[1] === result[i]) {
+                    result.splice(i, 1);
+                    set(ref(getDatabase(), `Users/${user}/Reviews`), result);
+                    break;
+                }
             }
-        }
 
-        const tutorData = Tutor.get_information(tutor);
-        const data3 = await tutorData.then(val => {return val;});
-        const reviewsForTutor = data3.ReviewsForTutor;
-        result = Object.keys(reviewsForTutor).map((key) => reviewsForTutor[key]);
-        
-        for (let i = 0; i < result.length; i += 1) {
-            if (reviewID === result[i]) {
-                result.splice(i, 1);
-                set(ref(getDatabase(), `TutorAccounts/${tutor}/ReviewsForTutor`), result);
-                break;
+            const tutorData = Tutor.get_information(tutor);
+            const data3 = await tutorData.then(val => {
+                return val;
+            });
+            const reviewsForTutor = data3.ReviewsForTutor;
+            result = Object.keys(reviewsForTutor).map((key) => reviewsForTutor[key]);
+
+            for (let i = 0; i < result.length; i += 1) {
+                if (reviewIDs[j] === result[i]) {
+                    result.splice(i, 1);
+                    set(ref(getDatabase(), `TutorAccounts/${tutor}/ReviewsForTutor`), result);
+                    break;
+                }
             }
-        }
 
-        set(ref(getDatabase(), `Reviews/${reviewID}`), null);
-        await Tutor.tutor_rating(tutor);
+            set(ref(getDatabase(), `Reviews/${reviewIDs[j]}`), null);
+            await Tutor.tutor_rating(tutor);
+        }
+        /* eslint-disable no-await-in-loop */
         
     }
-
 
     static async getReviewInformation(reviewID){
 
