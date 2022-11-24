@@ -133,7 +133,7 @@ export class Tutor {
     // This function deletes a particular tutor's data from the database.
     // It sets the HasTutorAccount to false. Meaning that the given user does not have a tutor account
     static async delete_profile(userID) {
-        
+
         const data = Tutor.get_information(userID);
         const data1 = await data.then(val => {return val;});
         const data2 = data1.Sessions;
@@ -158,30 +158,19 @@ export class Tutor {
 
         const data5 = data1.ReviewsForTutor;
         const result2 = Object.keys(data5).map((key) => data5[key]);
-        /* eslint-disable no-await-in-loop */
-        for (let i = 1; i < result2.length; i += 1) {
-            const reviewID = result2[i].split('/');
-            await remove(ref(getDatabase(), `Reviews/${result[i]}`));
-            const userData = User.get_information(reviewID[0]);
-            const data3 = await userData.then(val => {return val;});
-            const data4 = data3.Reviews;
-            const result1 = Object.keys(data4).map((key) => data4[key]);
-
-            for (let k = 1; k < result1.length; k += 1) {
-
-                if (result1[k] === reviewID[1]) {
-                    result1.splice(k,1);
-                    await set(ref(getDatabase(), `Users/${reviewID[0]}/Reviews`), result1);
-                }
-            }
+        let result7 = [];
+        for (let l = 1; l < result2.length; l += 1) {
+            result7[l - 1] = result2[l];
         }
+        await Review.delete_review(result7);
 
         const data6 = data1.Feedback;
         const result3 = Object.keys(data6).map((key) => data6[key]);
-        /* eslint-disable no-await-in-loop */
-        for (let i = 1; i < result3.length; i += 1) {
-            await Feedback.delete_feedback(`${userID}/${result3[i]}`);
+        result7 = [];
+        for (let l = 1; l < result3.length; l += 1) {
+            result7[l - 1] = `${userID}/${result3[l]}`;
         }
+        await Feedback.delete_feedback(result7);
 
         const data7 = data1.NotVerifiedCourses;
         const result4 = Object.keys(data7).map((key) => data7[key]);
@@ -255,17 +244,21 @@ export class Tutor {
 
             const offers = data.Offers;
             result = Object.keys(offers).map((key) => offers[key]);
+            const offerData = Requests.get_offer_info(result6[m], userID);
+            const data9 = await offerData.then(val => {return val;});
 
-            for (let r = 1; r < result.length; r += 1) {
-                const offerData = Requests.get_offer_info(result6[m], result[r]);
-                const data = await offerData.then(val => {return val;});
-                const createdBy = data.Tutor;
+            if (data9 === null) {
+                console.log('continue');
+            }
+            else {
+                const createdBy = data9.Tutor;
 
                 if (createdBy === userID) {
-                    await set(ref(getDatabase(), `Requests/${result6[m]}/Offers/${result[r]}`), null);
+                    await set(ref(getDatabase(), `Requests/${result6[m]}/Offers/${userID}`), null);
                 }
             }
         }
+
 
 
         /* eslint-disable no-await-in-loop */
