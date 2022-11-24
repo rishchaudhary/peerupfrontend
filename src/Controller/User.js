@@ -72,13 +72,13 @@ export class User {
     }
 
 
-    static async delete_account(userID){ 
+    static async delete_account(userID){
 
         const userData = User.get_information(userID);
         const data = await userData.then(val => {return val;});
         const userDataRequests = data.Requests;
         let result = Object.keys(userDataRequests).map((key) => userDataRequests[key]);
-        const result7 = [];
+        let result7 = [];
         for (let l = 1; l < result.length; l += 1) {
             result7[l - 1] = `${userID}/${result[l]}`;
         }
@@ -88,37 +88,29 @@ export class User {
 
         const userDataReviews = data.Reviews;
         result = Object.keys(userDataReviews).map((key) => userDataReviews[key]);
-        /* eslint-disable no-await-in-loop */
-        for (let i = 1; i < result.length; i += 1) {
-            await Review.delete_review(`${userID}/${result[i]}`);
+        result7 = [];
+        for (let l = 1; l < result.length; l += 1) {
+            result7[l - 1] = `${userID}/${result[l]}`;
         }
+        await Review.delete_review(result7);
+
 
         const feedbackData = data.Feedback;
-        const result2 = Object.keys(feedbackData).map((key) => feedbackData[key]);
-
-        /* eslint-disable no-await-in-loop */
-        for (let i = 1; i < result2.length; i += 1) {
-            const feedbackID = result2[i].split('/');
-            await remove(ref(getDatabase(), `Feedback/${result2[i]}`));
-            const tutorData = Tutor.get_information(feedbackID[0]);
-            const data3 = await tutorData.then(val => {return val;});
-            const data4 = data3.Feedback;
-            const result3 = Object.keys(data4).map((key) => data4[key]);
-
-            for (let k = 0; k < result3.length; k += 1) {
-
-                if (result3[k] === feedbackID[1]) {
-                    result3.splice(k,1);
-                    await set(ref(getDatabase(), `TutorAccounts/${feedbackID[0]}/Feedback`), result3);
-                }
-            }
+        result = Object.keys(feedbackData).map((key) => feedbackData[key]);
+        result7 = [];
+        for (let l = 1; l < result.length; l += 1) {
+            result7[l - 1] = result[l];
         }
-        /* eslint-disable no-await-in-loop */
+
+        await Feedback.delete_feedback(result7);
+
+        await set(ref(getDatabase(), `HelpForms/${userID}`), null);
 
 
         const sessionData = data.Sessions;
         const result4 = Object.keys(sessionData).map((key) => sessionData[key]);
 
+        /* eslint-disable no-await-in-loop */
         for (let i = 1; i < result4.length; i += 1) {
 
             const data = Sessions.get_info(`${userID}/${result4[i]}`);
@@ -150,12 +142,12 @@ export class User {
 
         remove(ref(getDatabase(), `Users/${userID}`))
 
-        .then(() => {
-            return "Data Deleted Successfully";
-        })
-        .catch((error) => {
-            return error;
-        });
+            .then(() => {
+                return "Data Deleted Successfully";
+            })
+            .catch((error) => {
+                return error;
+            });
 
     }
 
