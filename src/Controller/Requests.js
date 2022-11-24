@@ -175,7 +175,7 @@ export class Requests {
         const data = data1.Offers;
         const result = (Object.keys(data).length);
 
-        await set(ref(getDatabase(), `Requests/${requestID}/Offers/Offer ${result}`), {
+        await set(ref(getDatabase(), `Requests/${requestID}/Offers/${tutorID}`), {
             Time: startTime,
             Length: length,
             Date: date,
