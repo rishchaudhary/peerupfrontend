@@ -20,7 +20,7 @@ export class Requests {
     // format (string) -- Online or In-Person
     // location (string) -- where the session is being hosted. If the Format is Online give
     // N/A for the location.
-    static async create_request( startTime, length, date, description, userID, course, location, format, name, fileAttachments) {
+    static async create_request( startTime, length, date, description, userID, course, location, format, name, fileAttachments, priorityList) {
 
         const dbRef = push(ref(getDatabase(), `Requests/${userID}`));
         const uploadInput = fileAttachments.files;
@@ -67,7 +67,7 @@ export class Requests {
         result.push(dbRef.key);
 
         await set(ref(getDatabase(), `Users/${userID}/Requests`), result);
-        const tutorList = await MatchingAlgorithm.match(`${userID}/${dbRef.key}`);
+        const tutorList = await MatchingAlgorithm.match(`${userID}/${dbRef.key}`, priorityList);
         await set(ref(getDatabase(), `Requests/${userID}/${dbRef.key}/MatchedTutors`), tutorList);
         return `${userID}/${dbRef.key}`;
 
