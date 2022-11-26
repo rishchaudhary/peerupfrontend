@@ -98,7 +98,7 @@ export default function Profile() {
     <Page title="Profile">
 
       {/* main container holding everything */}
-      <Container sx={{mx: 'auto', width: 1000}}> 
+      <Container sx={{mx: 'auto', width: 1000}}>
 
         {/* Grid for top section of the profile page */}
         <Grid container spacing={2}>

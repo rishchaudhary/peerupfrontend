@@ -526,6 +526,14 @@ export class Tutor {
         console.log("THIS PRINT STATEMENT Courses:", courses)
         return courses;
     }
+
+    static async get_badges(userID) {
+        const db = getDatabase();
+        const timesRef = ref(db, `TutorAccounts/${userID}/Badges`);
+        const snapshot = (await (get(timesRef))).toJSON();
+        console.log(snapshot)
+        return Object.values(snapshot);
+    }
     
 }
 

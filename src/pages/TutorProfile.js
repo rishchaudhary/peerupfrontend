@@ -12,11 +12,13 @@ import {
     Paper,
     Typography,
     Stack,
+    Popover,
     TextField,
     IconButton
   } from '@mui/material';
   import VerifiedIcon from '@mui/icons-material/Verified';
   import { PhotoCamera } from '@mui/icons-material';
+  import StarsIcon from '@mui/icons-material/Stars';
   import {useContext, useEffect, useState} from 'react';
   import { getAuth } from 'firebase/auth';
   import { ref, onValue, set, getDatabase } from 'firebase/database';
@@ -60,6 +62,7 @@ function mapToggle(value, index) {
     );
 }
 
+
 const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
 export default function TutorProfile() {
@@ -69,6 +72,7 @@ export default function TutorProfile() {
     const [stateUserClass] = userClass;
     const [stateUserTutorBio] = userTutorBio;
     const [usrProfilePicURL] = tutorPFPURL;
+    const [badges, setBadges] = useState([]);
     const [courses, setCourses] = useState([]);
     const [days, setDays] = useState([]);
     const [times, setTimes] = useState([]);
@@ -89,6 +93,12 @@ export default function TutorProfile() {
                 console.log("Offered Courses", fetchCourses)
                 setCourses(fetchCourses)
             })
+        TUTOR.get_badges(auth.currentUser.uid)
+            .then(fetchBadges => {
+                console.log("Badges", fetchBadges)
+                setBadges(fetchBadges)
+            })
+
     }, [])
 
     const uploadTranscript = () => {
@@ -117,9 +127,22 @@ export default function TutorProfile() {
       }).catch((error) => {
           console.log('error uploading new pfp ', error);
       })
-  }
+    }
 
-    if (days.length === 0 || times.length === 0 || courses.length === 0) {
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handlePopoverOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+
+
+    if (days.length === 0 || times.length === 0 || courses.length === 0 || badges.length === 0) {
         return <h1>Fetching data.....</h1>;
     }
 
@@ -127,7 +150,7 @@ export default function TutorProfile() {
       <Page title="Profile">
   
         {/* main container holding everything */}
-        <Container sx={{mx: 'auto', width: 1000}}> 
+        <Container sx={{mx: 'auto', width: 1000}}>
   
           {/* Grid for top section of the profile page */}
           <Grid container spacing={2}>
@@ -151,6 +174,45 @@ export default function TutorProfile() {
                     </Typography>
                     <VerifiedIcon/>
                 </Stack>
+                  {badges.map((value, index) => {
+                      if (value.value) {
+                          return (
+                              <div key={index}>
+                                  <Chip
+                                      label={value.badge}
+                                      icon={<StarsIcon />}
+                                      size={"small"}
+                                      sx={{bgcolor: 'primary.dark', fontWeight: 'light'}}
+                                      aria-owns={open ? 'mouse-over-popover' : undefined}
+                                      aria-haspopup="true"
+                                      onMouseEnter={handlePopoverOpen}
+                                      onMouseLeave={handlePopoverClose}
+                                  />
+                                  <Popover
+                                      id="mouse-over-popover"
+                                      sx={{
+                                          pointerEvents: 'none',
+                                      }}
+                                      open={open}
+                                      anchorEl={anchorEl}
+                                      anchorOrigin={{
+                                          vertical: 'bottom',
+                                          horizontal: 'left',
+                                      }}
+                                      transformOrigin={{
+                                          vertical: 'top',
+                                          horizontal: 'left',
+                                      }}
+                                      onClose={handlePopoverClose}
+                                      disableRestoreFocus
+                                  >
+                                      <Typography variant="body2" sx={{ p: 1 }}>{value.description}</Typography>
+                                  </Popover>
+                              </div>
+                          );
+                      }
+                      return null
+                  })}
                 <Rating 
                   name="read-only" 
                   value={account.ratingVal} 
