@@ -16,6 +16,7 @@ import Settings from './pages/Settings';
 import TutorProfile from './pages/TutorProfile';
 import AdminPanel from './pages/TestAdmin';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 
 // ----------------------------------------------------------------------
@@ -50,6 +51,12 @@ export default function Router() {
       path: 'forgotpassword',
       element: loggedIn() ? <Navigate to="/dashboard/app" /> : <ForgotPassword />
     },
+
+    {
+      path: 'resetpassword',
+      element: loggedIn() ? <Navigate to="/dashboard/app" /> : <ResetPassword />
+    },
+
     {
       path: '/register',
       element: <Register />,
