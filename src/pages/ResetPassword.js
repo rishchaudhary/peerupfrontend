@@ -108,7 +108,10 @@ export default function ResetPassword() {
 
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                 <Stack spacing={3}>
-                    <RHFTextField name="email" label="Email address" />
+                    <RHFTextField name="password" label="Password" />
+                </Stack>
+                <Stack spacing={3}>
+                    <RHFTextField name="confirmpassword" label="Confirm Password" />
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
                     Submit
