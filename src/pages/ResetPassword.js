@@ -107,10 +107,10 @@ export default function ResetPassword() {
             </Typography>
 
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-                <Stack spacing={3}>
+                <Stack sx={{ py: 1 }}  spacing={3}>
                     <RHFTextField name="password" label="Password" />
                 </Stack>
-                <Stack spacing={3}>
+                <Stack sx={{ py: 1 }}  spacing={3}>
                     <RHFTextField name="confirmpassword" label="Confirm Password" />
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
