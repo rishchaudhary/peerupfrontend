@@ -173,6 +173,7 @@ export default function AdminPanel() {
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
             <Tab label="Transcripts" {...a11yProps(0)} />
             <Tab label="Reviews" {...a11yProps(1)} />
+            <Tab label="Support Ticket4" {...a11yProps(2)} />
           </Tabs>
         </Box>
         
@@ -230,11 +231,11 @@ export default function AdminPanel() {
             <TranscriptTable/>
           </Container>
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        <TabPanel value={value} index={2}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
               <Typography variant="h3" gutterBottom>
-                Reviews
+                Support Tickets
               </Typography>
 
             </Stack>
@@ -267,6 +268,8 @@ export default function AdminPanel() {
                 <DisputedReviewTable/>
           </Container>
         </TabPanel>
+
+        
       
       </Box>
       </Container>
