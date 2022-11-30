@@ -14,44 +14,32 @@ export class HelpForm {
         const name = data.Name;
         const email = data.Email;
 
-        const helpFormData = this.get_help_form_info_by_user(userID);
-        const data2 = await helpFormData.then(val => {return val;});
-        let numFormsForUser;
-        if (data2 === null) {
-            numFormsForUser = 0;
-        }
-        else {
-            numFormsForUser = Object.keys(data2).length;
-        }
-
-        const dbRef = push(ref(getDatabase(), `HelpForms/${userID}`));
+        const dbRef = push(ref(getDatabase(), `HelpForms`));
         await set(dbRef,{
             Description: description,
             CreatedBy: name,
             Email: email,
-            UserID: userID,
-            ID: numFormsForUser,
-            FormID: dbRef.key
+            UserID: userID
         });
     }
 
     // this function should be called when the help request of the user has been resolved
     // it removes the forms from the list of help forms for that user
-    static async delete_help_form(userID, formIDs) {
+    static async delete_help_form(formIDs) {
 
         /* eslint-disable no-await-in-loop */
         for (let i = 0; i < formIDs.length; i += 1) {
-            await set(ref(getDatabase(), `HelpForms/${userID}/${formIDs[i]}`), null);
+            await set(ref(getDatabase(), `HelpForms/${formIDs[i]}`), null);
         }
         /* eslint-disable no-await-in-loop */
     }
 
     // This function will get you all help forms for a particular user
     // This function can only be used by backend.
-    static async get_help_form_info_by_user(userID) {
+    static async get_help_forms() {
 
         const db = getDatabase();
-        const helpFormRef = ref(db, `HelpForms/${userID}`);
+        const helpFormRef = ref(db, `HelpForms`);
         const snapshot = (await (get(helpFormRef))).toJSON();
         return snapshot;
     }
