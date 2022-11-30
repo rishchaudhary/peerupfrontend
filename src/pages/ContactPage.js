@@ -13,13 +13,18 @@ import {
     TextField,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { ref, getDatabase, set, push } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 import Page from '../components/Page';
+
+const auth = getAuth();
 
 
 export default function ContactPage() {
     const [userInput, updateUserInput] = React.useState();
+    const [ticketNumber, setTicketNumber] = React.useState();
 
-    const mailToString = `mailto:peerupadmin@googlegroups.com?subject=User Contact Message&body=${userInput}`;
+    const mailToString = `mailto:peerupadmin@googlegroups.com?subject=Ticket ${ticketNumber}&body=${userInput}`;
 
     return(
     <Page title="Contact Page">
@@ -34,9 +39,16 @@ export default function ContactPage() {
                     }}
                 />
                 <LoadingButton size="large" type="submit" variant="contained" onClick={(e) => {
-                    // Send email
-                    window.location.href = mailToString;
-                    e.preventDefault();
+                    // Create ticket
+                    const dbref = push(ref(getDatabase(), `HelpForms`));
+                    setTicketNumber(dbref.key);
+                    const helpFormData = {
+                        CreatedBy: auth.currentUser.displayName,
+                        Description: userInput,
+                        Email: auth.currentUser.email,
+                        UserID: auth.currentUser.uid
+                    };
+                    set(dbref, helpFormData);
                     }} >
                         Send email
                     </LoadingButton>
