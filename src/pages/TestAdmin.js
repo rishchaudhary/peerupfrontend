@@ -32,6 +32,7 @@ import Page from '../components/Page';
 import UserTable from '../sections/admin/UserAdminTable';
 import TranscriptTable from '../sections/admin/TranscriptVerificationTable';
 import DisputedReviewTable from '../sections/admin/DisputedReviewTable';
+import TicketTable from '../sections/admin/TicketTable';
 import UserList from '../sections/admin/UserList';
 // mock
 import account from '../_mock/account';
@@ -173,7 +174,7 @@ export default function AdminPanel() {
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
             <Tab label="Transcripts" {...a11yProps(0)} />
             <Tab label="Reviews" {...a11yProps(1)} />
-            <Tab label="Support Ticket4" {...a11yProps(2)} />
+            <Tab label="Support Ticket" {...a11yProps(2)} />
           </Tabs>
         </Box>
         
@@ -237,35 +238,11 @@ export default function AdminPanel() {
               <Typography variant="h3" gutterBottom>
                 Support Tickets
               </Typography>
-
+            
             </Stack>
                 <Stack spacing={0.5} mt={3} mx={3}>
-
-                  {/* User ID */}
-                  <Stack spacing={0.5} direction="row">
-                    <TextField
-                      id="outlined-multiline-flexible"
-                      label="Enter Review ID"
-                      multiline
-                      maxRows={4}
-                      onChange={(event) => {
-                        setInputUid(event.target.value);
-                      }}
-                    />
-                    <LoadingButton size="large" type="submit" variant="contained" onClick={() => {
-                      console.log("Deleting user...");
-                      USER.delete_account(inputUid).then(() => {
-                        console.log('User deleted from database successfully');
-                      }).catch(() => {
-                        console.log('Error deleting user from database');
-                      });
-
-                    }} >
-                      Delete Review
-                    </LoadingButton>
-                  </Stack>
+                <TicketTable/>
                 </Stack>
-                <DisputedReviewTable/>
           </Container>
         </TabPanel>
 
