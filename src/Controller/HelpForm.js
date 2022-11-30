@@ -12,6 +12,7 @@ export class HelpForm {
         const userData = User.get_information(userID);
         const data = await userData.then(val => {return val;});
         const name = data.Name;
+        const email = data.Email;
 
         const helpFormData = this.get_help_form_info_by_user(userID);
         const data2 = await helpFormData.then(val => {return val;});
@@ -27,6 +28,7 @@ export class HelpForm {
         await set(dbRef,{
             Description: description,
             CreatedBy: name,
+            Email: email,
             UserID: userID,
             ID: numFormsForUser,
             FormID: dbRef.key
