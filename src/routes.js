@@ -17,6 +17,7 @@ import TutorProfile from './pages/TutorProfile';
 import AdminPanel from './pages/TestAdmin';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import ContactPage from './pages/ContactPage';
 
 
 // ----------------------------------------------------------------------
@@ -60,6 +61,10 @@ export default function Router() {
     {
       path: '/register',
       element: <Register />,
+    },
+    {
+      path: '/contact',
+      element: <ContactPage />
     },
     {
       path: '/',

@@ -1,4 +1,4 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -71,6 +71,8 @@ export default function ForgotPassword() {
 
   const methods = useForm();
 
+  const navigate = useNavigate();
+
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -79,6 +81,7 @@ export default function ForgotPassword() {
   const onSubmit = async data => {
     sendPasswordResetEmail(auth, data.email).then(() => {
         console.log("password reset email sent");
+        navigate('/login', { replace: true });
     }).catch((error) => {
         console.log(error);
     })
