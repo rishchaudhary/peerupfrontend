@@ -104,9 +104,6 @@ export class User {
 
         await Feedback.delete_feedback(result7);
 
-        await set(ref(getDatabase(), `HelpForms/${userID}`), null);
-
-
         const sessionData = data.Sessions;
         const result4 = Object.keys(sessionData).map((key) => sessionData[key]);
 
