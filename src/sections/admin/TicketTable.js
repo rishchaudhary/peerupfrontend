@@ -152,11 +152,12 @@ function EnhancedTableToolbar(props) {
 
         console.log("Deleted Requests:", checked);
         const deletedIDs = [];
+        console.log("Checked ids:", deletedIDs);
         checked.forEach(value => {
-            deletedIDs.push(`${userID}/${value}`);
+            deletedIDs.push(`${value}`);
         });
 
-        SUP.delete_help_form();
+        SUP.delete_help_form(deletedIDs);
 
         setDelete(true);
     }
@@ -256,12 +257,12 @@ export default function TicketTable() {
             /* console.log("Support ticket email", supObj.Email); */
             /* console.log("Support ticket description", supObj.Description); */
             /* console.log("Support ticket id:", userSupIDs[i]); */
-            console.log("Table id:", i);
+            // console.log("Table id:", i);
             supRows.push(createData(
                 supObj.CreatedBy,
                 supObj.Email,
                 supObj.Description,
-                i
+                userSupIDs[i]
             ));
         }
     }, 1)
