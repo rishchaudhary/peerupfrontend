@@ -33,11 +33,22 @@ export default function ContactPage() {
 
     return(
     <Page title="Contact Page">
-        <Container sx={{mx: 'auto', width: 1000}}>
+        <Container sx={{mx: 'auto'}} maxWidth='sm'>
             <Stack alignItems="center" spacing={0.5} direction="row">
+                <Typography variant='h4' gutterBottom>
+                    Contact PeerUp Support
+                </Typography>
+            </Stack>
+            <Stack alignItems="center" spacing={0.5} direction="row">
+                <Typography variant='body1' gutterBottom>
+                    Use this page to send a message to the PeerUp support team.
+                </Typography>
+            </Stack>
+            <Stack alignItems="center" spacing={0.5} direction="column">
                 <TextField
                     id="outlined-multiline-flexible"
                     label="Enter your comment or issue"
+                    fullWidth
                     multiline
                     onChange={(e) => {
                         updateUserInput(e.target.value);
