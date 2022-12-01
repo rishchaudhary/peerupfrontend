@@ -372,7 +372,7 @@ export default function TicketTable() {
                                                 scope="row"
                                                 padding="none"
                                             >
-                                                {row.CreatedBy}
+                                                {row.supID}
                                             </TableCell>
                                             <TableCell align="right">{row.CreatedBy}</TableCell>
                                             <TableCell align="right">{row.Email}</TableCell>
