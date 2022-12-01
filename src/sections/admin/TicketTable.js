@@ -233,7 +233,7 @@ export default function TicketTable() {
        userSupIDs = Object.keys(snapshot.val());
     });
 
-    console.log("SUPPORT IDS:", userSupIDs);
+    // console.log("SUPPORT IDS:", userSupIDs);
 
     const supRows = [];
     const userSupObjs = [];
@@ -256,6 +256,7 @@ export default function TicketTable() {
             /* console.log("Support ticket email", supObj.Email); */
             /* console.log("Support ticket description", supObj.Description); */
             /* console.log("Support ticket id:", userSupIDs[i]); */
+            console.log("Table id:", i);
             supRows.push(createData(
                 supObj.CreatedBy,
                 supObj.Email,
