@@ -25,11 +25,11 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import {HelpForm as SUP} from "../../Controller/HelpForm";
 
-function createData(CreatedBy, Description, Email, supID) {
+function createData(CreatedBy,Email,Description,supID) {
     return {
         CreatedBy,
-        Description,
         Email,
+        Description,
         supID
     };
 }
@@ -65,7 +65,7 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-    {
+     {
         id: 'CreatedBy',
         numeric: false,
         disablePadding: true,
@@ -260,10 +260,10 @@ export default function TicketTable() {
                 supObj.CreatedBy,
                 supObj.Email,
                 supObj.Description,
-                userSupIDs[i]
+                i
             ));
         }
-    }, )
+    }, 1)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -342,7 +342,7 @@ export default function TicketTable() {
                             {stableSort(supRows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.reqID);
+                                    const isItemSelected = isSelected(row.supID);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -364,7 +364,14 @@ export default function TicketTable() {
                                                     }}
                                                 />
                                             </TableCell>
-                                          
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                padding="none"
+                                            >
+                                                {row.CreatedBy}
+                                            </TableCell>
                                             <TableCell align="right">{row.CreatedBy}</TableCell>
                                             <TableCell align="right">{row.Email}</TableCell>
                                             <TableCell align="right">{row.Description}</TableCell>
