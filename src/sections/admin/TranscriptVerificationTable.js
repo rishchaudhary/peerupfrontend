@@ -475,7 +475,7 @@ checked.forEach(value => {
       }
       console.log(`new oldVerified: ${oldVerified}`);
 
-      TUTOR.update_by_admin(inputUid, oldVerified, oldNotVerified);
+      TUTOR.update_by_admin(value, oldVerified, oldNotVerified);
 
 });
 
