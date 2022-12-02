@@ -188,47 +188,7 @@ export default function AdminPanel() {
 
             </Stack>
 
-            <Stack spacing={0.5} mt={3} mx={3}>
-
-{/* User ID */}
-<Stack spacing={0.5} direction="row">
-    <TextField
-        id="outlined-multiline-flexible"
-        label="Enter User ID"
-        multiline
-        maxRows={4}
-        onChange={(event) => {
-            setInputUid(event.target.value);
-        }}
-    />
-    <LoadingButton size="large" type="submit" variant="contained" onClick={() => {
-      // View transcript
-      getDownloadURL(ref(getStorage(), `User_data/${inputUid}/Transcript/transcript.pdf`))
-      .then((url) => {
-        const element = document.createElement("a");
-        element.href = url;
-        element.target = "_blank";
-        element.click();
-      }).catch((error) => {
-        console.log(error);
-      })
-    }} >
-        View Transcript
-    </LoadingButton>
-    <TextField 
-      id="outlined-multiline-flexible"
-      label="Enter course to verify"
-      multiline
-      maxRows={4}
-      onChange={(event) => {
-        setInputCourse(event.target.value);
-      }}
-    />
-    <LoadingButton size="large" type="submit" variant="contained" onClick={() => verifyTutorCourses()}>
-      Verify user for course
-    </LoadingButton>
-</Stack>
-</Stack>                       
+                       
 
             <TranscriptTable/>
           </Container>
