@@ -7,6 +7,9 @@ export class Sessions{
 
     static async create_session(requestID, tutorID) {
 
+        console.log(requestID)
+        console.log(tutorID)
+
         const requestData = Requests.get_information(requestID);
         const offerData = Requests.get_offer_info(requestID, tutorID)
         const data = await requestData.then(val => {return val;});
@@ -14,7 +17,7 @@ export class Sessions{
 
 
 
-        console.log(info);
+        console.log(data);
         const userID = data.CreatedBy;
         const startTime = info.Time;
         const date = info.Date;
