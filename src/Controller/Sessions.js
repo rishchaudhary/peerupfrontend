@@ -12,61 +12,17 @@ export class Sessions{
         const data = await requestData.then(val => {return val;});
         const info = await offerData.then(val => {return val;});
 
-        const daysOffer = info.Days;
-        const result7 = Object.keys(daysOffer).map((key) => daysOffer[key]);
 
-        for (let i = 0; i < result7.length; i += 1) {
 
-            if (result7[i] === 'Monday') {
-                result7[i] = 0;
-            }
-
-            else if (result7[i] === 'Tuesday') {
-                result7[i] = 1;
-            }
-
-            else if (result7[i] === 'Wednesday') {
-                result7[i] = 2;
-            }
-            else if (result7[i] === 'Thursday') {
-                result7[i] = 3;
-            }
-
-            else if (result7[i] === 'Friday') {
-                result7[i] = 4;
-            }
-
-            else if (result7[i] === 'Saturday') {
-                result7[i] = 5;
-            }
-            else {
-                result7[i] = 6;
-            }
-        }
-
-        const days = [
-            {key:"Mon", value: false},
-            {key:"Tue", value: false},
-            {key:"Wed", value: false},
-            {key:"Thu", value: false},
-            {key:"Fri", value: false},
-            {key:"Sat", value: false},
-            {key:"Sun", value: false},
-        ];
-        for (let i = 0; i < result7.length; i += 1) {
-            days[result7[i]].value = true;
-        }
-        
-        
-        console.log(data);
+        console.log(info);
         const userID = data.CreatedBy;
         const startTime = info.Time;
-        const length = info.Length;
         const date = info.Date;
         const weeks = data.Weeks;
-        const totalSessions = weeks * result7.length;
+        const preferredDays = data.PreferredDays;
+        const totalSessions = data.TotalSessionsWanted;
         const recurring = data.Recurring;
-        const preferredDays = days;
+        const length = data.Length;
         const description = data.Description;
         const location = info.Location;
         const format = info.Format;
