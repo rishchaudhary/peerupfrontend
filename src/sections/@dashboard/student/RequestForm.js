@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {useContext} from 'react';
+import { format } from 'date-fns';
 // forms
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -52,6 +53,8 @@ async function createSession(courseName,
 
     const userID = (auth.currentUser.uid).toString();
     let course = courseName;
+    console.log(dateValue)
+    console.log(timeValue)
     const date = dateValue.toString();
     const time = `${timeValue.toString()} hrs`;
     const descriptionText = requestDescription.toString();
@@ -74,7 +77,8 @@ async function createSession(courseName,
 
     const uploadInput = document.getElementById('usr_doc');
 
-    REQUESTS.create_request(time,
+    REQUESTS.create_request(
+        time,
         length,
         date,
         descriptionText,
@@ -147,7 +151,8 @@ export default function RequestForm() {
     return (
 
 
-        <FormControl>
+       // <FormControl>
+        <div>
             <Stack direction="row" spacing={2}>
             
                 <Box sx={{ width: '100%' }}>
@@ -206,6 +211,8 @@ export default function RequestForm() {
                             label="Select Date"
                             value={dateValue}
                             onChange={(newValue) => {
+                                console.log(newValue)
+                                // console.log(format(newValue, 'mm/dd/yyyy'))
                                 setDateValue(newValue);
                             }}
                             renderInput={(params) => <TextField {...params} />}
@@ -219,6 +226,7 @@ export default function RequestForm() {
                             label="Select Time"
                             value={timeValue}
                             onChange={(newValue) => {
+                                console.log(newValue)
                                 setTimeValue(newValue);
                             }}
                             renderInput={(params) => <TextField {...params} />}
@@ -301,7 +309,10 @@ export default function RequestForm() {
             <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={() => {
                 console.log("Creating session");
                 setOpen(true);
-                createSession(courseValue,
+                // format(dateValue, 'mm/dd/yyyy')
+                // format(timeValue, 'hh:mm bbb')
+                createSession(
+                    courseValue,
                     otherCourse,
                     dateValue,
                     timeValue,
@@ -314,7 +325,7 @@ export default function RequestForm() {
                 Submit Request
             </LoadingButton>
 
-        </FormControl>
+        </div>
     );
 
 }

@@ -253,20 +253,20 @@ export default function RequestTable() {
     userReqObjs = snapshot.val();
   })
 
-   setTimeout(() => {
-      console.log("Request objects", userReqObjs);
-      for (let i = 1; i < userReqIDs.length; i += 1) {
-        const reqObj = userReqObjs[userReqIDs[i]];
-        reqRows.push(createData(
-            reqObj.CourseWanted,
-            reqObj.Time,
-            reqObj.Length,
-            reqObj.Location,
-            reqObj.IsOnline,
-            userReqIDs[i]
-        ));
-      }
-    }, 1)
+  console.log("Request objects", userReqObjs);
+  for (let i = 1; i < userReqIDs.length; i += 1) {
+    const reqObj = userReqObjs[userReqIDs[i]];
+    if (reqObj != null) {
+      reqRows.push(createData(
+          reqObj.CourseWanted,
+          reqObj.Time,
+          reqObj.Length,
+          reqObj.Location,
+          reqObj.IsOnline,
+          userReqIDs[i]
+      ));
+    }
+  }
 
 
   console.log("newROWS:", reqRows);

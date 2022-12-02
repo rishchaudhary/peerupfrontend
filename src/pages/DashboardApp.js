@@ -31,6 +31,7 @@ import { User as USER } from '../Controller/User';
 import { Requests as REQUESTS } from '../Controller/Requests';
 
 // components
+import CreateRequestForm from '../sections/@dashboard/student/CreateRequestForm';
 import RequestForm from '../sections/@dashboard/student/RequestForm';
 import RequestTable from '../sections/@dashboard/student/RequestTable';
 import MatchedView from '../sections/@dashboard/student/StudentMatched';
@@ -146,8 +147,10 @@ export default function DashboardApp() {
                 Request
               </Typography>
             </Stack>
+            <Card sx={{ px: 4, py: 4, mb: 5 }}>
+              <CreateRequestForm/>
+            </Card>
             <Card sx={{ px: 7, py: 4 }}>
-              <RequestForm />
               <RequestTable/>
             </Card>
 
