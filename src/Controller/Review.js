@@ -38,8 +38,21 @@ export class Review {
 
     static dispute_review(reviewID, comment) {
 
-        set(ref(getDatabase(), `Reviews/${reviewID}/Disputed`),true);
+         set(ref(getDatabase(), `Reviews/${reviewID}/Disputed`),true);
         set(ref(getDatabase(), `Reviews/${reviewID}/WhyDisputed`),comment);
+        const id = reviewID.split('/')[1]
+        const reviewData = this.getReviewInformation(reviewID);
+        const data = await reviewData.then(val => {
+            return val;
+        });
+        set(ref(getDatabase(), `DisputedReviews/${id}`),data);
+    }
+    
+    static delete_disputed_reviews(reviewIDs) {
+
+        for (let i = 0; i < reviewIDs.length; i += 1) {
+            set(ref(getDatabase(), `DisputedReviews/${reviewIDs[i]}`), null);
+        }
     }
 
     static async delete_review(reviewIDs) {
