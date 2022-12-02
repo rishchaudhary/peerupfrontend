@@ -5,6 +5,7 @@ import * as React from "react";
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+
 // @mui
 import {
     Stack,
@@ -18,12 +19,15 @@ import {
     MenuItem,
     useTheme,
     ToggleButtonGroup,
-    InputLabel
+    InputLabel,
+    Button
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 import { getAuth } from 'firebase/auth';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 // components
+import Iconify from '../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../components/hook-form';
 import {Tutor as TUTOR} from '../../Controller/Tutor';
 
@@ -85,6 +89,15 @@ export default function TutorApplication() {
             typeof value === 'string' ? value.split(',') : value,
         );
     };
+
+    const uploadTranscript = () => {
+        const storage = getStorage();
+        const transcriptRef = ref(storage, `User_data/${getAuth().currentUser.uid}/Transcript/transcript.pdf`);
+        const tutorFile = document.getElementById("transcript_doc").files[0];
+        uploadBytes(transcriptRef, tutorFile).then((snapshot) => {
+            console.log('uploaded transcript ', snapshot)
+        })
+    }
 
     const RegisterSchema = Yup.object().shape({
         price: Yup.number().required("Please enter your default rate"),
@@ -214,7 +227,23 @@ export default function TutorApplication() {
                         </ToggleButtonGroup>
                     </ToggleButtonGroup>
                 </Stack>
-
+                <Stack direction={"row"} spacing={3} alignItems="center">
+                    <Button
+                        variant="contained"
+                        component="label"
+                        startIcon={<Iconify icon="eva:plus-fill"/>}
+                    >
+                        Upload transcript
+                        <input
+                                hidden
+                                type="file"
+                                accept=".pdf"
+                                id="transcript_doc"
+                                name='transcript_doc'
+                                onChange={uploadTranscript}
+                            />
+                    </Button>
+                </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
                     Save Changes
                 </LoadingButton>

@@ -20,41 +20,28 @@ export class Requests {
     // format (string) -- Online or In-Person
     // location (string) -- where the session is being hosted. If the Format is Online give
     // N/A for the location.
-    static async create_request(
-        startTime,
-        length,
-        date,
-        description,
-        userID,
-        course,
-        location,
-        format,
-        fileAttachments,
-        priorityList,
-        recurring,
-        preferredDays,
-        weeks) {
+    static async create_request( startTime, length, date, description, userID, course, location, format, fileAttachments, priorityList, recurring, preferredDays, weeks) {
 
         const dbRef = push(ref(getDatabase(), `Requests/${userID}`));
-        // const uploadInput = fileAttachments.files;
-      //  const fileURLs = [];
+       // const uploadInput = fileAttachments.files;
+       // const fileURLs = [];
         /* eslint-disable no-await-in-loop */
         /* eslint-disable no-restricted-syntax */
-       // for (const file of uploadInput) {
-          //  const fileRef = storageRef(getStorage(), `Request_docs/${dbRef.key}/${file.name}`);
-          //  await uploadBytes(fileRef, file).catch((error) => {
-            //    console.log(error);
-           // });
-           // await getDownloadURL(fileRef).then((url) => {
-             //   console.log('File uploaded. URL: ', url);
-              //  fileURLs.push(url);
-           // })
-            
-        // }
+      //  for (const file of uploadInput) {
+       //     const fileRef = storageRef(getStorage(), `Request_docs/${dbRef.key}/${file.name}`);
+       //     await uploadBytes(fileRef, file).catch((error) => {
+        //        console.log(error);
+        //    });
+         //   await getDownloadURL(fileRef).then((url) => {
+         //       console.log('File uploaded. URL: ', url);
+          //      fileURLs.push(url);
+         //   })
+
+       // }
         /* eslint-enable no-await-in-loop */
         /* eslint-enable no-restricted-syntax */
-       // console.log('file URLs: ', fileURLs);
-        
+      //  console.log('file URLs: ', fileURLs);
+
         const days = [
             {key:"Mon", value: false},
             {key:"Tue", value: false},
@@ -199,14 +186,13 @@ export class Requests {
     // It will add the tutor's ID to the list of tutor's who have accepted this request.
     // As this function is called by the tutor side of the website, you can get the tutorID
     // by calling auth.currentUser.uid
-   static async create_offer(requestID, tutorID, startTime, date, format, location) {
+   static async create_offer(requestID, tutorID, startTime, date, location) {
 
 
         await set(ref(getDatabase(), `Requests/${requestID}/Offers/${tutorID}`), {
             Time: startTime,
             Date: date,
             Location: location,
-            Format: format,
             Tutor: tutorID
         },);
 

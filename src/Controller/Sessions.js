@@ -25,7 +25,7 @@ export class Sessions{
         const length = data.Length;
         const description = data.Description;
         const location = info.Location;
-        const format = info.Format;
+        const format = data.Format;
         const tutorData1 = User.get_information(tutorID);
         const data7 = await tutorData1.then(val => {return val;});
         const tutorName = data7.Name;
