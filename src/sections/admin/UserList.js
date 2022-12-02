@@ -451,9 +451,7 @@ export default function UserList() {
                 Major: {Major}
             </Paper>
 
-            <Paper>
-                Langauge: {Language}
-            </Paper>
+          
 
             <Paper>
                 Bio: {Bio}
