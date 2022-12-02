@@ -59,6 +59,7 @@ export class Requests {
         const data = await userData.then(val => {return val;});
         const requestData = data.Requests;
         const language = data.Language;
+        const totalSessions = preferredDays.length * weeks;
 
         await set(dbRef, {
 
