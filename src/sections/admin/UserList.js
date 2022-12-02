@@ -28,11 +28,14 @@ import {Review as REV} from "../../Controller/Review";
 import {User as USER} from "../../Controller/User";
 
 
-function createData(Name,Email,Rating,userID) {
+function createData(Name,Email,Rating,Major, Bio, Language, userID) {
     return {
         Name,
         Email,
         Rating,
+        Major,
+        Bio,
+        Language,
         userID
     };
 }
@@ -68,13 +71,13 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  {
-    id: 'Name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Name',
-},
-     {
+    {
+        id: 'Name',
+        numeric: false,
+        disablePadding: true,
+        label: 'Name',
+    },
+    {
         id: 'Email',
         numeric: false,
         disablePadding: true,
@@ -86,6 +89,7 @@ const headCells = [
         disablePadding: true,
         label: 'Rating',
     },
+    
 ];
 
 function EnhancedTableHead(props) {
@@ -226,6 +230,12 @@ export default function UserList() {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [requests, setRequests] = React.useState(false);
+    const [checked, setCheck] = React.useState(false);
+    
+
+    const [Major, setMajor] = React.useState('Major');
+    const [Language, setLanguage] = React.useState('Language');
+    const [Bio, setBio] = React.useState('Bio');
 
     const database = getDatabase();
     const userID = getAuth().currentUser.uid;
@@ -264,6 +274,9 @@ export default function UserList() {
               userObj.Name,  
               userObj.Email,
                 userObj.Rating,
+                userObj.Major,
+                userObj.Bio,
+                userObj.Language,
                 userIDs[i]
             ));
         
@@ -281,11 +294,12 @@ export default function UserList() {
             setSelected(newSelected);
             return;
         }
-        setSelected([]);
+        setSelected(true);
     };
 
     const handleClick = (event, userID) => {
         const selectedIndex = selected.indexOf(userID);
+        setCheck(true);
         let newSelected = [];
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, userID);
@@ -299,6 +313,22 @@ export default function UserList() {
                 selected.slice(selectedIndex + 1),
             );
         }
+
+        console.log("Currently selected:", newSelected);
+        console.log("Inside handle click:", userRows);
+
+        for (let i = 0; i < userRows.length; i += 1) {
+            if((userRows[i].userID).toString() === (newSelected.toString())){
+                setMajor(userRows[i].Major.toString());
+                setBio(userRows[i].Bio.toString());
+                setLanguage(userRows[i].Langauge.toString());
+
+                console.log("Major:", userRows[i].Major);
+                console.log("Major:", Major);
+
+            }
+        }
+
 
         setSelected(newSelected);
     };
@@ -390,6 +420,10 @@ export default function UserList() {
                         </TableBody>
                     </Table>
                 </TableContainer>
+               
+              
+
+        
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
@@ -401,6 +435,20 @@ export default function UserList() {
                 />
             </Paper>
 
+            <Paper>
+                Major: {Major}
+            </Paper>
+
+            <Paper>
+                Langauge: {Language}
+            </Paper>
+
+            <Paper>
+                Bio: {Bio}
+            </Paper>
+
         </Box>
+
+        
     );
 }

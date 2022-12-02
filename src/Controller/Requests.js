@@ -202,11 +202,6 @@ export class Requests {
     static async create_offer(requestID, tutorID, startTime, length, date, location, format, days) {
 
 
-        const requestData = this.get_information(requestID);
-        const data1 = await requestData.then(val => {return val;});
-        const data = data1.Offers;
-        const result = (Object.keys(data).length);
-
         await set(ref(getDatabase(), `Requests/${requestID}/Offers/${tutorID}`), {
             Time: startTime,
             Length: length,
@@ -214,8 +209,7 @@ export class Requests {
             Location: location,
             Format: format,
             Tutor: tutorID,
-            Days: days,
-            id: result - 1
+            Days: days
         },);
 
     }
