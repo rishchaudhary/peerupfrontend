@@ -90,11 +90,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       icon: getIcon('eva:person-outline'),
     },
     {
-      title: 'Documents',
-      path: '/dashboard/document',
-      icon: getIcon('eva:file-text-outline'),
-    },
-    {
       title: 'Settings',
       path: '/dashboard/settings',
       icon: getIcon('eva:settings-fill'),
@@ -113,11 +108,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       title: 'Tutor Profile',
       path: '/dashboard/tutorProfile',
       icon: getIcon('eva:person-outline'),
-    },
-    {
-      title: 'Documents',
-      path: '/dashboard/document',
-      icon: getIcon('eva:file-text-outline'),
     },
     {
       title: 'Settings',

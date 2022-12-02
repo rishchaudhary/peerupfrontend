@@ -239,8 +239,9 @@ export default function ReviewTable() {
     let revIDs = [];
     const revIdsRef = ref(database, `DisputedReviews`);
     onValue(revIdsRef, (snapshot) => {
-       /* userSupIDs = snapshot.val(); */
-       revIDs = Object.keys(snapshot.val());
+        if (snapshot.val() != null) { 
+            revIDs = Object.keys(snapshot.val());
+        }
     });
 
     // console.log("SUPPORT IDS:", userSupIDs);
