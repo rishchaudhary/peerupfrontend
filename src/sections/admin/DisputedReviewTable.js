@@ -166,7 +166,7 @@ function EnhancedTableToolbar(props) {
             deletedIDs.push(`${value}`);
         });
 
-        SUP.delete_disputed_reviews(deletedIDs);
+        REV.delete_disputed_reviews(deletedIDs);
 
         setDelete(true);
     }
