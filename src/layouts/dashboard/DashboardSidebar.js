@@ -6,7 +6,12 @@ import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
 
 import { getAuth } from 'firebase/auth';
+import * as React from 'react';
 import { ref, onValue, getDatabase } from 'firebase/database';
+
+// toggle
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 // mock
 import account from '../../_mock/account';
@@ -17,15 +22,21 @@ import { useAuthState } from '../../firebaseConfig/firebaseConfig';
 
 // components
 import Logo from '../../components/Logo';
+import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
-import navConfig from './NavConfig';
+// import navConfig from './NavConfig';
+
+const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
+
+
 
 // ----------------------------------------------------------------------
 
 const auth = getAuth();
 const database = getDatabase();
+
 
 const DRAWER_WIDTH = 280;
 
@@ -52,10 +63,70 @@ DashboardSidebar.propTypes = {
 };
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+ 
+  const [checked, setChecked] = React.useState(true);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
+  
+
+  const {hasTutorAcc} = useContext(DBContext);
   const { pathname } = useLocation();
   const {displayName} = useContext(DBContext);
   const [stateDisplayName, setStateDisplayName] = displayName;
   const isDesktop = useResponsive('up', 'lg');
+
+  const navConfig = [
+
+    {
+      title: 'Student Home',
+      path: '/dashboard/app',
+      icon: getIcon('eva:home-fill'),
+    },
+    {
+      title: 'Student Profile',
+      path: '/dashboard/profile',
+      icon: getIcon('eva:person-outline'),
+    },
+    {
+      title: 'Documents',
+      path: '/dashboard/document',
+      icon: getIcon('eva:file-text-outline'),
+    },
+    {
+      title: 'Settings',
+      path: '/dashboard/settings',
+      icon: getIcon('eva:settings-fill'),
+    },
+    
+  ];
+
+  const navConfigStudent =  [
+   
+    {
+      title: 'Tutor Home',
+      path: '/dashboard/tutorapp',
+      icon: getIcon('eva:home-fill'),
+    },
+    {
+      title: 'Tutor Profile',
+      path: '/dashboard/tutorProfile',
+      icon: getIcon('eva:person-outline'),
+    },
+    {
+      title: 'Documents',
+      path: '/dashboard/document',
+      icon: getIcon('eva:file-text-outline'),
+    },
+    {
+      title: 'Settings',
+      path: '/dashboard/settings',
+      icon: getIcon('eva:settings-fill'),
+    },
+    
+  ];
+ 
 
   const usrProfilePicURL = auth.currentUser.photoURL;
   
@@ -94,7 +165,26 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         </Link>
       </Box>
 
-      <NavSection navConfig={navConfig} />
+      <NavSection navConfig={checked ?
+        navConfig
+        : navConfigStudent
+      } />
+
+      {hasTutorAcc[0] ?
+            <Stack alignItems={"center"} mb={5}>
+              <FormControlLabel control={
+              <Switch
+                checked={checked}
+                onChange={handleChange}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />} label= {checked ?
+                " Current Mode: Student"
+                 : " Current Mode: Tutor"
+             } />
+            </Stack>
+            : null
+          }
+
 
       <Box sx={{ flexGrow: 1 }} />
 

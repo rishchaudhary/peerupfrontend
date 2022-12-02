@@ -6,7 +6,25 @@ creds.secretAccessKey = "KSDSo9wHs0KpOJxxQ/DZyiqTC69AnnC94sQZyQ6/";
 aws.config.credentials = creds;
 const ses = new aws.SES({region: "us-east-2"});
 
-
+export async function sendAdminTicketEmail(message, ticketNumber, sourceEmail) {
+    const params = {
+        Destination: {
+            ToAddresses: ['jaggerhuff@gmail.com']
+        },
+        Message: {
+            Body: {
+                Text: {
+                    Data: `Ticket #${ticketNumber} has been created by user ${sourceEmail}.\n\n${message}`
+                }
+            },
+            Subject: {
+                Data: `PeerUp support ticket ${ticketNumber} created.`
+            }
+        },
+        Source: "peeruptutor@gmail.com"
+    };
+    return ses.sendEmail(params).promise();
+}
 
 export async function sendEmailNotification(email) {
     const params = {

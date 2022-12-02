@@ -186,6 +186,7 @@ export default function SettingsProfile() {
                     photoURL: url
                 }).then(() => {
                     console.log('PFP url updated to', auth.currentUser.photoURL);
+                    window.location.reload();
                 }).catch((error) => {
                     console.log('error updating profile ', error);
                 })

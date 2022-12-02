@@ -175,6 +175,7 @@ export default function AdminPanel() {
             <Tab label="Transcripts" {...a11yProps(0)} />
             <Tab label="Reviews" {...a11yProps(1)} />
             <Tab label="Support Ticket" {...a11yProps(2)} />
+            <Tab label="Users" {...a11yProps(3)} />
           </Tabs>
         </Box>
         
@@ -232,6 +233,21 @@ export default function AdminPanel() {
             <TranscriptTable/>
           </Container>
         </TabPanel>
+
+        <TabPanel value={value} index={1}>
+          <Container>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+              <Typography variant="h3" gutterBottom>
+               Disputed Review
+              </Typography>
+            
+            </Stack>
+                <Stack spacing={0.5} mt={3} mx={3}>
+                <DisputedReviewTable/>
+                </Stack>
+          </Container>
+        </TabPanel>
+
         <TabPanel value={value} index={2}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -246,6 +262,19 @@ export default function AdminPanel() {
           </Container>
         </TabPanel>
 
+        <TabPanel value={value} index={3}>
+          <Container>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+              <Typography variant="h3" gutterBottom>
+                Users
+              </Typography>
+            
+            </Stack>
+                <Stack spacing={0.5} mt={3} mx={3}>
+                <UserList/>
+                </Stack>
+          </Container>
+        </TabPanel>
         
       
       </Box>

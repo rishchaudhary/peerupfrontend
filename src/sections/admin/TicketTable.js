@@ -25,11 +25,11 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import {HelpForm as SUP} from "../../Controller/HelpForm";
 
-function createData(CreatedBy, Description, Email, supID) {
+function createData(CreatedBy,Email,Description,supID) {
     return {
         CreatedBy,
-        Description,
         Email,
+        Description,
         supID
     };
 }
@@ -65,7 +65,7 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-    {
+     {
         id: 'CreatedBy',
         numeric: false,
         disablePadding: true,
@@ -152,11 +152,12 @@ function EnhancedTableToolbar(props) {
 
         console.log("Deleted Requests:", checked);
         const deletedIDs = [];
+        console.log("Checked ids:", deletedIDs);
         checked.forEach(value => {
-            deletedIDs.push(`${userID}/${value}`);
+            deletedIDs.push(`${value}`);
         });
 
-        SUP.delete_help_form();
+        SUP.delete_help_form(deletedIDs);
 
         setDelete(true);
     }
@@ -233,7 +234,7 @@ export default function TicketTable() {
        userSupIDs = Object.keys(snapshot.val());
     });
 
-    console.log("SUPPORT IDS:", userSupIDs);
+    // console.log("SUPPORT IDS:", userSupIDs);
 
     const supRows = [];
     const userSupObjs = [];
@@ -249,21 +250,26 @@ export default function TicketTable() {
 
     console.log("Support ticket objects", userSupObjs);
 
-    setTimeout(() => {
         for (let i = 0; i < userSupIDs.length; i += 1) {
             const supObj = userSupObjs[i];
             /* console.log("Support ticket created by", supObj.CreatedBy); */
             /* console.log("Support ticket email", supObj.Email); */
             /* console.log("Support ticket description", supObj.Description); */
             /* console.log("Support ticket id:", userSupIDs[i]); */
+            // console.log("Table id:", i);
             supRows.push(createData(
                 supObj.CreatedBy,
                 supObj.Email,
                 supObj.Description,
                 userSupIDs[i]
             ));
+            console.log("Length inside:", supRows.length);
         }
-    }, )
+
+    console.log("Length Outside:", supRows.length);
+
+    // console.log("Sup row length:", supRows.length);
+    // console.log("Sup row:", supRows);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -337,14 +343,15 @@ export default function TicketTable() {
                             rowCount={supRows.length}
                         />
                         <TableBody>
+                            
                             {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.sort(getComparator(order, orderBy)).slice() */}
                             {stableSort(supRows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.reqID);
+                                    const isItemSelected = isSelected(row.supID);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-
+                           
                                     return (
                                         <TableRow
                                             hover
@@ -364,10 +371,9 @@ export default function TicketTable() {
                                                     }}
                                                 />
                                             </TableCell>
-                                          
-                                            <TableCell align="right">{row.CreatedBy}</TableCell>
-                                            <TableCell align="right">{row.Email}</TableCell>
-                                            <TableCell align="right">{row.Description}</TableCell>
+                                            <TableCell align="center">{row.CreatedBy}</TableCell>
+                                            <TableCell align="center">{row.Email}</TableCell>
+                                            <TableCell align="center">{row.Description}</TableCell>
                                         </TableRow>
                                     );
                                 })}
