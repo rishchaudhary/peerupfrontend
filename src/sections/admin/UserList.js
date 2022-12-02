@@ -232,7 +232,7 @@ export default function UserList() {
     const [requests, setRequests] = React.useState(false);
     const [checked, setCheck] = React.useState(false);
     
-
+    const [Name, setName ] = React.useState('Name');
     const [Major, setMajor] = React.useState('Major');
     const [Language, setLanguage] = React.useState('Language');
     const [Bio, setBio] = React.useState('Bio');
@@ -294,20 +294,23 @@ export default function UserList() {
             setSelected(newSelected);
             return;
         }
-        setSelected(true);
+        setSelected([]);
     };
 
     const handleClick = (event, userID) => {
         const selectedIndex = selected.indexOf(userID);
-        setCheck(true);
         let newSelected = [];
         if (selectedIndex === -1) {
+            console.log("case 1");
             newSelected = newSelected.concat(selected, userID);
         } else if (selectedIndex === 0) {
+            console.log("case 2");
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
+            console.log("case 3");
             newSelected = newSelected.concat(selected.slice(0, -1));
         } else if (selectedIndex > 0) {
+            console.log("case 4");
             newSelected = newSelected.concat(
                 selected.slice(0, selectedIndex),
                 selected.slice(selectedIndex + 1),
@@ -316,9 +319,12 @@ export default function UserList() {
 
         console.log("Currently selected:", newSelected);
         console.log("Inside handle click:", userRows);
+        setSelected(newSelected);
 
+        if (selectedIndex === -1) {
         for (let i = 0; i < userRows.length; i += 1) {
             if((userRows[i].userID).toString() === (newSelected.toString())){
+                setName(userRows[i].Name.toString());
                 setMajor(userRows[i].Major.toString());
                 setBio(userRows[i].Bio.toString());
                 setLanguage(userRows[i].Langauge.toString());
@@ -328,9 +334,10 @@ export default function UserList() {
 
             }
         }
+    }
 
-
-        setSelected(newSelected);
+       //  setCheck(true);
+        // setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -433,6 +440,10 @@ export default function UserList() {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
+            </Paper>
+
+            <Paper>
+                Name: {Name}
             </Paper>
 
             <Paper>
