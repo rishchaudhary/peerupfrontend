@@ -94,6 +94,11 @@ export default class CreateRequestForm extends Component {
         this.setState({rDays: selectedDays})
     }
 
+    handleFiles = (uploadInput) => {
+        console.log("files:", uploadInput)
+        this.setState({files: uploadInput})
+    }
+
     render() {
         const { step } = this.state;
         const {
@@ -173,6 +178,7 @@ export default class CreateRequestForm extends Component {
                         nextStep={ this.nextStep }
                         prevStep={ this.prevStep }
                         handleChange={ this.handleChange }
+                        handleFiles = {this.handleFiles}
                         values={ values }
                     />
                 )

@@ -2,26 +2,39 @@ import React from 'react'
 import {Button} from "@mui/material";
 // Controller
 import {Requests as REQUESTS} from '../../Controller/Requests';
-import {DBContext} from "../../App";
 
 const PostRequest = ({jumpStep, values}) => {
-    const {displayName} = React.useContext(DBContext)
+    const {
+        userID,
+        course,
+        date,
+        time,
+        length,
+        location,
+        format,
+        description,
+        files,
+        matchPriority,
+        recurring,
+        rDays,
+        rNumWeeks
+    } = values
+
     console.log('PostRequest values: ', values)
     REQUESTS.create_request(
-        values.time,
-        values.length,
-        values.date,
-        values.description,
-        values.userID,
-        values.course,
-        values.location,
-        values.format,
-        displayName,
-        values.files,
-        values.matchPriority,
-        values.recurring,
-        values.rDays,
-        values.rNumWeeks
+        time,
+        length,
+        date,
+        description,
+        userID,
+        course,
+        location,
+        format,
+        files,
+        matchPriority,
+        recurring,
+        rDays,
+        rNumWeeks
     ).then(r => console.log("REQUEST POSTED SUCCESSFULLY", r))
 
 
