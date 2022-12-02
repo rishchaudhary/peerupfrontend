@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {getDatabase, ref, onValue} from "firebase/database";
 import {Box, Button, Container, FormControl, Stack, Typography} from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
@@ -7,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import {Requests as REQ} from '../../Controller/Requests';
 
-const SelectCourse = ({nextStep, prevStep, handleChange, values}) => {
+const SelectCourse = ({nextStep, jumpStep, handleChange, values}) => {
     const [courses, setCourses] = useState([]);
 
     React.useEffect(() => {
@@ -20,12 +19,16 @@ const SelectCourse = ({nextStep, prevStep, handleChange, values}) => {
 
     const Continue = e => {
         e.preventDefault()
-        nextStep()
+        if (values.recurring) {
+            jumpStep(9)
+        } else {
+            nextStep()
+        }
     }
 
     const Previous = e => {
         e.preventDefault();
-        prevStep();
+        jumpStep(1);
     }
 
     return (
