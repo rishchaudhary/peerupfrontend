@@ -4,9 +4,9 @@ import {Button} from "@mui/material";
 import {Requests as REQUESTS} from '../../Controller/Requests';
 import {DBContext} from "../../App";
 
-const PostRequest = (jumpStep, values) => {
+const PostRequest = ({jumpStep, values}) => {
     const {displayName} = React.useContext(DBContext)
-
+    console.log('PostRequest values: ', values)
     REQUESTS.create_request(
         values.time,
         values.length,

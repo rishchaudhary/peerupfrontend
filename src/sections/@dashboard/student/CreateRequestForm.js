@@ -194,10 +194,11 @@ export default class CreateRequestForm extends Component {
                     />
                 )
             case 8:
+                console.log('values:', values)
                 return (
                     <PostRequest
                         jumpStep={ this.jumpStep }
-                        values = { values }
+                        values={ values }
                     />
                 )
             case 9:
