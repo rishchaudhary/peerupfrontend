@@ -5,8 +5,10 @@ import Button from "@mui/material/Button";
 import Iconify from "../Iconify";
 import {DBContext} from "../../App";
 
-const AdditionalDetails = ({nextStep, prevStep, handleChange, values}) => {
+const AdditionalDetails = ({nextStep, prevStep, handleChange, handleFiles, values}) => {
     const {userLang} = React.useContext(DBContext)
+    const uploadInput = document.getElementById('usr_doc');
+
     const Continue = e => {
         e.preventDefault()
         nextStep()
@@ -46,7 +48,11 @@ const AdditionalDetails = ({nextStep, prevStep, handleChange, values}) => {
                         />
                     </div>
                     <div>
-                        <Button variant="contained" component="label" startIcon={<Iconify icon="eva:plus-fill"/>}>
+                        <Button
+                            variant="contained"
+                            component="label"
+                            startIcon={<Iconify icon="eva:plus-fill"/>}
+                        >
                             Upload Attachment
                             <input
                                 hidden
@@ -54,6 +60,7 @@ const AdditionalDetails = ({nextStep, prevStep, handleChange, values}) => {
                                 type="file"
                                 id="usr_doc"
                                 name='usr_doc'
+                                onChange={handleChange('files')}
                             />
                         </Button>
                     </div>
