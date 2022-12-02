@@ -24,8 +24,7 @@ export class MatchingAlgorithm{
         /* eslint-disable no-await-in-loop */
         
         const timeData = data.Time;
-        const timeData2 = timeData.split(' ');
-        const timeData3 = timeData2[4].split(':');
+        const timeData3 = timeData[4].split(':');
         const timeData4 = parseFloat(timeData3[0]);
         let time;
 
