@@ -186,14 +186,13 @@ export class Requests {
     // It will add the tutor's ID to the list of tutor's who have accepted this request.
     // As this function is called by the tutor side of the website, you can get the tutorID
     // by calling auth.currentUser.uid
-   static async create_offer(requestID, tutorID, startTime, date, format, location) {
+   static async create_offer(requestID, tutorID, startTime, date, location) {
 
 
         await set(ref(getDatabase(), `Requests/${requestID}/Offers/${tutorID}`), {
             Time: startTime,
             Date: date,
             Location: location,
-            Format: format,
             Tutor: tutorID
         },);
 
