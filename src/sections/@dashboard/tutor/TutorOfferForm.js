@@ -53,7 +53,7 @@ export default function TutorOfferForm(props) {
             finalTime = `${timeVals[0]}:${timeVals[1]} PM`
         }
         console.log("Creating Offer:",checked.at(0), finalDate, finalTime, requestLocation)
-        // REQUEST.create_offer(checked.at(0), tutorID, finalTime, finalDate  )
+        REQUEST.create_offer(checked.at(0), tutorID, finalTime, finalDate, requestLocation)
         setCounter(true);
     };
 
