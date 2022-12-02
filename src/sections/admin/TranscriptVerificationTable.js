@@ -98,6 +98,8 @@ const headCells = [
     
 ];
 
+
+
 function EnhancedTableHead(props) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
         props;
@@ -158,21 +160,58 @@ function EnhancedTableToolbar(props) {
     const { numSelected, checked } = props;
     const userID = getAuth().currentUser.uid
     const [deleteItem, setDelete] = React.useState(false);
+    
 
 
     // Delete support ticket 
-    const handleDelete = (event) => {
+    const handleVerification = (event, inputCourse) => {
 
-        console.log("Deleted Requests:", checked);
-        const deletedIDs = [];
-        console.log("Checked ids:", deletedIDs);
-        checked.forEach(value => {
-            deletedIDs.push(`${value}`);
-        });
-        console.log("Delete id:", deletedIDs);
- 
+      const deletedIDs = [];
+console.log("Checked ids:", deletedIDs);
+checked.forEach(value => {
+  deletedIDs.push(`${value}`);
+  console.log("Value:", value);
+   // View transcript
+   const notVerifiedRef = refDatabase(getDatabase(), `TutorAccounts/${value}/NotVerifiedCourses`);
+      let oldNotVerified = [];
+      get(notVerifiedRef).then((snapshot) => {
+        oldNotVerified = snapshot.val();
+        console.log(`oldNotVerified: ${oldNotVerified}`);
+      }).catch((error) => {
+        console.log(error);
+      });
 
-        setDelete(true);
+      const verifiedRef = refDatabase(getDatabase(), `TutorAccounts/${value}/VerifiedCourses`);
+      let oldVerified = [];
+      get(verifiedRef).then((snapshot) => {
+        oldVerified = snapshot.val();
+        console.log(`oldVerified: ${oldVerified}`);
+      }).catch((error) => {
+        console.log(error);
+      });
+
+      const indexNotVerified = oldNotVerified.indexOf(inputCourse);
+      if (indexNotVerified > -1) {
+        const notVerifiedRemoved = oldNotVerified.splice(indexNotVerified, 1);
+
+        console.log(`Removed ${notVerifiedRemoved} from array`);
+      }
+      console.log(`newNotVerified: ${oldNotVerified}`);
+      const indexVerified = oldVerified.indexOf(inputCourse);
+      if (indexVerified === -1 ) {
+        const elemsPushed = oldVerified.push(inputCourse);
+        console.log(`new Verified length: ${elemsPushed}`);
+        const indexNA = oldVerified.indexOf('N/A');
+        if (indexNA > -1) {
+          oldVerified.splice(indexNA, 1);
+        }
+      }
+      console.log(`new oldVerified: ${oldVerified}`);
+
+      TUTOR.update_by_admin(value, oldVerified, oldNotVerified);
+
+});
+
     }
 
     return (
@@ -186,6 +225,9 @@ function EnhancedTableToolbar(props) {
                 }),
             }}
         >
+
+
+          
             {numSelected > 0 ? (
                 <Typography
                     sx={{ flex: '1 1 100%' }}
@@ -205,6 +247,13 @@ function EnhancedTableToolbar(props) {
                   List of all users
                 </Typography>
             )}
+
+<Tooltip title="VerifyCourse">
+                    <IconButton onClick={(event) => handleVerification(event)}>
+                        VerifyCourse
+                    </IconButton>
+                </Tooltip>
+
 
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
@@ -230,6 +279,9 @@ function EnhancedTableToolbar(props) {
                         View Transcript<DownloadIcon />
                     </IconButton>
                 </Tooltip>
+                
+                
+                
             ) : (
                 <Tooltip title="Filter list">
                     <IconButton>
@@ -237,6 +289,8 @@ function EnhancedTableToolbar(props) {
                     </IconButton>
                 </Tooltip>
             )}
+            
+            
         </Toolbar>
     );
 }
@@ -265,7 +319,8 @@ export default function TranscriptVerificationTable() {
     const userID = getAuth().currentUser.uid;
 
     const [inputUid, setInputUid ] = React.useState();
-    const [inputCourse, setInputCourse ] = React.useState();
+    const [inputCourse, setInputCourse] = React.useState();
+
 
     /*
     async function verifyTutorCourses() {
@@ -432,56 +487,9 @@ export default function TranscriptVerificationTable() {
         setInputCourse(event.target.value);
       }}
     />
-    <LoadingButton size="large" type="submit" variant="contained" onClick={() => {
+  
 
-const deletedIDs = [];
-console.log("Checked ids:", deletedIDs);
-checked.forEach(value => {
-  deletedIDs.push(`${value}`);
-   // View transcript
-   const notVerifiedRef = refDatabase(getDatabase(), `TutorAccounts/${value}/NotVerifiedCourses`);
-      let oldNotVerified = [];
-      get(notVerifiedRef).then((snapshot) => {
-        oldNotVerified = snapshot.val();
-        console.log(`oldNotVerified: ${oldNotVerified}`);
-      }).catch((error) => {
-        console.log(error);
-      });
-
-      const verifiedRef = refDatabase(getDatabase(), `TutorAccounts/${value}/VerifiedCourses`);
-      let oldVerified = [];
-      get(verifiedRef).then((snapshot) => {
-        oldVerified = snapshot.val();
-        console.log(`oldVerified: ${oldVerified}`);
-      }).catch((error) => {
-        console.log(error);
-      });
-
-      const indexNotVerified = oldNotVerified.indexOf(inputCourse);
-      if (indexNotVerified > -1) {
-        const notVerifiedRemoved = oldNotVerified.splice(indexNotVerified, 1);
-
-        console.log(`Removed ${notVerifiedRemoved} from array`);
-      }
-      console.log(`newNotVerified: ${oldNotVerified}`);
-      const indexVerified = oldVerified.indexOf(inputCourse);
-      if (indexVerified === -1 ) {
-        const elemsPushed = oldVerified.push(inputCourse);
-        console.log(`new Verified length: ${elemsPushed}`);
-        const indexNA = oldVerified.indexOf('N/A');
-        if (indexNA > -1) {
-          oldVerified.splice(indexNA, 1);
-        }
-      }
-      console.log(`new oldVerified: ${oldVerified}`);
-
-      TUTOR.update_by_admin(value, oldVerified, oldNotVerified);
-
-});
-
-}}>
-      Verify user for course
-    </LoadingButton>
+  
 
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar checked={selected} numSelected={selected.length} />
