@@ -371,9 +371,9 @@ export default function TicketTable() {
                                                     }}
                                                 />
                                             </TableCell>
-                                            <TableCell align="right">{row.CreatedBy}</TableCell>
-                                            <TableCell align="right">{row.Email}</TableCell>
-                                            <TableCell align="right">{row.Description}</TableCell>
+                                            <TableCell align="center">{row.CreatedBy}</TableCell>
+                                            <TableCell align="center">{row.Email}</TableCell>
+                                            <TableCell align="center">{row.Description}</TableCell>
                                         </TableRow>
                                     );
                                 })}

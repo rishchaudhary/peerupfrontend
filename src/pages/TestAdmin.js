@@ -232,6 +232,21 @@ export default function AdminPanel() {
             <TranscriptTable/>
           </Container>
         </TabPanel>
+
+        <TabPanel value={value} index={1}>
+          <Container>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+              <Typography variant="h3" gutterBottom>
+               Disputed Review
+              </Typography>
+            
+            </Stack>
+                <Stack spacing={0.5} mt={3} mx={3}>
+                <DisputedReviewTable/>
+                </Stack>
+          </Container>
+        </TabPanel>
+
         <TabPanel value={value} index={2}>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
