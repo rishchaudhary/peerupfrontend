@@ -139,7 +139,7 @@ export class UnitTest27 {
         console.log('Tutor test12, has been matched to a student based on the matching algorithm. The tutor cannot meet with ' +
             'the student as the allotted time and wants to see if the student is available on a different day at a different time ')
         const requestID = await Requests.create_request('8:15am', '2 hrs', 'Wed, 16 Nov, 2022', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'TEST.TXT', ['course'], true, [0, 1, 2], 2);
-        Requests.create_offer(requestID, 'test12', '1 pm', '1 hr', '16th May 2023', 'N/A', 'Online', []);
+        Requests.create_offer(requestID, 'test12', '1 pm', '1 hr', '16th May 2023', 'N/A', 'Online');
         const requestData = Requests.get_offer_info(requestID, 'test12');
         const data = await requestData.then(val => {return val;});
         console.log('Student proposed time -- 12pm, Student proposed date 17th May 2023' )
