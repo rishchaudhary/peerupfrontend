@@ -29,7 +29,6 @@ export class Requests {
         course,
         location,
         format,
-        name,
         fileAttachments,
         priorityList,
         recurring,
@@ -73,6 +72,7 @@ export class Requests {
         const data = await userData.then(val => {return val;});
         const requestData = data.Requests;
         const language = data.Language;
+        const name = data.Name;
         const totalSessions = preferredDays.length * weeks;
 
         await set(dbRef, {
