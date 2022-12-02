@@ -85,11 +85,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       icon: getIcon('eva:home-fill'),
     },
     {
-      title: 'Messages',
-      path: '/dashboard/message',
-      icon: getIcon('eva:message-circle-fill'),
-    },
-    {
       title: 'Student Profile',
       path: '/dashboard/profile',
       icon: getIcon('eva:person-outline'),
@@ -113,11 +108,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       title: 'Tutor Home',
       path: '/dashboard/tutorapp',
       icon: getIcon('eva:home-fill'),
-    },
-    {
-      title: 'Messages',
-      path: '/dashboard/message',
-      icon: getIcon('eva:message-circle-fill'),
     },
     {
       title: 'Tutor Profile',
