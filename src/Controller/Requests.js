@@ -20,7 +20,21 @@ export class Requests {
     // format (string) -- Online or In-Person
     // location (string) -- where the session is being hosted. If the Format is Online give
     // N/A for the location.
-    static async create_request( startTime, length, date, description, userID, course, location, format, name, fileAttachments, priorityList, recurring, preferredDays, weeks) {
+    static async create_request(
+        startTime,
+        length,
+        date,
+        description,
+        userID,
+        course,
+        location,
+        format,
+        name,
+        fileAttachments,
+        priorityList,
+        recurring,
+        preferredDays,
+        weeks) {
 
         const dbRef = push(ref(getDatabase(), `Requests/${userID}`));
         const uploadInput = fileAttachments.files;

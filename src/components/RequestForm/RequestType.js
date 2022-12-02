@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Container, Stack, Typography} from "@mui/material";
 
-const RequestType = ({nextStep, jumpStep}) => {
+const RequestType = ({nextStep, jumpStep, handleChange}) => {
     const Continue = e => {
         e.preventDefault()
         nextStep()
@@ -9,7 +9,7 @@ const RequestType = ({nextStep, jumpStep}) => {
 
     const Jump = e => {
         e.preventDefault()
-        jumpStep()
+        jumpStep(2)
     }
     return (
         <Container maxWidth={"xs"}>
