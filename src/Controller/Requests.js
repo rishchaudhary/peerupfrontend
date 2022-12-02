@@ -41,6 +41,19 @@ export class Requests {
         /* eslint-enable no-await-in-loop */
         /* eslint-enable no-restricted-syntax */
         console.log('file URLs: ', fileURLs);
+        
+        const days = [
+            {key:"Mon", value: false},
+            {key:"Tue", value: false},
+            {key:"Wed", value: false},
+            {key:"Thu", value: false},
+            {key:"Fri", value: false},
+            {key:"Sat", value: false},
+            {key:"Sun", value: false},
+        ];
+        for (let i = 0; i < preferredDays.length; i += 1) {
+            days[preferredDays[i]].value = true;
+        }
 
         const userData = User.get_information(userID);
         const data = await userData.then(val => {return val;});
@@ -58,6 +71,10 @@ export class Requests {
             Format: format,
             Location: location,
             LanguagePreference: language,
+            Recurring: recurring,
+            Weeks: weeks,
+            PreferredDays: days,
+            TotalSessionsWanted: totalSessions,
             CourseWanted: course,
             Offers: ['Offer ID'],
             attachmentURLS: fileURLs
@@ -167,7 +184,7 @@ export class Requests {
     // It will add the tutor's ID to the list of tutor's who have accepted this request.
     // As this function is called by the tutor side of the website, you can get the tutorID
     // by calling auth.currentUser.uid
-    static async add_tutor_to_request(requestID, tutorID, startTime, length, date, location, format) {
+    static async create_offer(requestID, tutorID, startTime, length, date, location, format, days) {
 
 
         const requestData = this.get_information(requestID);
@@ -182,6 +199,7 @@ export class Requests {
             Location: location,
             Format: format,
             Tutor: tutorID,
+            Days: days,
             id: result - 1
         },);
 
