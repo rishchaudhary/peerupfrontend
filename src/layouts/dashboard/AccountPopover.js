@@ -31,6 +31,11 @@ const MENU_OPTIONS = [
     icon: 'eva:settings-2-fill',
     linkTo: '/dashboard/settings',
   },
+  {
+    label: 'Contact support',
+    icon: 'evaLsettings-2-fill',
+    linkTo: '/contact'
+  }
 ];
 
 // ----------------------------------------------------------------------
