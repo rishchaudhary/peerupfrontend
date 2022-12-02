@@ -8,15 +8,68 @@ export class Sessions{
     static async create_session(requestID, tutorID) {
 
         const requestData = Requests.get_information(requestID);
+        const offerData = Requests.get_offer_info(requestID, tutorID)
         const data = await requestData.then(val => {return val;});
+        const info = await offerData.then(val => {return val;});
+
+        const daysOffer = info.Days;
+        const result7 = Object.keys(daysOffer).map((key) => daysOffer[key]);
+
+        for (let i = 0; i < result7.length; i += 1) {
+
+            if (result7[i] === 'Monday') {
+                result7[i] = 0;
+            }
+
+            else if (result7[i] === 'Tuesday') {
+                result7[i] = 1;
+            }
+
+            else if (result7[i] === 'Wednesday') {
+                result7[i] = 2;
+            }
+            else if (result7[i] === 'Thursday') {
+                result7[i] = 3;
+            }
+
+            else if (result7[i] === 'Friday') {
+                result7[i] = 4;
+            }
+
+            else if (result7[i] === 'Saturday') {
+                result7[i] = 5;
+            }
+            else {
+                result7[i] = 6;
+            }
+        }
+
+        const days = [
+            {key:"Mon", value: false},
+            {key:"Tue", value: false},
+            {key:"Wed", value: false},
+            {key:"Thu", value: false},
+            {key:"Fri", value: false},
+            {key:"Sat", value: false},
+            {key:"Sun", value: false},
+        ];
+        for (let i = 0; i < result7.length; i += 1) {
+            days[result7[i]].value = true;
+        }
+        
+        
         console.log(data);
         const userID = data.CreatedBy;
-        const startTime = data.Time;
-        const length = data.Length;
-        const date = data.Date;
+        const startTime = info.Time;
+        const length = info.Length;
+        const date = info.Date;
+        const weeks = data.Weeks;
+        const totalSessions = weeks * result7.length;
+        const recurring = data.Recurring;
+        const preferredDays = days;
         const description = data.Description;
-        const location = data.Location;
-        const format = data.Format;
+        const location = info.Location;
+        const format = info.Format;
         const tutorData1 = User.get_information(tutorID);
         const data7 = await tutorData1.then(val => {return val;});
         const tutorName = data7.Name;
@@ -38,8 +91,13 @@ export class Sessions{
             Student: nameStudent,
             StudentID: userID,
             TutorID: tutorID,
+            Weeks: weeks,
+            Recurring: recurring,
+            PreferredDays: preferredDays,
             Tutor: tutorName,
             Completed: false,
+            CompletedSubSessions: 0,
+            TotalSessions: totalSessions,
             Location: location,
             Format: format,
             id: result.length
@@ -59,11 +117,22 @@ export class Sessions{
     
     static async session_completed(sessionID) {
 
-        await set(ref(getDatabase(), `Sessions/${sessionID}/Completed`), true);
+
 
         const sessionData = this.get_info(sessionID);
         const data = await sessionData.then(val => {return val;});
         const tutorID = data.TutorID;
+        const recurring = data.Recurring;
+        const sessionCompleted = data.CompletedSubSessions;
+        const totalSessions = data.TotalSessions;
+
+        if (recurring && sessionCompleted >= totalSessions) {
+            await set(ref(getDatabase(), `Sessions/${sessionID}/Completed`), true);
+        }
+
+        if (recurring) {
+            await set(ref(getDatabase(), `Sessions/${sessionID}/CompletedSubSessions`), sessionCompleted + 1);
+        }
         const tutorData = Tutor.get_information(tutorID);
         const data3 = await tutorData.then(val => {return val;});
         const sessionsCompleted = parseFloat(data3.SessionsCompleted) + 1;
