@@ -19,7 +19,7 @@ export class UnitTest27 {
         console.log('Running scenario-1 -->')
         console.log('User wants to request help in CS180. There are 2 tutors for this course -- test11 and test12. ' +
             'Only test12 is verified for this course')
-        const requestID = await Requests.create_request('Thu, 24 Nov 2022 8:20:00 GMT hrs', '2 hrs', 'Wed, 16 Nov 2022 18:20:00 GMT hrs', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['course'], true, [0, 1, 2], 2);
+        const requestID = await Requests.create_request('8:15am', '2 hrs', 'Wed, 16 Nov, 2022', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['course'], true, [0, 1, 2], 2);
         const requestData = Requests.get_information(requestID);
         const data = await requestData.then(val => {return val;});
         const matched = data.MatchedTutors;
@@ -43,7 +43,7 @@ export class UnitTest27 {
         console.log('Running scenario-2 -->')
         console.log('User wants to request help in CS180 and wants the matching algorithm to sort on only the following' +
             'parameters --> day, time, language and finally course')
-        const requestID = await Requests.create_request('Thu, 24 Nov 2022 8:20:00 GMT hrs', '2 hrs', 'Wed, 16 Nov 2022 18:20:00 GMT hrs', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['day', 'time', 'language', 'course'], true, [0, 1, 2], 2);
+        const requestID = await Requests.create_request('8:15am', '2 hrs', 'Wed, 16 Nov, 2022', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['day', 'time', 'language', 'course'], true, [0, 1, 2], 2);
         const requestData = Requests.get_information(requestID);
         const data = await requestData.then(val => {return val;});
         const matched = data.MatchedTutors;
@@ -66,7 +66,7 @@ export class UnitTest27 {
 
         console.log('Running scenario-3 -->')
         console.log('User wants to request help in CS380, a course which currently has no tutors')
-        const requestID = await Requests.create_request('Thu, 24 Nov 2022 8:20:00 GMT hrs', '2 hrs', 'Wed, 16 Nov 2022 18:20:00 GMT hrs', 'Math Help', 'test10', 'CS380', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['course'], true, [0, 1, 2], 2);
+        const requestID = await Requests.create_request('8:15am', '2 hrs', 'Wed, 16 Nov, 2022', 'Math Help', 'test10', 'CS380', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['course'], true, [0, 1, 2], 2);
         const requestData = Requests.get_information(requestID);
         const data = await requestData.then(val => {return val;});
         const matched = data.MatchedTutors;
@@ -90,7 +90,7 @@ export class UnitTest27 {
         console.log('Running scenario-4 -->')
         console.log('User wants to request help in CS180. He is only free to have a session with a tutor at 1pm for 1 hr' +
             'Thus, he wants to find tutors based on the preferredtime parameter')
-        const requestID = await Requests.create_request('Thu, 24 Nov 2022 13:00:00 GMT hrs', '2 hrs', 'Wed, 16 Nov 2022 18:20:00 GMT hrs', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['time'], true, [0, 1, 2], 2);
+        const requestID = await Requests.create_request('8:15am', '2 hrs', 'Wed, 16 Nov, 2022', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['time'], true, [0, 1, 2], 2);
         const requestData = Requests.get_information(requestID);
         const data = await requestData.then(val => {return val;});
         const matched = data.MatchedTutors;
@@ -114,7 +114,7 @@ export class UnitTest27 {
         console.log('Running scenario-5 -->')
         console.log('User wants to request help in CS180. He is only free to have a session with a tutor on Thursday' +
             'Thus, he wants to find tutors based on the preferredday parameter')
-        const requestID = await Requests.create_request('Thu, 24 Nov 2022 8:20:00 GMT hrs', '2 hrs', 'Mon, 16 Nov 2022 18:20:00 GMT hrs', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['day'], true, [0, 1, 2], 2);
+        const requestID = await Requests.create_request('8:15am', '2 hrs', 'Wed, 16 Nov, 2022', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['day'], true, [0, 1, 2], 2);
         const requestData = Requests.get_information(requestID);
         const data = await requestData.then(val => {return val;});
         const matched = data.MatchedTutors;
@@ -138,7 +138,7 @@ export class UnitTest27 {
         console.log('Running scenario-6 -->')
         console.log('Tutor test12, has been matched to a student based on the matching algorithm. The tutor cannot meet with ' +
             'the student as the allotted time and wants to see if the student is available on a different day at a different time ')
-        const requestID = await Requests.create_request('Thu, 24 Nov 2022 8:20:00 GMT hrs', '2 hrs', 'Mon, 16 Nov 2022 18:20:00 GMT hrs', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['course'], true, [0, 1, 2], 2);
+        const requestID = await Requests.create_request('8:15am', '2 hrs', 'Wed, 16 Nov, 2022', 'Math Help', 'test10', 'CS180', 'PMU', 'In-person', 'Avi', 'TEST.TXT', ['course'], true, [0, 1, 2], 2);
         Requests.create_offer(requestID, 'test12', '1 pm', '1 hr', '16th May 2023', 'N/A', 'Online', []);
         const requestData = Requests.get_offer_info(requestID, 'test12');
         const data = await requestData.then(val => {return val;});
@@ -147,5 +147,7 @@ export class UnitTest27 {
         console.log(data);
 
     }
+
+
 
 }
