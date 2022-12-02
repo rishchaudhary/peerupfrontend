@@ -36,7 +36,7 @@ export class Review {
 
     }
 
-    static dispute_review(reviewID, comment) {
+    static async dispute_review(reviewID, comment) {
 
          set(ref(getDatabase(), `Reviews/${reviewID}/Disputed`),true);
         set(ref(getDatabase(), `Reviews/${reviewID}/WhyDisputed`),comment);

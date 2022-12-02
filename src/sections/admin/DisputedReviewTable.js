@@ -165,7 +165,7 @@ function EnhancedTableToolbar(props) {
         checked.forEach(value => {
             deletedIDs.push(`${value}`);
         });
-
+        console.log("Delete id:", deletedIDs);
         REV.delete_disputed_reviews(deletedIDs);
 
         setDelete(true);
@@ -273,6 +273,7 @@ export default function ReviewTable() {
                 revObj.WhyDisputed,
                 revIDs[i]
             ));
+            console.log("review Ids:", revIDs);
             console.log("Length inside:", revRows.length);
         }
 
@@ -289,18 +290,18 @@ export default function ReviewTable() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = revRows.map((n,) => n.supID);
+            const newSelected = revRows.map((n,) => n.revID);
             setSelected(newSelected);
             return;
         }
         setSelected([]);
     };
 
-    const handleClick = (event, supID) => {
-        const selectedIndex = selected.indexOf(supID);
+    const handleClick = (event, revID) => {
+        const selectedIndex = selected.indexOf(revID);
         let newSelected = [];
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, supID);
+            newSelected = newSelected.concat(selected, revID);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -328,7 +329,7 @@ export default function ReviewTable() {
         setDense(event.target.checked);
     };
 
-    const isSelected = (supID) => selected.indexOf(supID) !== -1;
+    const isSelected = (revID) => selected.indexOf(revID) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -359,17 +360,17 @@ export default function ReviewTable() {
                             {stableSort(revRows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.supID);
+                                    const isItemSelected = isSelected(row.revID);
                                     const labelId = `enhanced-table-checkbox-${index}`;
                            
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, row.supID)}
+                                            onClick={(event) => handleClick(event, row.revID)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.supID}
+                                            key={row.revID}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">
