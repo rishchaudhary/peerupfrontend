@@ -1,5 +1,6 @@
 import * as React from 'react';
 import PropTypes from "prop-types";
+import {getAuth} from "firebase/auth";
 import {
     Button,
     TextField,
@@ -14,7 +15,8 @@ import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {TimePicker} from "@mui/x-date-pickers/TimePicker";
-import {Offers as OFFER} from '../../../Controller/Offers';
+import {Requests as REQUEST} from '../../../Controller/Requests';
+
 
 TutorOfferForm.propTypes = {
     open: PropTypes.bool.isRequired,
@@ -24,17 +26,34 @@ TutorOfferForm.propTypes = {
 };
 
 export default function TutorOfferForm(props) {
+    const tutorID = getAuth().currentUser.uid;
+
     const { open, checked, onClose, items } = props;
     const [dateValue, setDateValue] = React.useState(null);
     const [timeValue, setTimeValue] = React.useState(null);
-    const [requestLocation, setLocation] = React.useState('');
+    const [requestLocation, setLocation] = React.useState(items.at(0).location);
     const [counter, setCounter] = React.useState(false);
 
 
     const handleCounter = () => {
-        console.log(items)
-        console.log("Creating Offer:",checked.at(0), dateValue, timeValue, requestLocation)
-        // OFFER.create_offer(checked.at(0), )
+
+        const dateData = dateValue.$d.toString();
+        const dateVal = dateData.split(' ').slice(0, 4);
+        const finalDate = `${dateVal[0]}, ${dateVal[1]} ${dateVal[2]}, ${dateVal[3]}`;
+
+        const timeData = timeValue.$d.toString();
+        const timeVal = timeData.split(' ')[4];
+        const timeVals = timeVal.split(':');
+        let finalTime = '';
+        if (Number(timeVals[0]) < 12) {
+            finalTime = `${timeVals[0]}:${timeVals[1]} AM`
+        } else if (Number(timeVals[0]) > 12) {
+            finalTime = `${Number(timeVals[0]) - 12}:${timeVals[1]} PM`
+        } else {
+            finalTime = `${timeVals[0]}:${timeVals[1]} PM`
+        }
+        console.log("Creating Offer:",checked.at(0), finalDate, finalTime, requestLocation)
+        // REQUEST.create_offer(checked.at(0), tutorID, finalTime, finalDate  )
         setCounter(true);
     };
 

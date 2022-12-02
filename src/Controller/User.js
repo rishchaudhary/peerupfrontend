@@ -275,7 +275,7 @@ export class User {
                 reqObjects.push(request);
             }
         }
-        // console.log(reqObjects);
+        console.log(reqObjects);
 
         return reqObjects;
 

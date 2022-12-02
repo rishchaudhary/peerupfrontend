@@ -104,6 +104,7 @@ function EnhancedTableToolbar(props) {
 
     const handleOfferOpen = (event) => {
         console.log("Waiting for Offer")
+        console.log(items)
         setCounter(true)
     }
 
@@ -282,7 +283,12 @@ export default function TutorMatched() {
     };
 
     const handleClick = (event, matchID, MeetingDate, MeetingTime, Location) => {
-        const newItem = {date: MeetingDate, time: MeetingTime, location: Location};
+        const newItem = {
+            id: matchID,
+            date: MeetingDate,
+            time: MeetingTime,
+            location: Location
+        };
         const selectedIndex = selectedIds.indexOf(matchID);
         let newSelected = [];
         let newSelectedItems = [];

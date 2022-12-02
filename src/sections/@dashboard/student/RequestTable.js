@@ -1,4 +1,6 @@
 import * as React from 'react';
+import {useEffect} from "react";
+
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -24,14 +26,16 @@ import { visuallyHidden } from '@mui/utils';
 import {getDatabase, ref, onValue} from "firebase/database";
 import {getAuth} from "firebase/auth";
 import {Requests as REQ} from "../../../Controller/Requests";
+import {User as USER} from "../../../Controller/User";
 
-function createData(CourseWanted, Time, Length, Location, IsOnline, reqID) {
+function createData(CourseWanted, Date, Time, Length, Location, Format, reqID) {
   return {
     CourseWanted,
+    Date,
     Time,
     Length,
     Location,
-    IsOnline,
+    Format,
     reqID
   };
 }
@@ -74,10 +78,16 @@ const headCells = [
     label: 'Course',
   },
   {
+    id: 'Date',
+    numeric: false,
+    disablePadding: false,
+    label: 'Date',
+  },
+  {
     id: 'Time',
     numeric: false,
     disablePadding: false,
-    label: 'Meeting Time',
+    label: 'Time',
   },
   {
     id: 'Length',
@@ -92,10 +102,10 @@ const headCells = [
     label: 'Location',
   },
   {
-    id: 'IsOnline',
+    id: 'Format',
     numeric: false,
     disablePadding: false,
-    label: 'Meeting Format',
+    label: 'Format',
   },
 ];
 
@@ -232,10 +242,21 @@ export default function RequestTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [requests, setRequests] = React.useState(false);
+  const [requests, setRequests] = React.useState([]);
 
   const database = getDatabase();
   const userID = getAuth().currentUser.uid;
+
+  // useEffect(() => {
+  //   USER.get_user_requests(userID)
+  //       .then(fetchRequests => {
+  //         console.log("Requests:", fetchRequests)
+  //         setRequests(fetchRequests)
+  //       })
+  // }, [])
+
+
+
 
   let userReqIDs = [];
   const reqIdsRef = ref(database, `Users/${userID}/Requests`);
@@ -259,10 +280,11 @@ export default function RequestTable() {
     if (reqObj != null) {
       reqRows.push(createData(
           reqObj.CourseWanted,
+          reqObj.Date,
           reqObj.Time,
           reqObj.Length,
           reqObj.Location,
-          reqObj.IsOnline,
+          reqObj.Format,
           userReqIDs[i]
       ));
     }
@@ -378,10 +400,11 @@ export default function RequestTable() {
                             >
                               {row.CourseWanted}
                             </TableCell>
-                            <TableCell align="right">{row.Time}</TableCell>
-                            <TableCell align="right">{row.Length}</TableCell>
-                            <TableCell align="right">{row.Location}</TableCell>
-                            <TableCell align="right">{row.IsOnline}</TableCell>
+                            <TableCell align="center">{row.Date}</TableCell>
+                            <TableCell align="center">{row.Time}</TableCell>
+                            <TableCell align="center">{row.Length}</TableCell>
+                            <TableCell align="center">{row.Location}</TableCell>
+                            <TableCell align="center">{row.Format}</TableCell>
                           </TableRow>
                       );
                     })}
