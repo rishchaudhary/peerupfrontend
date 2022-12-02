@@ -90,11 +90,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       icon: getIcon('eva:person-outline'),
     },
     {
-      title: 'Documents',
-      path: '/dashboard/document',
-      icon: getIcon('eva:file-text-outline'),
-    },
-    {
       title: 'Settings',
       path: '/dashboard/settings',
       icon: getIcon('eva:settings-fill'),
