@@ -19,6 +19,7 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { getDatabase, ref, onValue } from "firebase/database";
@@ -203,7 +204,7 @@ function EnhancedTableToolbar(props) {
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
                     <IconButton onClick={handleDelete}>
-                        <DeleteIcon />
+                        Delete User: <PersonRemoveIcon />
                     </IconButton>
                 </Tooltip>
             ) : (
