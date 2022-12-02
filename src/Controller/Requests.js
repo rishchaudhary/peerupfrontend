@@ -276,4 +276,12 @@ export class Requests {
         return snapshot;
     }
 
+    static async get_university_courses() {
+        const db = getDatabase();
+        const coursesRef = ref(db, `University/Purdue`);
+        const snapshot = (await (get(coursesRef))).toJSON();
+        console.log(snapshot)
+        return Object.keys(snapshot);
+    }
+
 }
