@@ -250,7 +250,6 @@ export default function TicketTable() {
 
     console.log("Support ticket objects", userSupObjs);
 
-    setTimeout(() => {
         for (let i = 0; i < userSupIDs.length; i += 1) {
             const supObj = userSupObjs[i];
             /* console.log("Support ticket created by", supObj.CreatedBy); */
@@ -264,8 +263,13 @@ export default function TicketTable() {
                 supObj.Description,
                 userSupIDs[i]
             ));
+            console.log("Length inside:", supRows.length);
         }
-    }, 1)
+
+    console.log("Length Outside:", supRows.length);
+
+    // console.log("Sup row length:", supRows.length);
+    // console.log("Sup row:", supRows);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -339,6 +343,7 @@ export default function TicketTable() {
                             rowCount={supRows.length}
                         />
                         <TableBody>
+                            
                             {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.sort(getComparator(order, orderBy)).slice() */}
                             {stableSort(supRows, getComparator(order, orderBy))
@@ -346,7 +351,7 @@ export default function TicketTable() {
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(row.supID);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-
+                           
                                     return (
                                         <TableRow
                                             hover
@@ -365,14 +370,6 @@ export default function TicketTable() {
                                                         'aria-labelledby': labelId,
                                                     }}
                                                 />
-                                            </TableCell>
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                padding="none"
-                                            >
-                                                {row.supID}
                                             </TableCell>
                                             <TableCell align="right">{row.CreatedBy}</TableCell>
                                             <TableCell align="right">{row.Email}</TableCell>
