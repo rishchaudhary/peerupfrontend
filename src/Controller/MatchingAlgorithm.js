@@ -13,6 +13,16 @@ export class MatchingAlgorithm{
         const language = data.LanguagePreference;
         const course = data.CourseWanted;
 
+        const days = [];
+        /* eslint-disable no-await-in-loop */
+        for (let i = 0; i < 7; i += 1) {
+
+            if (await this.get_specific_day_from_request(requestID, i)) {
+                days.push(i);
+            }
+        }
+        /* eslint-disable no-await-in-loop */
+        
         const timeData = data.Time;
         const timeData2 = timeData.split(' ');
         const timeData3 = timeData2[4].split(':');
@@ -91,7 +101,7 @@ export class MatchingAlgorithm{
             /* eslint-disable no-await-in-loop */
         }
 
-        else if (priorityList[0] === 'day') {
+        else if (priorityList[0] === 'day' && days.length === 0) {
 
             /* eslint-disable no-await-in-loop */
             for (let i = 0; i < tutorIDs.length; i += 1) {
@@ -105,6 +115,29 @@ export class MatchingAlgorithm{
                 }
             }
             /* eslint-disable no-await-in-loop */
+        }
+
+        else if (priorityList[0] === 'day' && days.length !== 0) {
+
+            /* eslint-disable no-await-in-loop */
+            for (let i = 0; i < tutorIDs.length; i += 1) {
+                for (let k = 0; k < days.length; k += 1) {
+
+                    const tutorData = this.get_specific_day(tutorIDs[i], days[k]);
+                    const data3 = await tutorData.then(val => {
+                        return val;
+                    });
+
+                    if (data3) {
+                        tutorList.push(tutorIDs[i]);
+                    }
+                }
+            }
+            /* eslint-disable no-await-in-loop */
+
+            tutorList = tutorList.filter((c, index) =>  {
+                return tutorList.indexOf(c) === index;
+            });
         }
 
         else {
@@ -160,7 +193,7 @@ export class MatchingAlgorithm{
         console.log('yes');
         console.log(tutorList);
         for (let m = 1; m < priorityList.length; m += 1) {
-            tutorList = await this.match_2(priorityList[m], tutorList, language, course, time, day);
+            tutorList = await this.match_2(priorityList[m], tutorList, language, course, time, day, days);
         }
 
 
@@ -189,7 +222,7 @@ export class MatchingAlgorithm{
         return tutorList;
     }
 
-    static async match_2(priorityItem, tutorIDs, language, course, time, day) {
+    static async match_2(priorityItem, tutorIDs, language, course, time, day, days) {
 
         let tutorList = [];
 
@@ -227,7 +260,7 @@ export class MatchingAlgorithm{
             /* eslint-disable no-await-in-loop */
         }
 
-        else if (priorityItem === 'day') {
+        else if (priorityItem === 'day' && days.length === 0) {
 
             /* eslint-disable no-await-in-loop */
             for (let i = 0; i < tutorIDs.length; i += 1) {
@@ -241,6 +274,29 @@ export class MatchingAlgorithm{
                 }
             }
             /* eslint-disable no-await-in-loop */
+        }
+
+        else if (priorityItem === 'day' && days.length !== 0) {
+
+            /* eslint-disable no-await-in-loop */
+            for (let i = 0; i < tutorIDs.length; i += 1) {
+                for (let k = 0; k < days.length; k += 1) {
+
+                    const tutorData = this.get_specific_day(tutorIDs[i], days[k]);
+                    const data3 = await tutorData.then(val => {
+                        return val;
+                    });
+
+                    if (data3) {
+                        tutorList.push(tutorIDs[i]);
+                    }
+                }
+            }
+            /* eslint-disable no-await-in-loop */
+
+            tutorList = tutorList.filter((c, index) =>  {
+                return tutorList.indexOf(c) === index;
+            });
         }
 
         else {
@@ -309,6 +365,13 @@ export class MatchingAlgorithm{
     static async get_specific_day(userID, num) {
         const db = getDatabase();
         const daysRef = ref(db, `TutorAccounts/${userID}/PreferredDays/${num}/value`);
+        const snapshot = (await (get(daysRef))).toJSON();
+        return snapshot;
+    }
+    
+    static async get_specific_day_from_request(requestID, num) {
+        const db = getDatabase();
+        const daysRef = ref(db, `requests/${requestID}/PreferredDays/${num}/value`);
         const snapshot = (await (get(daysRef))).toJSON();
         return snapshot;
     }
