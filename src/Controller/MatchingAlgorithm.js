@@ -24,14 +24,15 @@ export class MatchingAlgorithm{
         /* eslint-disable no-await-in-loop */
         
         const timeData = data.Time;
+        const timeData2 = timeData.split(' ')[1]
         const timeData3 = timeData[4].split(':');
         const timeData4 = parseFloat(timeData3[0]);
         let time;
 
-        if (timeData4 < 12.0) {
+        if (timeData2 === 'AM') {
             time = 0;
         }
-        else if (timeData4 > 16) {
+        else if (timeData4 > 16 && timeData2 === 'PM') {
             time = 2;
         }
         else {
