@@ -163,8 +163,8 @@ function EnhancedTableToolbar(props) {
     
 
 
-    // Delete support ticket 
-    const handleVerification = (event, inputCourse) => {
+
+    const handleVerification = (event, courseInput) => {
 
       const deletedIDs = [];
 console.log("Checked ids:", deletedIDs);
@@ -190,16 +190,16 @@ checked.forEach(value => {
         console.log(error);
       });
 
-      const indexNotVerified = oldNotVerified.indexOf(inputCourse);
+      const indexNotVerified = oldNotVerified.indexOf(courseInput);
       if (indexNotVerified > -1) {
         const notVerifiedRemoved = oldNotVerified.splice(indexNotVerified, 1);
 
         console.log(`Removed ${notVerifiedRemoved} from array`);
       }
       console.log(`newNotVerified: ${oldNotVerified}`);
-      const indexVerified = oldVerified.indexOf(inputCourse);
+      const indexVerified = oldVerified.indexOf(courseInput);
       if (indexVerified === -1 ) {
-        const elemsPushed = oldVerified.push(inputCourse);
+        const elemsPushed = oldVerified.push(courseInput);
         console.log(`new Verified length: ${elemsPushed}`);
         const indexNA = oldVerified.indexOf('N/A');
         if (indexNA > -1) {
@@ -249,7 +249,7 @@ checked.forEach(value => {
             )}
 
 <Tooltip title="VerifyCourse">
-                    <IconButton onClick={(event) => handleVerification(event)}>
+                    <IconButton onClick={(event,inputCourse) => handleVerification(event,inputCourse)}>
                         VerifyCourse
                     </IconButton>
                 </Tooltip>
@@ -485,6 +485,7 @@ export default function TranscriptVerificationTable() {
       maxRows={4}
       onChange={(event) => {
         setInputCourse(event.target.value);
+        console.log("Input Course: ", inputCourse);
       }}
     />
   
