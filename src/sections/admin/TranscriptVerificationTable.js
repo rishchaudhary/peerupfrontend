@@ -32,6 +32,47 @@ import {HelpForm as SUP} from "../../Controller/HelpForm";
 import {Review as REV} from "../../Controller/Review";
 import { Tutor as TUTOR } from '../../Controller/Tutor';
 
+async function handleVerify(course, inputUid) {
+    
+    const notVerifiedRef = refDatabase(getDatabase(), `TutorAccounts/${inputUid}/NotVerifiedCourses`);
+    let oldNotVerified = [];
+    await get(notVerifiedRef).then((snapshot) => {
+        oldNotVerified = snapshot.val();
+        console.log(`oldNotVerified: ${oldNotVerified}`);
+    }).catch((error) => {
+        console.log(error);
+    });
+
+    const verifiedRef = refDatabase(getDatabase(), `TutorAccounts/${inputUid}/VerifiedCourses`);
+    let oldVerified = [];
+    await get(verifiedRef).then((snapshot) => {
+        oldVerified = snapshot.val();
+        console.log(`oldVerified: ${oldVerified}`);
+    }).catch((error) => {
+        console.log(error);
+    });
+
+    const indexNotVerified = oldNotVerified.indexOf(course);
+    if (indexNotVerified > -1) {
+        const notVerifiedRemoved = oldNotVerified.splice(indexNotVerified, 1);
+
+        console.log(`Removed ${notVerifiedRemoved} from array`);
+    }
+    console.log(`newNotVerified: ${oldNotVerified}`);
+    const indexVerified = oldVerified.indexOf(course);
+    if (indexVerified === -1 ) {
+        const elemsPushed = oldVerified.push(course);
+        console.log(`new Verified length: ${elemsPushed}`);
+        const indexNA = oldVerified.indexOf('Course name');
+        if (indexNA > -1) {
+            oldVerified.splice(indexNA, 1);
+        }
+    }
+    console.log(`new oldVerified: ${oldVerified}`);
+
+    TUTOR.update_by_admin(inputUid, oldVerified, oldNotVerified);
+}
+
 
 function createData(Name,Email,Rating,NotVerifiedCourses,Major, Bio, Language, userID) {
     return {
@@ -157,61 +198,15 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-    const { numSelected, checked } = props;
+    const { numSelected, checked, coursesInput } = props;
     const userID = getAuth().currentUser.uid
     const [deleteItem, setDelete] = React.useState(false);
     
 
 
 
-    const handleVerification = (event, courseInput) => {
-
-      const deletedIDs = [];
-console.log("Checked ids:", deletedIDs);
-checked.forEach(value => {
-  deletedIDs.push(`${value}`);
-  console.log("Value:", value);
-   // View transcript
-   const notVerifiedRef = refDatabase(getDatabase(), `TutorAccounts/${value}/NotVerifiedCourses`);
-      let oldNotVerified = [];
-      get(notVerifiedRef).then((snapshot) => {
-        oldNotVerified = snapshot.val();
-        console.log(`oldNotVerified: ${oldNotVerified}`);
-      }).catch((error) => {
-        console.log(error);
-      });
-
-      const verifiedRef = refDatabase(getDatabase(), `TutorAccounts/${value}/VerifiedCourses`);
-      let oldVerified = [];
-      get(verifiedRef).then((snapshot) => {
-        oldVerified = snapshot.val();
-        console.log(`oldVerified: ${oldVerified}`);
-      }).catch((error) => {
-        console.log(error);
-      });
-
-      const indexNotVerified = oldNotVerified.indexOf(courseInput);
-      if (indexNotVerified > -1) {
-        const notVerifiedRemoved = oldNotVerified.splice(indexNotVerified, 1);
-
-        console.log(`Removed ${notVerifiedRemoved} from array`);
-      }
-      console.log(`newNotVerified: ${oldNotVerified}`);
-      const indexVerified = oldVerified.indexOf(courseInput);
-      if (indexVerified === -1 ) {
-        const elemsPushed = oldVerified.push(courseInput);
-        console.log(`new Verified length: ${elemsPushed}`);
-        const indexNA = oldVerified.indexOf('N/A');
-        if (indexNA > -1) {
-          oldVerified.splice(indexNA, 1);
-        }
-      }
-      console.log(`new oldVerified: ${oldVerified}`);
-
-      TUTOR.update_by_admin(value, oldVerified, oldNotVerified);
-
-});
-
+    const handleVerification = (event) => {
+        handleVerify(coursesInput, checked[0])
     }
 
     return (
@@ -297,7 +292,8 @@ checked.forEach(value => {
 
 EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
-    checked: PropTypes.array.isRequired
+    checked: PropTypes.array.isRequired,
+    coursesInput: PropTypes.array.isRequired
 };
 
 export default function TranscriptVerificationTable() {
@@ -493,7 +489,7 @@ export default function TranscriptVerificationTable() {
   
 
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar checked={selected} numSelected={selected.length} />
+                <EnhancedTableToolbar checked={selected} numSelected={selected.length} coursesInput={inputCourse} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750, maxWidth: 800 }}
