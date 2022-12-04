@@ -94,7 +94,7 @@ function getComparator(order, orderBy) {
 
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, checked } = props;
+  const { numSelected, checked, items } = props;
   const userID = getAuth().currentUser.uid
   const [deleteItem, setDelete] = React.useState(false);
   const [acceptItem, setAccepted] = React.useState(false);
@@ -102,8 +102,11 @@ function EnhancedTableToolbar(props) {
 
 
   const handleAccept = (event) => {
-    console.log("Accepted Requests:", checked);
-    // checked.forEach(requestID => SESSION.create_session(checked, tutorID));
+    console.log("Accepted Requests:", items);
+    items.forEach(requestID => {
+      console.log("ID", requestID)
+      SESSION.create_session(requestID.Sid, tutorID)
+    });
     setAccepted(true);
   }
 
@@ -173,7 +176,8 @@ function EnhancedTableToolbar(props) {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  checked: PropTypes.array.isRequired
+  checked: PropTypes.array.isRequired,
+  items: PropTypes.array.isRequired,
 };
 
 
@@ -185,6 +189,7 @@ export default function TutorMatched() {
   const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const [orderBy, setOrderBy] = useState('name');
 
@@ -207,17 +212,18 @@ export default function TutorMatched() {
   console.log("REQUESTS IDS:", userReqIDs);
 
   const matchRows = [];
-  // setTimeout(() => {
     userReqIDs.slice(1).forEach( (reqID) => {
       let reqObject;
       const reqRef = ref(database, `Requests/${userID}/${reqID}`)
       onValue(reqRef, (snapshot) => {
         reqObject = snapshot.val();
-        console.log("Request:", reqObject)
+        // console.log("Request:", reqObject)
         if (reqObject !== null) {
-          const tutorsAcc = reqObject.TutorsWhoAccepted
+          const tutorsAcc = Object.keys(reqObject.Offers)
+          console.log("TUTORACC:", tutorsAcc)
           if (tutorsAcc.length > 1) {
             tutorsAcc.slice(1).forEach((tutorID, index) => {
+              console.log("TUTORID:", tutorID)
               let tutorName;
               const tutorNameRef = ref(database, `Users/${tutorID}/Name`)
               onValue(tutorNameRef, (snapshot) => {
@@ -282,19 +288,30 @@ export default function TutorMatched() {
     setSelected([]);
   };
 
-  const handleClick = (event, matchID) => {
+  const handleClick = (event, matchID, sessionID) => {
+    const newItem = {
+      id: matchID,
+      Sid: sessionID
+    }
+
     const selectedIndex = selected.indexOf(matchID);
     let newSelected = [];
+    let newSelectedItems = []
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, matchID);
+      newSelectedItems = newSelectedItems.concat(newSelected, newItem);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
+      newSelectedItems = newSelectedItems.concat(newSelected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelectedItems = newSelectedItems.concat(newSelected.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+      newSelectedItems = newSelectedItems.concat(newSelected.slice(0, selectedIndex), selectedItems.slice(selectedIndex + 1));
     }
     setSelected(newSelected);
+    setSelectedItems(newSelectedItems);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -321,7 +338,11 @@ export default function TutorMatched() {
   return (
 
       <Card>
-        <EnhancedTableToolbar checked={selected} numSelected={selected.length} />
+        <EnhancedTableToolbar
+            checked={selected}
+            numSelected={selected.length}
+            items={selectedItems}
+        />
 
         <Scrollbar>
           <TableContainer sx={{minWidth: 800}}>
@@ -339,7 +360,7 @@ export default function TutorMatched() {
                 {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                   const {
                     matchID,
-                    SessionID,
+                    sessionID,
                     Name,
                     Course,
                     MeetingDate,
@@ -348,6 +369,7 @@ export default function TutorMatched() {
                     Rate,
                   } = row;
                   const selectedMatch = selected.indexOf(matchID) !== -1;
+                  console.log(row)
 
                   return (
                       <TableRow
@@ -356,7 +378,7 @@ export default function TutorMatched() {
                           tabIndex={-1}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={selectedMatch} onChange={(event) => handleClick(event, matchID)} />
+                          <Checkbox checked={selectedMatch} onChange={(event) => handleClick(event, matchID, sessionID)} />
                         </TableCell>
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>

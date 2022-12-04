@@ -273,46 +273,29 @@ export class Tutor {
     // if yes, then add them to the list called verified courses else add to the list called notVerified. These two lists are 
     // set as the value of the keys VerifiedCourses and NotverifiedCourses respectively.
     static async update_courses(userID, courses) {
-        
+
         const tutorData = this.get_information(userID);
         const data = await tutorData.then(val => {return val;});
-        const verifiedCourses = data.VerifiedCourses;
-        const result = Object.keys(verifiedCourses).map((key) => verifiedCourses[key]);
-        const values1 = [];
-        
+        const notVerified = data.NotVerifiedCourses;
+        const result = Object.keys(notVerified).map((key) => notVerified[key]);
+        await set(ref(getDatabase(), `TutorAccounts/${userID}/VerifiedCourses`), courses);
+
         for(let i = 0; i < courses.length; i += 1) {
 
             for (let j = 0; j < result.length; j += 1) {
-        
-                if (courses[i] === result[j]) {
-                    values1.push(courses[i]);
-                    courses[i] = 'Done';
+
+                if (result[j] === courses[i]) {
+                    result.splice(j, 1);
                 }
             }
         }
 
-        const values2 = [];
-
-        for(let i = 0; i < courses.length; i += 1) {
-
-            if (courses[i] !== 'Done') {
-                values2.push(courses[i]);
-            }
-        }
-
         // These two if statements are for the purpose of mainting the size of instances across all tutor accounts
-        if (values1.length === 0) {
-            values1.push('N/A');
+        if (result.length === 0) {
+            result.push('N/A');
         }
 
-        if (values2.length === 0) {
-            values2.push('N/A');
-        }
-
-        console.log(values1);
-        console.log(values2);
-        set(ref(getDatabase(), `TutorAccounts/${userID}/VerifiedCourses`), values1);
-        set(ref(getDatabase(), `TutorAccounts/${userID}/NotVerifiedCourses`), values2);
+        await set(ref(getDatabase(), `TutorAccounts/${userID}/NotVerifiedCourses`), result);
     }
 
     // Once the admin looks over the tutor's transcript, they must enter a list of verified and not verified courses for

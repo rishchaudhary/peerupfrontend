@@ -114,8 +114,14 @@ function EnhancedTableToolbar(props) {
 
 
     const handleAccept = (event) => {
+        console.log(items)
         console.log("Accepted Requests:", checked);
-        checked.forEach(requestID => REQ.add_tutor_to_request(requestID, tutorID));
+        checked.forEach(requestID =>
+            REQ.create_offer(requestID,
+                tutorID,
+                items.at(0).time,
+                items.at(0).date,
+                items.at(0).location));
         setAccepted(true);
     }
 
