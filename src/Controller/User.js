@@ -376,6 +376,53 @@ export class User {
         })
         return sessObjs;
     }
+
+    static async get_matches(userID) {
+        const db = getDatabase();
+        const reqObjsRef = ref(db, `Requests/${userID}`);
+        const userReqObjs = (await get(reqObjsRef)).toJSON();
+
+        const reqIdArr = Object.keys(userReqObjs)
+        const reqObjsArr = Object.values(userReqObjs)
+
+        const offerObjs2 = []
+        for (let i = 0; i < reqIdArr.length; i += 1) {
+            const reqObject = reqObjsArr[i]
+            if (Object.keys(reqObject.Offers).length > 1) {
+                const offerTutorIds = Object.keys(reqObject.Offers).slice(1)
+                const offerObjs = Object.values(reqObject.Offers).slice(1)
+                console.log(offerTutorIds.length)
+                console.log(offerObjs)
+                for (let j = 0; j < offerTutorIds.length; j += 1) {
+                    console.log("offerID, index", offerTutorIds[j], j)
+                    const tutorInfo = Tutor.get_information(offerTutorIds[j])
+                    const tutorObj = await tutorInfo.then(val => {
+                        return val
+                    })
+                    console.log(tutorObj)
+                    const tutorNameData = User.get_information(tutorObj.TutorID)
+                    const tutorName = await tutorNameData.then(val => {
+                        return val
+                    })
+                    console.log(offerObjs[j])
+
+                    offerObjs2.push({
+                        id: offerTutorIds[j],
+                        tutor: tutorName.Name,
+                        course: reqObject.CourseWanted,
+                        date: offerObjs[j].Date,
+                        time: offerObjs[j].Time,
+                        location: offerObjs[j].location,
+                        rate:   tutorObj.Price,
+                    })
+                }
+
+            }
+            i += 1
+        }
+
+        return offerObjs2
+    }
     
 } 
 

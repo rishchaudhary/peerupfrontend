@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 // tabs
 import * as React from 'react';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 
 // ratings
 import Rating from '@mui/material/Rating';
@@ -45,6 +45,7 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../user';
 
 // mock
 import {Sessions as SESSION} from "../../../Controller/Sessions";
+import {User as USER} from "../../../Controller/User";
 
 
 
@@ -197,11 +198,19 @@ export default function TutorMatched() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [offers, setOffers] = React.useState([]);
+
 
   const database = getDatabase();
   const userID = getAuth().currentUser.uid;
 
-
+    useEffect(() => {
+      USER.get_matches(userID)
+        .then(fetchOffers => {
+          console.log("OFFERS HERE:", fetchOffers)
+          setOffers(fetchOffers)
+        })
+  }, [])
 
   let userReqIDs = [];
   const reqIdsRef = ref(database, `Users/${userID}/Requests`);
@@ -255,9 +264,8 @@ export default function TutorMatched() {
           }
         }
       })
-      
+
     })
-  // }, 1)
 
 
   console.log("Match Objects", matchRows);
