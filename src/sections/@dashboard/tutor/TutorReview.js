@@ -49,7 +49,7 @@ async function createReview(rating, content,studentID){
     console.log(content.toString());
     console.log("tutorid:",studentID.toString());
 
-    FEEDBACK.create_feedback(reviewID, rating, content.toString(), studentID.toString(), userID);
+    FEEDBACK.create_feedback(rating, content.toString(), studentID.toString(), userID);
 
 }
 
@@ -74,7 +74,7 @@ console.log("Completed Sessions IDS: ", userSesIDs);
 const userSesObjs = [];
 for(let i = 1; i < userSesIDs.length; i+= 1){
   const sessionID = userSesIDs[i];
-  const sesRef = ref(database, `Sessions/${sessionID}`);
+  const sesRef = ref(database, `Sessions/${userID}/${sessionID}`);
   onValue(sesRef, (snapshot) => {
     if(snapshot.toJSON().Completed){
       userSesObjs.push(snapshot.toJSON());
