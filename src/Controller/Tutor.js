@@ -3,6 +3,7 @@ import { Review } from "./Review";
 import {User} from './User'
 import {Feedback} from './Feedback'
 import {Requests} from './Requests'
+import {Sessions} from './Sessions'
  
 export class Tutor {
     
@@ -528,7 +529,49 @@ export class Tutor {
         console.log(snapshot)
         return Object.values(snapshot);
     }
-    
+
+    static async get_sessions(userID) {
+        const db = getDatabase();
+        const sessionsIdsRef = ref(db, `TutorAccounts/${userID}/Sessions`);
+        const snapshot = (await (get(sessionsIdsRef))).toJSON();
+
+        const sessIds = Object.values(snapshot)
+
+        const sessObjs = []
+        /* eslint-disable no-await-in-loop */
+        for (let i = 1; i < sessIds.length; i += 1) {
+            const sessionData = Sessions.get_info(sessIds[i])
+            const sessObj = await sessionData.then(val => {
+                return val
+            })
+            if (sessObj != null) {
+                sessObjs.push({
+                    id: sessIds[i],
+                    completed: sessObj.Completed,
+                    numCompleted: sessObj.CompletedSubSessions,
+                    date: sessObj.Date,
+                    description: sessObj.Description,
+                    format: sessObj.Format,
+                    length: sessObj.Length,
+                    location: sessObj.Location,
+                    rDays: sessObj.PreferredDays,
+                    recurring: sessObj.Recurring,
+                    time: sessObj.StartTime,
+                    student: sessObj.Student,
+                    studentID: sessObj.studentID,
+                    totalSessions: sessObj.totalSessions,
+                    tutor: sessObj.Tutor,
+                    tutorID: sessObj.tutorID,
+                    weeks: sessObj.Weeks,
+                })
+            }
+        }
+
+        console.log("SESSION OBJ TUTOR", sessObjs)
+
+        return sessObjs;
+    }
+
 }
 
 

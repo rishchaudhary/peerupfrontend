@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import Collapse from "@mui/material/Collapse";
 import Alert from "@mui/material/Alert";
 import CloseIcon from "@mui/icons-material/Close";
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -38,17 +36,6 @@ import {User as USER} from "../../../Controller/User";
 
 
 
-function createData(CourseWanted, Date, Time, Length, Location, Format, reqID) {
-  return {
-    CourseWanted,
-    Date,
-    Time,
-    Length,
-    Location,
-    Format,
-    reqID
-  };
-}
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {

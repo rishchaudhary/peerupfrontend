@@ -335,6 +335,49 @@ export class User {
         const snapshot = (await (get(userRef))).toJSON();
         return snapshot;
     }
+
+    static async get_sessions(userID) {
+        const db = getDatabase();
+        const sessionsRef = ref(db, `Sessions/${userID}`);
+        const snapshot = (await (get(sessionsRef))).toJSON();
+
+        const sessions = Object.values(snapshot)
+        const sessIds = Object.keys(snapshot)
+
+        console.log("SESS IDS", sessIds)
+
+        const sessObjs = []
+        let i = 0;
+        sessIds.forEach(sessId => {
+            const sessObj = sessions[i]
+            console.log("The Session", sessObj)
+            if (sessObj != null) {
+                sessObjs.push({
+                    id: sessId,
+                    completed: sessObj.Completed,
+                    numCompleted: sessObj.CompletedSubSessions,
+                    date: sessObj.Date,
+                    description: sessObj.Description,
+                    format: sessObj.Format,
+                    length: sessObj.Length,
+                    location: sessObj.Location,
+                    rDays: sessObj.PreferredDays,
+                    recurring: sessObj.Recurring,
+                    time: sessObj.StartTime,
+                    student: sessObj.Student,
+                    studentID: sessObj.studentID,
+                    totalSessions: sessObj.totalSessions,
+                    tutor: sessObj.Tutor,
+                    tutorID: sessObj.tutorID,
+                    weeks: sessObj.Weeks,
+                })
+                i += 1;
+            }
+
+
+        })
+        return sessObjs;
+    }
     
 } 
 
