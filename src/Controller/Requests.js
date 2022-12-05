@@ -104,11 +104,18 @@ export class Requests {
             const requestIDUser = requestIDs[i].split('/');
             const requestData = Requests.get_information(requestIDs[i]);
             const data = await requestData.then(val => {return val;});
-            const requestInfo = data.MatchedTutors;
-            let result = Object.keys(requestInfo).map((key) => requestInfo[key]);
+
+
+            console.log("DATA:", data)
+            const requestInfo = data.Offers;
+            console.log("reqINFO:", requestInfo)
+
+
+
+            let result = Object.values(requestInfo).map((key) => requestInfo[key]);
             console.log(result)
             /* eslint-disable no-await-in-loop */
-            for (let j = 0; j < result.length; j += 1) {
+            for (let j = 1; j < result.length; j += 1) {
 
                 const tutorData = Tutor.get_information(result[j]);
                 const tutor = await tutorData.then(val => {return val;});

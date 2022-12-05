@@ -43,6 +43,8 @@ const PostRequest = ({jumpStep, values}) => {
         jumpStep(1);
     }
 
+    window.location.reload()
+
     return (
         <div>
             <h1>Success! Your request has been posted</h1>

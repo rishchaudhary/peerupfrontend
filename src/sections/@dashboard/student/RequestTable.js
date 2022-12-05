@@ -2,6 +2,9 @@ import * as React from 'react';
 import {useEffect, useState} from "react";
 
 import PropTypes from 'prop-types';
+import Collapse from "@mui/material/Collapse";
+import Alert from "@mui/material/Alert";
+import CloseIcon from "@mui/icons-material/Close";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { alpha } from '@mui/material/styles';
@@ -28,7 +31,7 @@ import LoopIcon from '@mui/icons-material/Loop';
 import { visuallyHidden } from '@mui/utils';
 import {getDatabase, ref, onValue} from "firebase/database";
 import {getAuth} from "firebase/auth";
-import {Chip, Popover} from "@mui/material";
+import {Chip, Popover, Stack} from "@mui/material";
 import {Requests as REQ} from "../../../Controller/Requests";
 import {User as USER} from "../../../Controller/User";
 
@@ -176,6 +179,7 @@ function EnhancedTableToolbar(props) {
   const { numSelected, checked } = props;
   const userID = getAuth().currentUser.uid
   const [deleteItem, setDelete] = React.useState(false);
+  const [showAlert, setAlert] = React.useState(false);
 
   const handleDelete = (event) => {
     console.log("Deleted Requests:", checked);
@@ -184,9 +188,9 @@ function EnhancedTableToolbar(props) {
       deletedIDs.push(`${userID}/${value}`);
     });
 
-    REQ.delete_request(deletedIDs);
-
-    setDelete(true);
+    REQ.delete_request(deletedIDs)
+    // setDelete(numSelected)
+    setAlert(!showAlert)
   }
 
   return (
@@ -199,6 +203,7 @@ function EnhancedTableToolbar(props) {
                   alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
             }),
           }}
+          alignItems={"center"}
       >
         {numSelected > 0 ? (
             <Typography
@@ -219,6 +224,28 @@ function EnhancedTableToolbar(props) {
               Active Requests
             </Typography>
         )}
+
+         <Box sx={{ width: '100%' }}>
+           <Collapse in={showAlert}>
+              <Alert
+                  action={
+                    <IconButton
+                        aria-label="close"
+                        color="inherit"
+                        size="medium"
+                        onClick={() => {
+                          setAlert(false);
+                        }}
+                    >
+                      <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                  }
+                  sx={{ mb: 2 }}
+              >
+                Request Deleted
+              </Alert>
+            </Collapse>
+         </Box>
 
         {numSelected > 0 ? (
             <Tooltip title="Delete">
@@ -331,12 +358,7 @@ export default function RequestTable() {
 
   if (requests.length === 0) {
     return (
-      <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+        <Typography variant="body2" sx={{ p: 1 }}>Your matches will appear here once you create some!</Typography>
     )
   }
 

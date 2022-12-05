@@ -263,23 +263,15 @@ export class User {
 
     static async get_user_requests(userID) {
         const db = getDatabase();
-
-        const reqIdsRef = ref(db, `Users/${userID}/Requests`);
-        const userReqIds = (await get(reqIdsRef)).toJSON();
-
         const reqObjsRef = ref(db, `Requests/${userID}`);
         const userReqObjs = (await get(reqObjsRef)).toJSON();
 
-
-
-        const reqIdArr = Object.values(userReqIds)
-        console.log("REQIDSSS", reqIdArr)
+        const reqIdArr = Object.keys(userReqObjs)
         const reqObjsArr = Object.values(userReqObjs)
 
-        console.log("userReqObjs", reqObjsArr)
         const reqObjs = []
         let i = 0;
-        reqIdArr.slice(1).forEach(reqId => {
+        reqIdArr.forEach(reqId => {
             const reqObject = reqObjsArr[i]
             console.log("The Object", reqObject)
             if (reqObject != null) {
