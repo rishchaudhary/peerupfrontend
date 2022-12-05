@@ -274,17 +274,28 @@ export class Tutor {
     // set as the value of the keys VerifiedCourses and NotverifiedCourses respectively.
     static async update_courses(userID, courses) {
 
+        let courseList;
+
+        if (courses.includes(',') === false) {
+            courseList = [courses];
+        }
+        else {
+            courseList = courses.split(',');
+        }
+
+        console.log(courseList);
+
         const tutorData = this.get_information(userID);
         const data = await tutorData.then(val => {return val;});
         const notVerified = data.NotVerifiedCourses;
         const result = Object.keys(notVerified).map((key) => notVerified[key]);
-        await set(ref(getDatabase(), `TutorAccounts/${userID}/VerifiedCourses`), courses);
+        await set(ref(getDatabase(), `TutorAccounts/${userID}/VerifiedCourses`), courseList);
 
-        for(let i = 0; i < courses.length; i += 1) {
+        for(let i = 0; i < courseList.length; i += 1) {
 
             for (let j = 0; j < result.length; j += 1) {
 
-                if (result[j] === courses[i]) {
+                if (result[j] === courseList[i]) {
                     result.splice(j, 1);
                 }
             }
