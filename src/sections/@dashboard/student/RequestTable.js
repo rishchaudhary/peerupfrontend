@@ -1,7 +1,9 @@
 import * as React from 'react';
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
 import PropTypes from 'prop-types';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -22,11 +24,16 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import LoopIcon from '@mui/icons-material/Loop';
 import { visuallyHidden } from '@mui/utils';
 import {getDatabase, ref, onValue} from "firebase/database";
 import {getAuth} from "firebase/auth";
+import {Chip, Popover} from "@mui/material";
 import {Requests as REQ} from "../../../Controller/Requests";
 import {User as USER} from "../../../Controller/User";
+
+
+
 
 function createData(CourseWanted, Date, Time, Length, Location, Format, reqID) {
   return {
@@ -247,51 +254,27 @@ export default function RequestTable() {
   const database = getDatabase();
   const userID = getAuth().currentUser.uid;
 
-  // useEffect(() => {
-  //   USER.get_user_requests(userID)
-  //       .then(fetchRequests => {
-  //         console.log("Requests:", fetchRequests)
-  //         setRequests(fetchRequests)
-  //       })
-  // }, [])
+  useEffect(() => {
+    USER.get_user_requests(userID)
+        .then(fetchRequests => {
+          console.log("REQUESTS HERE:", fetchRequests)
+          setRequests(fetchRequests)
+        })
+  }, [])
 
 
+  const [anchorEl, setAnchorEl] = useState(null);
 
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  let userReqIDs = [];
-  const reqIdsRef = ref(database, `Users/${userID}/Requests`);
-  onValue(reqIdsRef, (snapshot) => {
-    userReqIDs = snapshot.val();
-  });
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
-  console.log("REQUESTS IDS:", userReqIDs);
+  const open = Boolean(anchorEl);
 
-  const reqRows = [];
-
-  let userReqObjs = [];
-  const reqRef = ref(database, `Requests/${userID}`);
-  onValue(reqRef, (snapshot) => {
-    userReqObjs = snapshot.val();
-  })
-
-  console.log("Request objects", userReqObjs);
-  for (let i = 1; i < userReqIDs.length; i += 1) {
-    const reqObj = userReqObjs[userReqIDs[i]];
-    if (reqObj != null) {
-      reqRows.push(createData(
-          reqObj.CourseWanted,
-          reqObj.Date,
-          reqObj.Time,
-          reqObj.Length,
-          reqObj.Location,
-          reqObj.Format,
-          userReqIDs[i]
-      ));
-    }
-  }
-
-
-  console.log("newROWS:", reqRows);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -301,7 +284,7 @@ export default function RequestTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = reqRows.map((n,) => n.reqID);
+      const newSelected = requests.map((n,) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -344,7 +327,18 @@ export default function RequestTable() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-      page > 0 ? Math.max(0, (1 + page) * rowsPerPage - reqRows.length) : 0;
+      page > 0 ? Math.max(0, (1 + page) * rowsPerPage - requests.length) : 0;
+
+  if (requests.length === 0) {
+    return (
+      <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
+  }
 
   return (
       <Box sx={{ width: '100%' }}>
@@ -362,25 +356,34 @@ export default function RequestTable() {
                   orderBy={orderBy}
                   onSelectAllClick={handleSelectAllClick}
                   onRequestSort={handleRequestSort}
-                  rowCount={reqRows.length}
+                  rowCount={requests.length}
               />
               <TableBody>
                 {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.sort(getComparator(order, orderBy)).slice() */}
-                {stableSort(reqRows, getComparator(order, orderBy))
+                {stableSort(requests, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                      const isItemSelected = isSelected(row.reqID);
+                      const isItemSelected = isSelected(row.id);
                       const labelId = `enhanced-table-checkbox-${index}`;
+                      const preferredDays = Object.values(row.prefDays)
+
+                      let prefDays = `For ${row.weeks} Weeks, On: `
+                      preferredDays.forEach(value => {
+                        if (value.value) {
+                          prefDays += `${value.key}, `
+                        }
+                      })
+
 
                       return (
                           <TableRow
                               hover
-                              onClick={(event) => handleClick(event, row.reqID)}
+                              onClick={(event) => handleClick(event, row.id)}
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}
-                              key={row.reqID}
+                              key={row.id}
                               selected={isItemSelected}
                           >
                             <TableCell padding="checkbox">
@@ -398,13 +401,51 @@ export default function RequestTable() {
                                 scope="row"
                                 padding="none"
                             >
-                              {row.CourseWanted}
+                              {(row.recurring)
+                                  ?
+                                    <div key={index}>
+                                      <Chip
+                                          label={row.course}
+                                          icon={<LoopIcon />}
+                                          size={"small"}
+                                          sx={{bgcolor: 'primary.dark', fontWeight: 'light'}}
+                                          aria-owns={open ? 'mouse-over-popover' : undefined}
+                                          aria-haspopup="true"
+                                          onMouseEnter={handlePopoverOpen}
+                                          onMouseLeave={handlePopoverClose}
+                                      />
+                                      <Popover
+                                          id="mouse-over-popover"
+                                          sx={{
+                                            pointerEvents: 'none',
+                                          }}
+                                          open={open}
+                                          anchorEl={anchorEl}
+                                          anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                          }}
+                                          transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                          }}
+                                          onClose={handlePopoverClose}
+                                          disableRestoreFocus
+                                      >
+                                        <Typography variant="body2" sx={{ p: 1 }}>{prefDays}</Typography>
+                                      </Popover>
+                                    </div>
+                                  :
+                                  row.course
+                              }
+
+
                             </TableCell>
-                            <TableCell align="center">{row.Date}</TableCell>
-                            <TableCell align="center">{row.Time}</TableCell>
-                            <TableCell align="center">{row.Length}</TableCell>
-                            <TableCell align="center">{row.Location}</TableCell>
-                            <TableCell align="center">{row.Format}</TableCell>
+                            <TableCell align="center">{row.date}</TableCell>
+                            <TableCell align="center">{row.time}</TableCell>
+                            <TableCell align="center">{row.length}</TableCell>
+                            <TableCell align="center">{row.location}</TableCell>
+                            <TableCell align="center">{row.format}</TableCell>
                           </TableRow>
                       );
                     })}
@@ -423,7 +464,7 @@ export default function RequestTable() {
           <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={reqRows.length}
+              count={requests.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}

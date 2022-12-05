@@ -13,6 +13,8 @@ import {
   TextField,
   IconButton,
 } from '@mui/material';
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 // Firebase
 
@@ -90,7 +92,14 @@ export default function Profile() {
   const usrProfilePicURL = auth.currentUser.photoURL;
 
   if (days.length === 0 || times.length === 0) {
-    return <h1>Fetching data.....</h1>;
+    return (
+        <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+    );
   }
 
 

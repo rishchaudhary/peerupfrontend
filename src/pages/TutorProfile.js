@@ -16,6 +16,8 @@ import {
     TextField,
     IconButton
   } from '@mui/material';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
   import VerifiedIcon from '@mui/icons-material/Verified';
   import { PhotoCamera } from '@mui/icons-material';
   import StarsIcon from '@mui/icons-material/Stars';
@@ -143,7 +145,14 @@ export default function TutorProfile() {
 
 
     if (days.length === 0 || times.length === 0 || courses.length === 0 || badges.length === 0) {
-        return <h1>Fetching data.....</h1>;
+        return (
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+        );
     }
 
     return (

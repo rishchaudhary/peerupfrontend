@@ -263,22 +263,52 @@ export class User {
 
     static async get_user_requests(userID) {
         const db = getDatabase();
-        const userRef = ref(db, `Users/${userID}/Requests`);
-        const snapshot = (await get(userRef)).toJSON();
 
-        const reqObjects = [];
-        for (let i = 0; i < Object.entries(snapshot).length; i+= 1){
-            const value = Object.entries(snapshot)[i];
-            const reqRef = ref(db, `Requests/${value[1]}`);
-            const request = (await get(reqRef)).toJSON();
-            if (request !== null) {
-                reqObjects.push(request);
+        const reqIdsRef = ref(db, `Users/${userID}/Requests`);
+        const userReqIds = (await get(reqIdsRef)).toJSON();
+
+        const reqObjsRef = ref(db, `Requests/${userID}`);
+        const userReqObjs = (await get(reqObjsRef)).toJSON();
+
+
+
+        const reqIdArr = Object.values(userReqIds)
+        console.log("REQIDSSS", reqIdArr)
+        const reqObjsArr = Object.values(userReqObjs)
+
+        console.log("userReqObjs", reqObjsArr)
+        const reqObjs = []
+        let i = 0;
+        reqIdArr.slice(1).forEach(reqId => {
+            const reqObject = reqObjsArr[i]
+            console.log("The Object", reqObject)
+            if (reqObject != null) {
+                reqObjs.push({
+                    id: reqId,
+                    time: reqObject.Time,
+                    length: reqObject.Length,
+                    date: reqObject.Date,
+                    description: reqObject.Description,
+                    name: reqObject.Name,
+                    format: reqObject.Format,
+                    location: reqObject.Location,
+                    language: reqObject.LanguagePreference,
+                    recurring: reqObject.Recurring,
+                    weeks: reqObject.Weeks,
+                    prefDays: reqObject.PreferredDays,
+                    numSess: reqObject.TotalSessionsWanted,
+                    course: reqObject.CourseWanted,
+                })
+                i += 1;
             }
-        }
-        console.log(reqObjects);
 
-        return reqObjects;
 
+        })
+
+
+        console.log("User req Objsects",reqObjs);
+
+        return reqObjs;
     }
 
     static async get_days(userID) {
