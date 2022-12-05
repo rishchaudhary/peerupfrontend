@@ -293,8 +293,6 @@ export class User {
                 })
                 i += 1;
             }
-
-
         })
 
 

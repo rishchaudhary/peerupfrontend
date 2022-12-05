@@ -1,81 +1,45 @@
-import PropTypes from "prop-types";
-
-// tabs
 import * as React from 'react';
-import { useState } from 'react';
+import {useEffect, useState} from "react";
 
-// ratings
-import Rating from '@mui/material/Rating';
-// button
+import PropTypes from 'prop-types';
+import Collapse from "@mui/material/Collapse";
+import Alert from "@mui/material/Alert";
+import CloseIcon from "@mui/icons-material/Close";
+import { alpha } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
-import { filter } from 'lodash';
-
-// material
-import {
-    Card,
-    Table,
-    Stack,
-    Avatar,
-    Button,
-    Checkbox,
-    TableRow,
-    TableBody,
-    TableCell,
-    Container,
-    Typography,
-    TableContainer,
-    TablePagination,
-    Toolbar,
-    alpha,
-    Tooltip,
-} from '@mui/material';
-
+import Tooltip from '@mui/material/Tooltip';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-// firebase
-import {getDatabase, onValue, ref} from "firebase/database";
+import LoopIcon from '@mui/icons-material/Loop';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import LooksOneOutlinedIcon from '@mui/icons-material/LooksOneOutlined';import CancelIcon from '@mui/icons-material/Cancel';
+import { visuallyHidden } from '@mui/utils';
+import {getDatabase, ref, onValue} from "firebase/database";
 import {getAuth} from "firebase/auth";
-
-// components
-import Scrollbar from '../../../components/Scrollbar';
-import SearchNotFound from '../../../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../user';
+import {Button, Chip, Popover, Stack} from "@mui/material";
+import {Requests as REQ} from "../../../Controller/Requests";
+import {Tutor as TUTOR} from "../../../Controller/Tutor";
 import TutorOfferForm from "./TutorOfferForm";
 
-// mock
-import USERLIST from '../../../_mock/user';
-import {Requests as REQ} from "../../../Controller/Requests";
 
 
 
 
-
-function createData(matchID, Name, Course, MeetingDate, MeetingTime, Location, Description) {
-    return {
-        matchID,
-        Name,
-        Course,
-        MeetingDate,
-        MeetingTime,
-        Location,
-        Description
-    };
-}
-
-function applySortFilter(array, comparator, query) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    if (query) {
-        return filter(array, (_match) => _match.Name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-    }
-    return stabilizedThis.map((el) => el[0]);
-}
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -93,10 +57,118 @@ function getComparator(order, orderBy) {
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
+// This method is created for cross-browser compatibility, if you don't
+// need to support IE11, you can use Array.prototype.sort() directly
+function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) {
+            return order;
+        }
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+}
+
+const headCells = [
+    {
+        id: 'Student',
+        numeric: false,
+        disablePadding: false,
+        label: 'Student Name'
+    },
+    {
+        id: 'Date',
+        numeric: false,
+        disablePadding: false,
+        label: 'Date',
+    },
+    {
+        id: 'Time',
+        numeric: false,
+        disablePadding: false,
+        label: 'Time',
+    },
+    {
+        id: 'Length',
+        numeric: false,
+        disablePadding: false,
+        label: 'Length',
+    },
+    {
+        id: 'Location',
+        numeric: false,
+        disablePadding: false,
+        label: 'Location',
+    },
+    {
+        id: 'Recurring',
+        numeric: false,
+        disablePadding: false,
+        label: "",
+    }
+];
+
+function EnhancedTableHead(props) {
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+        props;
+    const createSortHandler = (property) => (event) => {
+        onRequestSort(event, property);
+    };
+
+    return (
+        <TableHead>
+            <TableRow>
+                <TableCell padding="checkbox">
+                    <Checkbox
+                        color="primary"
+                        indeterminate={numSelected > 0 && numSelected < rowCount}
+                        checked={rowCount > 0 && numSelected === rowCount}
+                        onChange={onSelectAllClick}
+                        inputProps={{
+                            'aria-label': 'select all requests',
+                        }}
+                    />
+                </TableCell>
+                {headCells.map((headCell) => (
+                    <TableCell
+                        key={headCell.id}
+                        align={"center"}
+                        padding={headCell.disablePadding ? 'none' : 'normal'}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <Box component="span" sx={visuallyHidden}>
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </Box>
+                            ) : null}
+                        </TableSortLabel>
+                    </TableCell>
+                ))}
+            </TableRow>
+        </TableHead>
+    );
+}
+
+EnhancedTableHead.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
+};
 
 function EnhancedTableToolbar(props) {
     const { numSelected, checked, items } = props;
-    const userID = getAuth().currentUser.uid
+    const [showAlert, setAlert] = React.useState(false);
     const [deleteItem, setDelete] = React.useState(false);
     const [acceptItem, setAccepted] = React.useState(false);
     const tutorID = getAuth().currentUser.uid;
@@ -132,6 +204,7 @@ function EnhancedTableToolbar(props) {
         checked.forEach(requestID => REQ.reject_request(requestID, tutorID));
 
         setDelete(true);
+        setAlert(!showAlert)
     }
 
     return (
@@ -164,6 +237,28 @@ function EnhancedTableToolbar(props) {
                     Select Match
                 </Typography>
             )}
+
+            <Box sx={{ width: '100%' }}>
+                <Collapse in={showAlert}>
+                    <Alert
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="medium"
+                                onClick={() => {
+                                    setAlert(false);
+                                }}
+                            >
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                        sx={{ mb: 2 }}
+                    >
+                        Request Deleted
+                    </Alert>
+                </Collapse>
+            </Box>
 
             {numSelected > 0 ? (
                 <Stack direction={"row"} spacing={5}>
@@ -208,68 +303,43 @@ EnhancedTableToolbar.propTypes = {
     items: PropTypes.array.isRequired,
 };
 
-
 export default function TutorMatched() {
 
 
-    const [page, setPage] = useState(0);
-
-    const [order, setOrder] = useState('asc');
-
-    const [selectedIds, setSelectedIds] = useState([]);
-
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('course');
+    const [selected, setSelected] = React.useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
+    const [page, setPage] = React.useState(0);
+    const [dense, setDense] = React.useState(false);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [matches, setMatches] = React.useState([]);
 
-    const [orderBy, setOrderBy] = useState('name');
-
-    const [filterName, setFilterName] = useState('');
-
-    const [rowsPerPage, setRowsPerPage] = useState(5);
 
 
     const database = getDatabase();
     const tutorID = getAuth().currentUser.uid;
 
+    useEffect(() => {
+        TUTOR.get_matches(tutorID)
+            .then(fetchMatches => {
+                console.log("Matches TUTOR HERE:", fetchMatches)
+                setMatches(fetchMatches)
+            })
+    }, [])
 
 
-    let matchIDs = [];
-    const matchIdsRef = ref(database, `TutorAccounts/${tutorID}/Requests`);
-    onValue(matchIdsRef, (snapshot) => {
-        matchIDs = snapshot.val();
-    });
-    // console.log("MatchIDs: ", matchIDs);
-    const matchRows = [];
+    const [anchorEl, setAnchorEl] = useState(null);
 
-    matchIDs.slice(1).forEach((match,) => {
-        let reqMatch;
-        const reqMatchRef = ref(database, `Requests/${match}`);
-        onValue(reqMatchRef, (snapshot) => {
-            reqMatch = snapshot.val();
-        });
-        if (reqMatch != null) {
-            matchRows.push(createData(
-                match,
-                reqMatch.Name,
-                reqMatch.CourseWanted,
-                reqMatch.Date,
-                reqMatch.Time,
-                reqMatch.Location,
-                reqMatch.Description,
-            ));
-        }
-    });
+    const handlePopoverOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-    console.log("Match Objects", matchRows);
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
 
-
-    const TABLE_HEAD = [
-        {id: 'Name', label: 'Student Name', alignRight: false},
-        {id: 'Course', label: 'Course', alignRight: false},
-        {id: 'MeetingDate', label: 'Date', alignRight: false},
-        {id: 'MeetingTime', label: 'Time', alignRight: false},
-        {id: 'Location', label: 'Location', alignRight: false},
-        {id: 'Description', label: 'More info', alignRight: false},
-    ];
+    const open = Boolean(anchorEl);
 
 
     const handleRequestSort = (event, property) => {
@@ -280,12 +350,11 @@ export default function TutorMatched() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = matchRows.map((n) => n.matchID);
-            setSelectedIds(newSelecteds);
+            const newSelected = matches.map((n,) => n.id);
+            setSelected(newSelected);
             return;
         }
-        setSelectedIds([]);
-        setSelectedItems([]);
+        setSelected([]);
     };
 
     const handleClick = (event, matchID, MeetingDate, MeetingTime, Location) => {
@@ -295,23 +364,26 @@ export default function TutorMatched() {
             time: MeetingTime,
             location: Location
         };
-        const selectedIndex = selectedIds.indexOf(matchID);
+        const selectedIndex = selected.indexOf(matchID);
         let newSelected = [];
         let newSelectedItems = [];
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selectedIds, matchID);
+            newSelected = newSelected.concat(selected, matchID);
             newSelectedItems = newSelectedItems.concat(selectedItems, newItem);
         } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selectedIds.slice(1));
+            newSelected = newSelected.concat(selected.slice(1));
             newSelectedItems = newSelectedItems.concat(selectedItems.slice(1));
-        } else if (selectedIndex === selectedIds.length - 1) {
-            newSelected = newSelected.concat(selectedIds.slice(0, -1));
-            newSelectedItems = newSelectedItems.concat(selectedItems.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selectedIds.slice(0, selectedIndex), selectedIds.slice(selectedIndex + 1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
             newSelectedItems = newSelectedItems.concat(selectedItems.slice(0, selectedIndex), selectedItems.slice(selectedIndex + 1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+                selected.slice(0, selectedIndex),
+                selected.slice(selectedIndex + 1),
+            );
         }
-        setSelectedIds(newSelected);
+
+        setSelected(newSelected);
         setSelectedItems(newSelectedItems);
     };
 
@@ -324,125 +396,166 @@ export default function TutorMatched() {
         setPage(0);
     };
 
-    const handleFilterByName = (event) => {
-        setPage(0);
-        setFilterName(event.target.value);
+    const handleChangeDense = (event) => {
+        setDense(event.target.checked);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - matchRows.length) : 0;
+    const isSelected = (reqID) => selected.indexOf(reqID) !== -1;
 
-    const filteredUsers = applySortFilter(matchRows, getComparator(order, orderBy), filterName);
+    // Avoid a layout jump when reaching the last page with empty rows.
+    const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - matches.length) : 0;
 
-    const isUserNotFound = filteredUsers.length === 0;
-
+    if (matches.length === 0) {
+        return (
+            <Typography variant="body2" sx={{ p: 1 }}>Your matches will appear here once you create some!</Typography>
+        )
+    }
 
     return (
-
-        <Card>
-            <EnhancedTableToolbar
-                checked={selectedIds}
-                numSelected={selectedIds.length}
-                items={selectedItems}
-            />
-            <Scrollbar>
-                <TableContainer sx={{minWidth: 800}}>
-                    <Table>
-                        <UserListHead
+        <Box sx={{ width: '100%' }}>
+            <Paper sx={{ width: '100%', mb: 2 }}>
+                <EnhancedTableToolbar
+                    checked={selected}
+                    numSelected={selected.length}
+                    items={selectedItems}
+                />
+                <TableContainer>
+                    <Table
+                        sx={{ minWidth: 750, maxWidth: 800}}
+                        aria-labelledby="tableTitle"
+                        size={dense ? 'small' : 'medium'}
+                    >
+                        <EnhancedTableHead
+                            numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
-                            headLabel={TABLE_HEAD}
-                            rowCount={matchRows.length}
-                            numSelected={selectedIds.length}
-                            onRequestSort={handleRequestSort}
                             onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={matches.length}
                         />
                         <TableBody>
-                            {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                const {
-                                    matchID,
-                                    Name,
-                                    Course,
-                                    MeetingDate,
-                                    MeetingTime,
-                                    Location,
-                                    Description,
-                                } = row;
-                                const selectedMatch = selectedIds.indexOf(matchID) !== -1;
+                            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+                            rows.sort(getComparator(order, orderBy)).slice() */}
+                            {stableSort(matches, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
+                                    const isItemSelected = isSelected(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
+                                    const preferredDays = Object.values(row.prefDays)
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        key={matchID}
-                                        tabIndex={-1}
-                                    >
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                checked={selectedMatch}
-                                                onChange={(event) => {
-                                                    handleClick(event, matchID, MeetingDate, MeetingTime, Location)
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell component="th" scope="row" padding="none">
-                                            <Stack direction="row" alignItems="center" spacing={2}>
-                                                { /* <Avatar alt={tutorName} src={avatarUrl}/> */ }
-                                                <Typography variant="subtitle2" noWrap>
-                                                    {Name}
-                                                </Typography>
-                                            </Stack>
-                                        </TableCell>
-                                        <TableCell align="left">{Course}</TableCell>
-                                        <TableCell align="left">{MeetingDate}</TableCell>
-                                        <TableCell align="left">{MeetingTime}</TableCell>
-                                        <TableCell align="left">{Location}</TableCell>
-                                        <TableCell align="left">{Description}</TableCell>
-                                        {/* <TableCell align="left"> */}
-                                        {/*    <IconButton aria-label="accept" size="large" onClick={handleAccept}> */}
-                                        {/*        <CheckCircleIcon fontSize="inherit"/> */}
-                                        {/*    </IconButton> */}
-                                        {/* </TableCell> */}
-                                        {/* <TableCell align="left"> */}
-                                        {/*    <IconButton value={index} aria-label="delete" size="large" onClick={handleDelete}> */}
-                                        {/*        <CancelIcon fontSize="inherit"/> */}
-                                        {/*    </IconButton> */}
-                                        {/* </TableCell> */}
-                                    </TableRow>
-                                );
-                            })}
+                                    let prefDays = `For ${row.weeks} Weeks, On: `
+                                    preferredDays.forEach(value => {
+                                        if (value.value) {
+                                            prefDays += `${value.key}, `
+                                        }
+                                    })
+
+
+                                    return (
+                                        <TableRow
+                                            hover
+                                            onClick={(event) => handleClick(event, row.id, row.date, row.time, row.location)}
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={row.id}
+                                            selected={isItemSelected}
+                                        >
+                                            <TableCell padding="checkbox">
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId,
+                                                    }}
+                                                />
+                                            </TableCell>
+                                            <TableCell align="center">{row.name}</TableCell>
+                                            <TableCell align="center">{row.date}</TableCell>
+                                            <TableCell align="center">{row.time}</TableCell>
+                                            <TableCell align="center">{row.length}</TableCell>
+                                            <TableCell align="center">{row.location}</TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                padding="none"
+                                            >
+                                                {(row.recurring)
+                                                    ?
+                                                    <div key={index}>
+                                                        <Chip
+                                                            label={"Rec"}
+                                                            icon={<LoopIcon />}
+                                                            size={"small"}
+                                                            sx={{bgcolor: 'primary.dark', fontWeight: 'light'}}
+                                                            aria-owns={open ? 'mouse-over-popover' : undefined}
+                                                            aria-haspopup="true"
+                                                            onMouseEnter={handlePopoverOpen}
+                                                            onMouseLeave={handlePopoverClose}
+                                                        />
+                                                        <Popover
+                                                            id="mouse-over-popover"
+                                                            sx={{
+                                                                pointerEvents: 'none',
+                                                            }}
+                                                            open={open}
+                                                            anchorEl={anchorEl}
+                                                            anchorOrigin={{
+                                                                vertical: 'bottom',
+                                                                horizontal: 'left',
+                                                            }}
+                                                            transformOrigin={{
+                                                                vertical: 'top',
+                                                                horizontal: 'left',
+                                                            }}
+                                                            onClose={handlePopoverClose}
+                                                            disableRestoreFocus
+                                                        >
+                                                            <Typography variant="body2" sx={{ p: 1 }}>{prefDays}</Typography>
+                                                        </Popover>
+                                                    </div>
+                                                    :
+                                                    <Chip
+                                                        label={"One"}
+                                                        icon={<LooksOneOutlinedIcon />}
+                                                        size={"small"}
+                                                        sx={{bgcolor: 'primary.dark', fontWeight: 'light'}}
+                                                    />
+                                                }
+
+
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
                             {emptyRows > 0 && (
-                                <TableRow style={{height: 53 * emptyRows}}>
-                                    <TableCell colSpan={6}/>
+                                <TableRow
+                                    style={{
+                                        height: (dense ? 33 : 53) * emptyRows,
+                                    }}
+                                >
+                                    <TableCell colSpan={6} />
                                 </TableRow>
                             )}
                         </TableBody>
-
-                        {isUserNotFound && (
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell align="center" colSpan={6} sx={{py: 3}}>
-                                        <SearchNotFound searchQuery={filterName}/>
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        )}
                     </Table>
                 </TableContainer>
-            </Scrollbar>
-
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={matchRows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={matches.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+            <FormControlLabel
+                control={<Switch checked={dense} onChange={handleChangeDense} />}
+                label="Dense padding"
             />
-        </Card>
+        </Box>
     );
 }
-
-
-
-
-

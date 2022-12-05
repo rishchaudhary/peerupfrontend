@@ -572,6 +572,46 @@ export class Tutor {
         return sessObjs;
     }
 
+    static async get_matches(tutorID) {
+        const db = getDatabase();
+        const reqIdsRef = ref(db, `TutorAccounts/${tutorID}/Requests`)
+        const userReqIds = (await get(reqIdsRef)).toJSON();
+
+        const reqIdsArr = Object.values(userReqIds)
+
+        console.log("TUTOR REQ IDS ARR", reqIdsArr)
+
+        const reqObjs = []
+        for (let i = 1; i < reqIdsArr.length; i += 1) {
+            const reqObjData = Requests.get_information(reqIdsArr[i])
+            const reqObject = await reqObjData.then(val => {
+                return val
+            })
+            console.log("TUTOR REQ OBJ", reqObject)
+            if (reqObject != null) {
+                reqObjs.push({
+                    id: reqIdsArr[i],
+                    time: reqObject.Time,
+                    length: reqObject.Length,
+                    date: reqObject.Date,
+                    description: reqObject.Description,
+                    name: reqObject.Name,
+                    format: reqObject.Format,
+                    location: reqObject.Location,
+                    language: reqObject.LanguagePreference,
+                    recurring: reqObject.Recurring,
+                    weeks: reqObject.Weeks,
+                    prefDays: reqObject.PreferredDays,
+                    numSess: reqObject.TotalSessionsWanted,
+                    course: reqObject.CourseWanted,
+                })
+            }
+        }
+
+        console.log("REQUEST OBJ TUTOR", reqObjs)
+
+        return reqObjs;
+    }
 }
 
 

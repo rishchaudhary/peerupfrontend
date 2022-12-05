@@ -26,8 +26,7 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import LoopIcon from '@mui/icons-material/Loop';
-import LooksOneIcon from '@mui/icons-material/LooksOne';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import LooksOneOutlinedIcon from '@mui/icons-material/LooksOneOutlined';import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { visuallyHidden } from '@mui/utils';
 import {getDatabase, ref, onValue} from "firebase/database";
 import {getAuth} from "firebase/auth";
@@ -452,13 +451,9 @@ export default function TutorScheduled() {
                                   :
                                   <Chip
                                       label={"One"}
-                                      icon={<LooksOneIcon />}
+                                      icon={<LooksOneOutlinedIcon />}
                                       size={"small"}
                                       sx={{bgcolor: 'primary.dark', fontWeight: 'light'}}
-                                      aria-owns={open ? 'mouse-over-popover' : undefined}
-                                      aria-haspopup="true"
-                                      onMouseEnter={handlePopoverOpen}
-                                      onMouseLeave={handlePopoverClose}
                                   />
                               }
 
