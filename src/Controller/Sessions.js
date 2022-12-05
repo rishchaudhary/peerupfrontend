@@ -92,6 +92,9 @@ export class Sessions{
         if (recurring) {
             await set(ref(getDatabase(), `Sessions/${sessionID}/CompletedSubSessions`), sessionCompleted + 1);
         }
+        if (recurring === false) {
+            await set(ref(getDatabase(), `Sessions/${sessionID}/Completed`), true);
+        }
         const tutorData = Tutor.get_information(tutorID);
         const data3 = await tutorData.then(val => {return val;});
         const sessionsCompleted = parseFloat(data3.SessionsCompleted) + 1;
