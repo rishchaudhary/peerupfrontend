@@ -174,7 +174,7 @@ function EnhancedTableToolbar(props) {
   const handleComplete = (event) => {
     console.log("Completed Sessions:", checked);
     checked.forEach(value => {
-      SESS.session_completed(`${userID}/${value}`);
+      SESS.session_completed(value);
     });
     setCompleted(numSelected)
     setAlert(!showAlert)
